@@ -8,6 +8,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+import java.awt.geom.Area;
 import java.io.IOException;
 
 public class Tools {
@@ -24,8 +25,18 @@ public class Tools {
      * @return la valeur du int
      */
     public static int rangedRandomInt(int rangeMin, int rangeMax) {
-        Random r = new Random();
-        int randomValue = rangeMin + r.nextInt(rangeMax - rangeMin);
+        int randomValue = 0;
+        if(rangeMin<0 ||rangeMax<=0||(rangeMax-rangeMin<=0)){
+            System.out.println("Argument de random doit etre positif !!");
+            if(rangeMin<0){
+                System.out.println(rangeMin+" est negatif");
+            }
+            return rangeMin;
+        } else {
+            Random r = new Random();
+            randomValue = rangeMin + r.nextInt(rangeMax - rangeMin);
+
+        }
         return randomValue;
     }
 
@@ -54,16 +65,49 @@ public class Tools {
         return after;
     }
 
+
     /**
-     * Verifie si il y a une collision entre le segment [p1,p2] et l'ovale
+     * Trouve le point y correspondant a la coord (x,y) sur le segment [p1,p2]
+     * @param x la coord x du point a chercher
      * @param p1 Le premier point relatif du segment
      * @param p2 Le deuxieme point relatif du segment
-     * @return
+     * @return la coord y du point cherche
      */
     public static int findY(int x, Point p1, Point p2){
         float pente = (p2.y - p1.y) / ((float)p2.x - (float)p1.x);
-        float y = p1.y - pente *(float)(p1.x - x);
+        //float y = p1.y - pente *(float)(p1.x - x);
+        float y = pente * (float)(x - p1.x) + p1.y;
         return (int) y;
     }
 
+    /**
+     * Trouve le point x correspondant a la coord (x,y) sur le segment [p1,p2]
+     * @param y la coord y du point a chercher
+     * @param p1 Le premier point relatif du segment
+     * @param p2 Le deuxieme point relatif du segment
+     * @return la coord x du point cherche
+     */
+    public static int findX(int y, Point p1, Point p2){
+        float pente = (p2.y - p1.y) / ((float)p2.x - (float)p1.x);
+        float x = (y - p1.y) / pente + p1.x;
+        return (int) x;
+    }
+
+    /**
+     * Verifie si il y a une collision entre les 2 objets definis par une Area, cad si ils se chevauchent.
+     * Une Area peut etre construite a partir d une Shape avec Area a = new Area(Shape s)
+     * @param a1 le premier objet a verifier
+     * @param a2 le 2e objet a verifier
+     * @return
+     */
+    public static boolean collision(Area a1, Area a2){
+        if( a1.getBounds().intersects(a2.getBounds()) ){//Verifie dabord les boxes pour eviter trop de calcul
+            Area a = new Area(a1);
+            a.intersect(new Area(a2));
+            if(!a.isEmpty()){
+                return true;
+            }
+        }
+        return false;
+    }
 }

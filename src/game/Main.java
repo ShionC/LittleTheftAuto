@@ -1,6 +1,7 @@
 package game;
 
 import controleur.Controleur;
+import controleur.Deplace;
 import model.Route;
 import model.User;
 import vue.Affichage;
@@ -48,7 +49,7 @@ class Main {
 
     /**
      * Principale fonction du main.
-     * </br>Cree tout les Swing Componment necessaires au lancement du jeu
+     * </br>Cree tout les Swing Componment necessaires au lancement du jeu et lance les threads
      * </br>Reinitialise la partie si la touche [ENTRER] est appuyee.
      */
     private static void createParty() {
@@ -62,6 +63,10 @@ class Main {
         Affichage affichage = new Affichage(ctrl, user, route);
         ctrl.setAffichage(affichage);
         ctrl.setCmds();
+        Deplace deplace = new Deplace(user, route, affichage);
+
+        deplace.start();//Voir qui le lance, en fonction de si il y a une fenetre de demarage ou pas
+        user.start(); //Redresse constament user (etat = 0)
 
         fenetre.add(affichage);
 

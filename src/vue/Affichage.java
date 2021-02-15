@@ -45,6 +45,7 @@ public class Affichage extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         this.bmg.drawBackground(g2);
         this.vueUser.drawCar(g2);
+        this.bmg.drawData(g2);
 
         //afficheCar(g);
     }
@@ -54,7 +55,7 @@ public class Affichage extends JPanel {
      */
     public void update() {
         repaint();
-        System.out.println("\n     *Update*");
+        //System.out.println("\n     *Update*");
     }
 
 }

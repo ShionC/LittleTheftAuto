@@ -38,55 +38,53 @@ public class Controleur {
     }
 
     /**
-     * Deplace user
+     * Deplace user ainsi que les nuages dans VueBackground
      * @param right
      */
-    private void move(boolean right){
-        if(right){
-            if(user.getPosX()+ VueUser.LARG_CAR<Affichage.LARGEUR){
-              user.moveRight();
+    private void move(boolean right) {
+        if (right) {
+            if (user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR) {
+                user.moveRight();
+                aff.bmg.moveDecors(! right);
             }
         } else {
-            if(user.getPosX()>0){
+            if (user.getPosX() > 0) {
                 user.moveLeft();
+                aff.bmg.moveDecors(! right);
             }
+            aff.update();
         }
-        aff.update();
     }
 
-    /**
-     * Defini les commandes au clavier pour faire bouger User
-     */
-    public void setCmds(){
+        /**
+         * Defini les commandes au clavier pour faire bouger User
+         */
+        public void setCmds () {
 
-        //Action a droite
-        this.aff.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "Right");
-        //KeyEvent.KEY_LOCATION_RIGHT
-        Action action = new AbstractAction()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                //System.out.print("Jump !! \n");
-                move(true);
-                //System.out.println("\n     *Action a droite*");
-            }
-        };
-        this.aff.getActionMap().put("Right", action);
+            //Action a droite
+            this.aff.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "Right");
+            //KeyEvent.KEY_LOCATION_RIGHT
+            Action action = new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //System.out.print("Jump !! \n");
+                    move(true);
+                    //System.out.println("\n     *Action a droite*");
+                }
+            };
+            this.aff.getActionMap().put("Right", action);
 
-        //Action a gauche
-        this.aff.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "Left");
-        //KeyEvent.KEY_LOCATION_RIGHT
-        Action action2 = new AbstractAction()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                //System.out.print("Jump !! \n");
-                move(false);
-                //System.out.println("\n     *Action a gauche*");
-            }
-        };
-        this.aff.getActionMap().put("Left", action2);
-    }
+            //Action a gauche
+            this.aff.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "Left");
+            //KeyEvent.KEY_LOCATION_RIGHT
+            Action action2 = new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //System.out.print("Jump !! \n");
+                    move(false);
+                    //System.out.println("\n     *Action a gauche*");
+                }
+            };
+            this.aff.getActionMap().put("Left", action2);
+        }
 }
