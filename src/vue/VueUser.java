@@ -18,7 +18,7 @@ public class VueUser {
     // Hauteur du véhicule sur la fenêtre
     public static int HAUTSCREEN_CAR = vue.Affichage.LARGEUR - LARG_CAR - 20;
 
-    private Affichage aff;
+    private final Affichage aff;
 
     //Images véhicules :
     BufferedImage userStraight;
@@ -53,7 +53,7 @@ public class VueUser {
 
     /**
      * Forme du véhicule
-     * @return
+     * @return area
      */
     public Area getShapeCar() {
         return new Area(new Rectangle(aff.user.getPosX(), aff.user.getPosY(), LARG_CAR, HAUT_CAR));

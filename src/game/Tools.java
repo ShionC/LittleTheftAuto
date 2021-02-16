@@ -1,7 +1,6 @@
 package game;
 
 import java.util.Random;
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -9,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.awt.geom.Area;
-import java.io.IOException;
 
 public class Tools {
 
@@ -20,12 +18,12 @@ public class Tools {
 
     /**
      * Cree un int random compris dans un certain intervalle [rangeMin, rangeMax]
-     * @param rangeMin
+     * @param rangeMin La borne minimale du random
      * @param rangeMax La borne maximale du random (doit etre positive !!)
      * @return la valeur du int
      */
     public static int rangedRandomInt(int rangeMin, int rangeMax) {
-        int randomValue = 0;
+        int randomValue;
         if(rangeMin<0 ||rangeMax<=0||(rangeMax-rangeMin<=0)){
             System.out.println("Argument de random doit etre positif !!");
             if(rangeMin<0){
@@ -43,7 +41,7 @@ public class Tools {
     /**
      * Cree une copie d un BufferedImage modifiable sans interferer avec l image source
      * @param bi BufferedImage source
-     * @return
+     * @return la copie
      */
     public static BufferedImage deepCopy(BufferedImage bi) {
         ColorModel cm = bi.getColorModel();
@@ -103,9 +101,9 @@ public class Tools {
 
     /**
      * Calcul de la distance entre 2 points
-     * @param p1
-     * @param p2
-     * @return
+     * @param p1 le 1er point
+     * @param p2 le 2e point
+     * @return la distance
      */
     public static double distance(Point p1, Point p2){
         double dx = p1.x - p2.x;
@@ -119,7 +117,7 @@ public class Tools {
      * <br/>Une Area peut etre construite a partir d une Shape avec Area a = new Area(Shape s)
      * @param a1 le premier objet a verifier
      * @param a2 le 2e objet a verifier
-     * @return
+     * @return true si les 2 area se chevauchent, false sinon
      */
     public static boolean collision(Area a1, Area a2){
         if( a1.getBounds().intersects(a2.getBounds()) ){//Verifie dabord les boxes pour eviter trop de calcul

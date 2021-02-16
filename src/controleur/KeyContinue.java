@@ -20,7 +20,6 @@ public class KeyContinue extends Thread {
      */
     KeyContinue(Controleur ctrl){
         this.ctrl = ctrl;
-        System.out.println("KeyContinue");
     }
 
     /**

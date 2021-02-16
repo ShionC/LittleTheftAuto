@@ -4,6 +4,7 @@ import controleur.Controleur;
 import vue.Affichage;
 import vue.VueUser;
 
+
 public class User extends Thread {
 
     /**Le flag d arret de la thread**/
@@ -16,9 +17,9 @@ public class User extends Thread {
      */
     private int posX;
     /**La position sur l axe Y de User**/
-    private int posY;
+    private final int posY;
     /**La valeur max d un deplacement lateral**/
-    private int saut;
+    private final int saut;
 
     /**La valeur actuelle d un saut. Comprise entre [-saut,saut]
      * Permet un derapage**/
@@ -58,13 +59,13 @@ public class User extends Thread {
 
     /**
      * Renvoie la vitesse de User, cad la vitesse a laquelle se deplace le decors
-     * @return
+     * @return la vitesse
      */
-    public double getVitesse(){return this.vitesse;};
+    public double getVitesse(){return this.vitesse;}
 
     /**
      * Renvoie la vitesse maximale a laquelle peut aller user.
-     * @return
+     * @return la vitesse max
      */
     public double getVitesseMax() {
         return vitesseMax;
@@ -74,7 +75,6 @@ public class User extends Thread {
      * Modifie la vitesse de User en lui ajoutant la nouvelle vitesse
      * La nouvelle vitesse est comprise entre [0, vitesseMax]
      * @param vitesse le modificateur de la vitesse
-     * @return
      */
     public void modVitesse(double vitesse){
         this.vitesse += vitesse;
@@ -87,14 +87,14 @@ public class User extends Thread {
         } else if (this.vitesse>this.vitesseMax){
             this.vitesse = this.vitesseMax;
         }
-    };
+    }
 
     /**
      * Renvoie l etat de user, cad si il est penche et si oui dans quelle position
      * <br/>-1 : vers la gauche
      * <br/>0 : tout droit
      * <br/>1 : vers la droite
-     * @return
+     * @return etat
      */
     public int getEtat() {
         return etat;
@@ -145,7 +145,7 @@ public class User extends Thread {
 
     /**
      * Renvoie la valeur de inertie, cad la force qui pousse user dans une certaine direction
-     * @return
+     * @return inertie/derapage
      */
     public int getInertie() {
         return inertie;
@@ -244,7 +244,8 @@ public class User extends Thread {
                 //this.posX += 30; //Effet rebond
                 //this.inertie=50;//Repars le l autre cote
                 this.rebond(1,true);
-            } else if(this.posX + VueUser.LARG_CAR >= Affichage.LARGEUR){
+            } else //noinspection ConstantConditions
+                if(this.posX + VueUser.LARG_CAR >= Affichage.LARGEUR){
                 //this.posX -= 30;
                 //this.inertie = -50;
                 this.rebond(1,false);
@@ -259,6 +260,7 @@ public class User extends Thread {
             }
 
             try {
+                //noinspection BusyWait
                 Thread.sleep(20);
             } catch(Exception e) {
                 e.printStackTrace();

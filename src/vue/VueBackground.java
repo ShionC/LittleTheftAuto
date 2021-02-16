@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.util.*;
 import java.awt.geom.Area;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class VueBackground {
@@ -20,18 +18,19 @@ public class VueBackground {
 
     //public static final int horizon = (int) (((float)Affichage.HAUTEUR) * (1/4))+1;
     public static final int horizon = 200;
-    /**La forme des montagnes, ne change pas. Initialisee dans le constructeur**/
-    private Shape montagnes = null;
+    ///**La forme des montagnes, ne change pas. Initialisee dans le constructeur**/
+    //private Shape montagnes = null;
     /**
      * On initialise la forme de la route en un rectangle
      */
     private Area route = new Area(new Rectangle(Affichage.LARGEUR/4, VueBackground.horizon, Affichage.LARGEUR/2, Affichage.HAUTEUR-VueBackground.horizon)) ;
     /**La liste des coord des nuages**/
+    @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Point> clouds = new ArrayList<>();
     /**Le type de nuage**/
     private ArrayList<Integer> cloudTypes = new ArrayList<>();
     private ArrayList<Integer> rangeroute = new ArrayList<>();
-    private ReentrantLock rangeMutex = new ReentrantLock();
+    private final ReentrantLock rangeMutex = new ReentrantLock();
 
     //Images nuages :
     BufferedImage cloud1;
@@ -43,30 +42,32 @@ public class VueBackground {
 
     //Coord montagnes
     /**La position x initiale des montagnes**/
-    private int initXMontagnes = -500;
+    private final int initXMontagnes = -500;
 
     /**Le modificateur de deplacement des montagnes**/
     private int modMontagnes = 0;
 
-    private Affichage aff;
+    private final Affichage aff;
 
     // ********************************** 2) Constructeur **********************************
 
     public VueBackground(Affichage aff){
         this.aff = aff;
+
+
         //Initialiser montagnes
         // Les creer apartir de l horizon. Le 1er et dernier point de la liste doit etre le meme
         /*int nbPoints = 0;
         int[] tabX = new int[0];
         int[] tabY = new int[0];*/
-
+        /*
         int nbPoints = 10;
         int[] tabX = new int[nbPoints+1];
         int[] tabY = new int[nbPoints+1];
         tabX[0] = 0;
-        tabY[0] = this.horizon;
+        tabY[0] = horizon;
 
-        int marge = aff.LARGEUR / nbPoints+1; //60
+        int marge = Affichage.LARGEUR / nbPoints+1; //60
         for (int i=1; i<nbPoints; i++) { // Redefinition de tab[0]
             // Tous les 3 points, on revient à la ligne d'horizon.
             if (i%3 == 0) {
@@ -81,6 +82,8 @@ public class VueBackground {
         tabY[nbPoints] = tabY[0];
 
         this.montagnes = new Polygon(tabX, tabY, nbPoints);
+
+        */
 
         //Initialiser les images des nuages et de la montagne :
             try{
@@ -125,7 +128,6 @@ public class VueBackground {
     /**
      * Cree la forme de la route et met a jour rangeRoute
      * <br/>Met aussi a jour this.route
-     * @return
      */
     private void setShapeRoute(){
 
@@ -154,7 +156,8 @@ public class VueBackground {
                         }
 
                     }
-                    int range = Math.round((rangeInit*(float) p.y)/(float) Affichage.HAUTEUR); //Produit en croix
+                    //int range = Math.round((rangeInit*(float) p.y)/(float) Affichage.HAUTEUR); //Produit en croix
+                    int range = Math.round((rangeInit*(float) (p.y-horizon+50))/(float) (Affichage.HAUTEUR-horizon+50)); //Produit en croix
                     if(range <1){
                         range = 1; //Mettre une largeur minimale de 1 pour pouvoir dessiner un beau polygone
                     }
@@ -211,7 +214,7 @@ public class VueBackground {
 
     /**
      * Renvoie la forme de la route, sans la recalculer
-     * @return
+     * @return area
      */
     public Area getShapeRoute(){
         synchronized (this.route){return this.route;}
@@ -219,7 +222,7 @@ public class VueBackground {
 
     /**
      * Renvoie la distance entre le bord de la route et le milieu de la route pour chaque point correspondant a la route
-     * @return
+     * @return range list
      */
     public ArrayList<Integer> getRangeRoute(){
         synchronized (this.rangeroute){
@@ -238,15 +241,15 @@ public class VueBackground {
      * <br/>Initialise egalement le type de nuage par un nombre de 0 a n (n le nb de dessins) enregistre dans cloudType
      */
     private void initClouds(){
-        /**Nombre de nuages**/
+        //Nombre de nuages
         int nb_clouds = Tools.rangedRandomInt(5,10);
-        /**Nombre de types de nuages**/
+        //Nombre de types de nuages
         int nb_cloudTypes = 4;
         // Dans l'espace entre la ligne d'abscisse 0 et la ligne d'horizon, initialiser des positions random
         for (int i = 0; i < nb_clouds; i++) {
             int marge = 0;
-            int random_x = Tools.rangedRandomInt(0 + marge, this.aff.LARGEUR);
-            int random_y = Tools.rangedRandomInt(0, this.horizon-70);
+            int random_x = Tools.rangedRandomInt(0+marge, Affichage.LARGEUR);
+            int random_y = Tools.rangedRandomInt(0, horizon-70);
             marge += 100;
             Point random_point = new Point(random_x, random_y);
             this.clouds.add(random_point);
@@ -275,7 +278,7 @@ public class VueBackground {
 
     /**
      * Dessine la pelouse, l'horizon, les nuages et les montagnes de fond
-     * @param g2
+     * @param g2 le graphism
      */
     private void drawFond(Graphics2D g2){
         //Pelouse
@@ -287,7 +290,7 @@ public class VueBackground {
 
         //Nuages
         for (int i = 0; i < this.clouds.size(); i++) {
-            BufferedImage modeleImage = null;
+            BufferedImage modeleImage;
             if (this.cloudTypes.get(i) == 0) {
                 modeleImage = cloud1;
             } else if (this.cloudTypes.get(i) == 1) {
@@ -320,14 +323,14 @@ public class VueBackground {
 
         BufferedImage montagnes = Tools.deepCopy(this.mountain);
         AffineTransform at = new AffineTransform();
-        at.translate(this.initXMontagnes+this.modMontagnes, horizon-(this.mountain.getHeight()/2)); //Les coord du nuage
+        at.translate(this.initXMontagnes+this.modMontagnes, horizon-(this.mountain.getHeight()/(double)2)); //Les coord du nuage
         g2.drawImage(montagnes, at, null);
 
     }
 
     /**
      * Dessine l arriere plan
-     * @param g2
+     * @param g2 le graphisme
      */
     public void drawBackground(Graphics2D g2){
         Color oldColor = g2.getColor();
@@ -364,7 +367,7 @@ public class VueBackground {
 
     /**
      * Ecrit a l ecran les differentes donnees comme la vitesse et le kilometrage
-     * @param g2
+     * @param g2 le graphisme
      */
     public void drawData(Graphics2D g2){
         Font oldFont = g2.getFont();
