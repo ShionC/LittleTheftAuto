@@ -11,8 +11,10 @@ public class Route {
     // ********************************** 1) Attributs **********************************
     /** Pour la ligne brisée principale**/
     private ArrayList<Point> listePoints = new ArrayList<>();
-    /**Valeur d un saut**/
-    private int saut;
+
+    /**Valeur d un accumule**/
+    private double sautCharge;
+
     /**Coordonnee du point de controle sur l axe Y**/
     private int y_ptCtrl = 0;
 
@@ -50,6 +52,9 @@ public class Route {
              */
             this.updateRoute();
         }
+
+        //Initialisation du saut. On peut penser que le saut "charge" jusqu a atteindre une valeur convenable (1)
+        this.sautCharge = 0;
 
     }
 
@@ -115,11 +120,30 @@ public class Route {
 
     /**
      * Défilement de la route, modifie liste
+     * La modification de delacement dy est chargee jusqu a obtenir un int non null avant de deplacer les points
      * Mettre aussi a jour le point de controle
-     * @param saut le deplacement de tous les points
+     * @param saut le deplacement de tous les points. Est mis a charger et lorsque il atteint une valeur > 1 fait bouger les points
      */
-    public void moveRoute(int saut) {
+    public void moveRoute(double saut) {
         //Peut etre utiliser un semaphore pour eviter que 2 objets essaient de se co en meme temps, avec getRoute
+        this.sautCharge += saut;
+        if(this.sautCharge >=1){
+            int currentSaut = (int) this.sautCharge; //La partie entiere de saut ici au moins 1
+            this.sautCharge -= currentSaut; //On va utiliser currentSaut donc on l enleve a ce qui a deja charge
+
+            //Modification des points
+            synchronized (this.listePoints){
+                for(int i = 0; i<this.listePoints.size(); i++){
+                    this.listePoints.get(i).move(this.listePoints.get(i).x, this.listePoints.get(i).y+currentSaut);
+                }
+                this.y_ptCtrl += currentSaut;
+                this.updateRoute();
+            }
+            this.kilometrage += currentSaut;
+
+
+        }
+        /*
         synchronized (this.listePoints){
             for(int i = 0; i<this.listePoints.size(); i++){
                 this.listePoints.get(i).move(this.listePoints.get(i).x, this.listePoints.get(i).y+saut);
@@ -128,6 +152,8 @@ public class Route {
             this.updateRoute();
         }
         this.kilometrage += saut;
+
+         */
 
     }
 
