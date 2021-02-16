@@ -77,7 +77,11 @@ public class Tools {
         float pente = (p2.y - p1.y) / ((float)p2.x - (float)p1.x);
         //float y = p1.y - pente *(float)(p1.x - x);
         float y = pente * (float)(x - p1.x) + p1.y;
-        return (int) y;
+        if((y<p1.y&&y<p2.Y)||(y>p1.y&&y>p2.y))){
+            System.out.println("Y hors segment !!");
+        }
+        
+        return Math.round(y);
     }
 
     /**
@@ -90,8 +94,23 @@ public class Tools {
     public static int findX(int y, Point p1, Point p2){
         float pente = (p2.y - p1.y) / ((float)p2.x - (float)p1.x);
         float x = (y - p1.y) / pente + p1.x;
-        return (int) x;
+        if((y<p1.y&&y<p2.y)||(y>p1.y&&y>p2.y)){
+            
+        return Math.round(x);
     }
+
+    /**
+     * Calcul de la distance entre 2 points
+     * @param p1
+     * @param p2
+     * @return
+     */
+    public static double distance(Point p1, Point p2){
+        double dx = p1.x - p2.x;
+        double dy = p1.y - p2.y;
+        return Math.sqrt(dx*dx+dy*dy);
+    }
+
 
     /**
      * Verifie si il y a une collision entre les 2 objets definis par une Area, cad si ils se chevauchent.

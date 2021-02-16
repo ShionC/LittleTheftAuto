@@ -8,6 +8,8 @@ public class User extends Thread {
     /**Le flag d arret de la thread**/
     private boolean run;
 
+    public boolean isOnRoad = true;
+
     /**
      * La position sur l axe X de User
      */
@@ -55,6 +57,9 @@ public class User extends Thread {
      */
     public void modVitesse(double vitesse){
         this.vitesse += vitesse;
+        if(this.isOnRoad && this.vitesse == 0){
+            System.out.println("Vitesse nulle malgre la route !!");
+        }
         if(this.vitesse<0){
             this.vitesse = 0;
         }

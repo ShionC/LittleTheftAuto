@@ -12,6 +12,7 @@ import java.awt.geom.Area;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class VueBackground {
 
@@ -21,11 +22,16 @@ public class VueBackground {
     public static final int horizon = 200;
     /**La forme des montagnes, ne change pas. Initialisee dans le constructeur**/
     private Shape montagnes = null;
-    private Area route;
+    /**
+     * On initialise la forme de la route en un rectangle
+     */
+    private Area route = new Area(new Rectangle(Affichage.LARGEUR/4, VueBackground.horizon, Affichage.LARGEUR/2, Affichage.HAUTEUR-VueBackground.horizon)) ;
     /**La liste des coord des nuages**/
     private ArrayList<Point> clouds = new ArrayList<>();
     /**Le type de nuage**/
     private ArrayList<Integer> cloudTypes = new ArrayList<>();
+    private ArrayList<Integer> rangeroute = new ArrayList<>();
+    private ReentrantLock rangeMutex = new ReentrantLock();
 
     //Images nuages :
     BufferedImage cloud1;
@@ -111,16 +117,120 @@ public class VueBackground {
 
         //Initialiser nuages
         this.initClouds();
+        this.setShapeRoute();
     }
 
     // ********************************** 3) Méthodes **********************************
 
     /**
-     * Cree la forme de la route
+     * Cree la forme de la route et met a jour rangeRoute
+     * Met aussi a jour this.route
      * @return
      */
-    private Area getShapeRoute(){
-        return null;
+    private void setShapeRoute(){
+
+        float rangeInit = 100; //Lorsque y=Affichage.HAUTEUR alors de chaque cote de la route il y a cette valeur
+        ArrayList<Point> list = this.aff.route.getRoute();
+        synchronized (this.rangeroute){
+            try{
+                this.rangeMutex.lock();
+                //Initialisation de rangeRoute
+                ArrayList<Integer> newRange = new ArrayList<>();
+                //this.rangeroute.clear();
+                for(int i = 0; i<list.size(); i++){
+                    Point p = list.get(i);
+                    if(p.y < horizon){
+                        if(i==0){
+                            p.move((Tools.findX(horizon, list.get(i+1), p)), horizon);
+                        } else {
+                            p.move(Tools.findX(horizon,p,list.get(i-1)), horizon); //N affiche que les points sous l horizon !
+                        }
+
+                    } else if(p.y>Affichage.HAUTEUR){
+                        if(i == list.size()-1){
+                            p.move(Tools.findX(Affichage.HAUTEUR, p, list.get(i-1)), Affichage.HAUTEUR);
+                        } else {
+                            p.move(Tools.findX(Affichage.HAUTEUR,list.get(i+1),p), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
+                        }
+
+                    }
+                    int range = Math.round((rangeInit*(float) p.y)/(float) Affichage.HAUTEUR); //Produit en croix
+                    if(range <1){
+                        range = 1; //Mettre une largeur minimale de 1 pour pouvoir dessiner un beau polygone
+                    }
+                    newRange.add(range);
+                }
+                this.rangeroute = newRange;
+
+
+            } finally {
+                this.rangeMutex.unlock();
+            }
+
+        }
+
+        synchronized (this.route){
+            //Creation de la route
+
+                    int sizeTab = (list.size()*2)+1;
+                    int[] tabX = new int[sizeTab];//+1 pour fermer le polygon
+                    int[] tabY = new int[sizeTab];
+                    //Initialisation du 1er point
+                    Point oldP = list.get(0); //On a toujours olp > p
+                    if(oldP.y>Affichage.HAUTEUR){
+                        oldP.move(Tools.findX(Affichage.HAUTEUR,list.get(1),oldP), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
+                    }
+                    tabX[0] = oldP.x-this.rangeroute.get(0);
+                    tabX[sizeTab-2] = oldP.x+this.rangeroute.get(0); //Remplir en partant de la fin
+                    tabY[0] = oldP.y;
+                    tabY[sizeTab-2] = oldP.y;
+
+                    for(int i = 1; i<list.size(); i++){
+
+                        Point p = list.get(i);
+                        if(p.y < horizon){
+                            p.move(Tools.findX(horizon,p,oldP), horizon); //N affiche que les points sous l horizon !
+                        }
+                        //Le point 0 est le point en bas a
+                        tabX[i] = p.x-this.rangeroute.get(i);
+                        tabX[sizeTab-2-i] = p.x+this.rangeroute.get(i); //Remplir en partant de la fin
+                        tabY[i] = p.y;
+                        tabY[sizeTab-2-i] = p.y;
+
+                        oldP = p;
+                    }
+                    tabX[sizeTab-1] = tabX[0];//Fermer le polygon
+                    tabY[sizeTab-1] = tabY[0];
+
+                    this.route = new Area(new Polygon(tabX,tabY, sizeTab)); //Pour ne pas avoir a calculer plusieurs fois
+        }
+
+
+
+    }
+
+    /**
+     * Renvoie la forme de la route, sans la recalculer
+     * @return
+     */
+    public Area getShapeRoute(){
+        synchronized (this.route){return this.route;}
+    }
+
+    /**
+     * Renvoie la distance entre le bord de la route et le milieu de la route pour chaque point correspondant a la route
+     * @return
+     */
+    public ArrayList<Integer> getRangeRoute(){
+        synchronized (this.rangeroute){
+            try{
+                this.rangeMutex.lock();
+                return this.rangeroute;
+            } finally {
+                this.rangeMutex.unlock();
+            }
+
+        }
     }
 
     /**
@@ -227,6 +337,14 @@ public class VueBackground {
         drawFond(g2);
 
         //Dessine la route
+
+        setShapeRoute();
+        g2.setColor(Color.gray);
+        g2.fill(this.route);
+
+        //Ligne au milieu
+        g2.setColor(Color.WHITE);
+
         ArrayList<Point> list = this.aff.route.getRoute();
         for(int i = 1; i<list.size(); i++){
 
@@ -237,7 +355,9 @@ public class VueBackground {
             }
             g2.drawLine(p1.x,p1.y,p2.x,p2.y);
         }
-        //g2.fill(getShapeRoute());
+
+
+
         g2.setColor(oldColor);
         g2.setStroke(oldStroke);
     }
@@ -250,15 +370,16 @@ public class VueBackground {
         Font oldFont = g2.getFont();
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
-        String str1 = "Vitesse : "+this.aff.user.getVitesse();
+        String str1 = "Vitesse m/s : "+Math.round(this.aff.user.getVitesse());
         String str2 = "Kilometrage : "+this.aff.route.getKilometrage();
 
-        g2.drawString(str1, Affichage.LARGEUR - 149, Affichage.HAUTEUR-99);
+        g2.drawString(str1, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99);
         g2.drawString(str2, Affichage.LARGEUR - 189, Affichage.HAUTEUR-59);
 
+        //Reecrit tout avec x et y +1, pour un effet de decalage pour mieux voir
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
-        g2.drawString(str1, Affichage.LARGEUR - 150, Affichage.HAUTEUR-100);
+        g2.drawString(str1, Affichage.LARGEUR - 205, Affichage.HAUTEUR-100);
         g2.drawString(str2, Affichage.LARGEUR - 190, Affichage.HAUTEUR-60);
 
         g2.setFont(oldFont);

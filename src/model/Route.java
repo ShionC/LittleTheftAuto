@@ -133,6 +133,7 @@ public class Route {
 
     /**
      * Renvoie la liste des points qui constituent la route.
+     * Le point 0 est celui le plus bas dans le fenetre
      * @return l arrayList de la liste des points
      */
     public ArrayList<Point> getRoute() {
@@ -140,6 +141,10 @@ public class Route {
             ArrayList<Point> newList = new ArrayList<>();
             for(int i = 0; i< this.listePoints.size(); i++){
                 newList.add((Point)this.listePoints.get(i).clone());
+            }
+            if(newList.size() == 0){ //Pour eviter les bugs
+                newList.add(new Point(Affichage.LARGEUR/2, Affichage.HAUTEUR));
+                newList.add(new Point(Affichage.LARGEUR/2, VueBackground.horizon));
             }
 
             return newList;
