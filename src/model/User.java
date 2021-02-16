@@ -1,12 +1,13 @@
 package model;
 
+import controleur.Controleur;
 import vue.Affichage;
 import vue.VueUser;
 
 public class User extends Thread {
 
     /**Le flag d arret de la thread**/
-    private boolean run;
+    private boolean run = true;
 
     public boolean isOnRoad = true;
 
@@ -16,8 +17,12 @@ public class User extends Thread {
     private int posX;
     /**La position sur l axe Y de User**/
     private int posY;
-    /**La valeur d un deplacement lateral**/
+    /**La valeur max d un deplacement lateral**/
     private int saut;
+
+    /**La valeur actuelle d un saut. Comprise entre [-saut,saut]
+     * Permet un derapage**/
+    private int inertie;
 
     /**La vitesse de User, et par extention la vitesse de la route**/
     private double vitesse;
@@ -32,6 +37,8 @@ public class User extends Thread {
     /**Le temps dattente actuel**/
     private int currentWaitEtat = 0;
 
+
+
     // ********************************** 2) Constructeur **********************************
 
     /**
@@ -41,7 +48,8 @@ public class User extends Thread {
     public User(){
         this.posX = Affichage.LARGEUR/2;
         this.posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
-        this.saut = 15;
+        this.saut = 25;
+        this.inertie = 0;
         this.vitesse = 10;
         this.vitesseMax = 100;
     }
@@ -93,21 +101,104 @@ public class User extends Thread {
     }
 
     /**
+     * Deplace user selon son inertie laterale
+     */
+    public void move(){
+        this.posX += this.inertie;
+    }
+
+    /**
      * Deplace la position de l utilisateur sur la droite sur l axe X
      */
     public void moveRight(){
-        this.posX += this.saut;
+        //this.posX += this.saut;
         this.etat = 1;
         this.currentWaitEtat = 0;
+        if(this.inertie<this.saut){
+            if(this.inertie>0){
+                this.inertie+=3;
+            } else {
+                this.inertie+=3; //Plus rapide lors de changement de direction
+            }
+        }
+        //this.posX += this.inertie;  //Le faire dans run()
+
     }
 
     /**
      * Deplace la position de l utilisateur sur la gauche sur l axe X
      */
     public void moveLeft(){
-        this.posX -= saut;
+        //this.posX -= saut;
         this.etat = -1;
         this.currentWaitEtat = 0;
+        if(this.inertie>-this.saut){
+            if(this.inertie<0){
+                this.inertie-=3;
+            } else {
+                this.inertie-=3; //Plus rapide lors de changement de direction
+            }
+
+        }
+        //this.posX += this.inertie; //Le faire dans run()
+    }
+
+    /**
+     * Renvoie la valeur de inertie, cad la force qui pousse user dans une certaine direction
+     * @return
+     */
+    public int getInertie() {
+        return inertie;
+    }
+
+
+    /**
+     * User fait un bond dans la direction indiquee et repars dans cette direction
+     * @param intensite taille/intensite du rebond. Appartiens a {1,2,3,4}
+     * @param right rebond vers la droite
+     */
+    public void rebond(int intensite, boolean right){
+        if(right){
+            this.etat = 1;
+            this.currentWaitEtat = 0;
+        } else {
+            this.etat = -1;
+            this.currentWaitEtat = 0;
+        }
+        if(intensite == 1){
+            if(right){
+                this.posX += 10; //Effet rebond
+                this.inertie=25;//Repars le l autre cote
+            } else {
+                this.posX -= 10;
+                this.inertie=-25;
+            }
+        } else if(intensite == 2){
+            if(right){
+                this.posX += 10; //Effet rebond
+                this.inertie=30;//Repars le l autre cote
+            } else {
+                this.posX -= 10;
+                this.inertie=-30;
+            }
+        } else if(intensite == 3){
+            if(right){
+                this.posX += 30;
+                this.inertie=35;
+            } else {
+                this.posX -= 30;
+                this.inertie=-35;
+            }
+        } else if(intensite == 4){
+            if(right){
+                this.posX += 50;
+                this.inertie=40;
+            } else {
+                this.posX -= 50;
+                this.inertie=-40;
+            }
+        }
+
     }
 
     public int getPosX() {
@@ -129,14 +220,46 @@ public class User extends Thread {
     @Override
     public void run() {
         while(run){
+
+            //Revient progressivement a this.inertie == 0
+            int change = 2;
+            if(this.inertie<0){
+                if(this.inertie+change>0){ //Si depassement, evite tremblotement de user
+                    this.inertie = 0;
+                } else {
+                    this.inertie+=change;
+                }
+            } else if(this.inertie>0){
+                if(this.inertie-change<0){
+                    this.inertie = 0;
+                } else {
+                    this.inertie-=change;
+                }
+            }
+            //Gestion bordure d ecran
+            if(this.posX > 0 && this.posX + VueUser.LARG_CAR < Affichage.LARGEUR){
+                //this.posX += this.inertie;
+                this.move();
+            } else if (this.posX <= 0){
+                //this.posX += 30; //Effet rebond
+                //this.inertie=50;//Repars le l autre cote
+                this.rebond(1,true);
+            } else if(this.posX + VueUser.LARG_CAR >= Affichage.LARGEUR){
+                //this.posX -= 30;
+                //this.inertie = -50;
+                this.rebond(1,false);
+            }
+
+
+            //Modif etat
             if(this.currentWaitEtat < this.waitEtat){
                 this.currentWaitEtat++;
-            } else if (this.currentWaitEtat == this.waitEtat){
+            } else if (this.currentWaitEtat == this.waitEtat && this.inertie == 0){ //On est pas en train de deraper
                 this.etat = 0;
             }
 
             try {
-                Thread.sleep(40);
+                Thread.sleep(20);
             } catch(Exception e) {
                 e.printStackTrace();
             }

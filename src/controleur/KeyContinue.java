@@ -51,11 +51,11 @@ public class KeyContinue extends Thread {
     public void run() {
         while( run ) {
             if( dir == Direction.LEFT) {
-                System.out.println("Left");
+                //System.out.println("Left");
                 this.ctrl.move(false);
             }
             else if( dir == Direction.RIGHT) {
-                System.out.println("Right");
+                //System.out.println("Right");
                 this.ctrl.move(true);
             }
 

@@ -53,12 +53,12 @@ public class Controleur implements KeyListener {
         if (right) {
             if (user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR) {
                 user.moveRight();
-                aff.bmg.moveDecors(! right);
+                //aff.bmg.moveDecors(! right);
             }
         } else {
             if (user.getPosX() > 0) {
                 user.moveLeft();
-                aff.bmg.moveDecors(! right);
+                //aff.bmg.moveDecors(! right);
             }
             aff.update();
         }

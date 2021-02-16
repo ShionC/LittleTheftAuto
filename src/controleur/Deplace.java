@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import model.User;
 import model.Route;
 import game.Tools;
+import vue.VueUser;
 
 public class Deplace extends Thread {
 
@@ -174,6 +175,16 @@ public class Deplace extends Thread {
             //Deplace les diff objets
             double facPos = 10; //Pour ajuster la vitesse selon les besoins /!\ min = 1 !!
             this.route.moveRoute(modPos*facPos);
+
+            //Decors
+            if(this.user.getPosX() > 50 && this.user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR-50){
+                int inertieUser = this.user.getInertie();
+                if(inertieUser != 0){
+                    this.aff.bmg.moveDecors(inertieUser>0);
+                }
+            }
+
+
             //TODO obstacles & concurrents
 
             //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu

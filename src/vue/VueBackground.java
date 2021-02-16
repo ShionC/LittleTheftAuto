@@ -261,7 +261,7 @@ public class VueBackground {
      */
     public void moveDecors(boolean right){
         int sautClouds = 1;
-        int sautMontagnes = 2;
+        int sautMontagnes = 1;
         for (int i = 0; i < this.clouds.size(); i++) {
             if (right) {
                 this.clouds.get(i).move(this.clouds.get(i).x + sautClouds, this.clouds.get(i).y);
@@ -343,7 +343,7 @@ public class VueBackground {
         g2.fill(this.route);
 
         //Ligne au milieu
-        g2.setColor(Color.WHITE);
+        g2.setColor(new Color(250, 240, 230)); //Blanc
 
         ArrayList<Point> list = this.aff.route.getRoute();
         for(int i = 1; i<list.size(); i++){
