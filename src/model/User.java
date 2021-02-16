@@ -36,7 +36,7 @@ public class User extends Thread {
 
     /**
      * Cree un nouvel utilisateur qui peut bouger a droite et a gauche
-     * Sa methode thread met constanment son etat a 0, cad qu elle redresse user
+     * <br/>Sa methode thread met constanment son etat a 0, cad qu elle redresse user
      */
     public User(){
         this.posX = Affichage.LARGEUR/2;
@@ -83,9 +83,9 @@ public class User extends Thread {
 
     /**
      * Renvoie l etat de user, cad si il est penche et si oui dans quelle position
-     * -1 : vers la gauche
-     * 0 : tout droit
-     * 1 : vers la droite
+     * <br/>-1 : vers la gauche
+     * <br/>0 : tout droit
+     * <br/>1 : vers la droite
      * @return
      */
     public int getEtat() {

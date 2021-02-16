@@ -124,7 +124,7 @@ public class VueBackground {
 
     /**
      * Cree la forme de la route et met a jour rangeRoute
-     * Met aussi a jour this.route
+     * <br/>Met aussi a jour this.route
      * @return
      */
     private void setShapeRoute(){
@@ -235,7 +235,7 @@ public class VueBackground {
 
     /**
      * Initialise la position et le nombre de nuages de facon aleatoire enregiste dans clouds
-     * Initialise egalement le type de nuage par un nombre de 0 a n (n le nb de dessins) enregistre dans cloudType
+     * <br/>Initialise egalement le type de nuage par un nombre de 0 a n (n le nb de dessins) enregistre dans cloudType
      */
     private void initClouds(){
         /**Nombre de nuages**/
@@ -256,7 +256,7 @@ public class VueBackground {
 
     /**
      * Deplace la position des nuages et de la montagne en fonction des actions de l utilisateur
-     * Cette methode est appellee par le controleur, lors des actions de l utilisateur pour deplacer user
+     * <br/>Cette methode est appellee par le controleur, lors des actions de l utilisateur pour deplacer user
      * @param right true si deplace a droite, false sinon
      */
     public void moveDecors(boolean right){

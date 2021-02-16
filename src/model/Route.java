@@ -119,9 +119,9 @@ public class Route {
     }
 
     /**
-     * Défilement de la route, modifie liste
-     * La modification de delacement dy est chargee jusqu a obtenir un int non null avant de deplacer les points
-     * Mettre aussi a jour le point de controle
+     * Défilement de la route, modifie liste.
+     * <br/>La modification de delacement dy est chargee jusqu a obtenir un int non null avant de deplacer les points
+     * <br/>Mettre aussi a jour le point de controle
      * @param saut le deplacement de tous les points. Est mis a charger et lorsque il atteint une valeur > 1 fait bouger les points
      */
     public void moveRoute(double saut) {
@@ -159,7 +159,7 @@ public class Route {
 
     /**
      * Renvoie la liste des points qui constituent la route.
-     * Le point 0 est celui le plus bas dans le fenetre
+     * <br/>Le point 0 est celui le plus bas dans le fenetre
      * @return l arrayList de la liste des points
      */
     public ArrayList<Point> getRoute() {

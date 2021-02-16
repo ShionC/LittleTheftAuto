@@ -8,8 +8,9 @@ import vue.VueUser;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class Controleur {
+public class Controleur implements KeyListener {
 
     // ********************************** 1) Attributs **********************************
 
@@ -17,17 +18,24 @@ public class Controleur {
     User user;
     Route route;
 
+    KeyContinue keyCont;
+
     // ********************************** 2) Constructeur **********************************
 
     public Controleur(User user, Route route){
         this.user = user;
         this.route = route;
+        this.keyCont = new KeyContinue(this);
+        this.keyCont.start();
+
     }
 
     // ********************************** 3) Méthodes **********************************
 
+    /**Lie l affichage**/
     public void setAffichage(Affichage aff){
         this.aff = aff;
+        this.aff.addKeyListener(this);
     }
 
     /**
@@ -41,7 +49,7 @@ public class Controleur {
      * Deplace user ainsi que les nuages dans VueBackground
      * @param right
      */
-    private void move(boolean right) {
+    void move(boolean right) {
         if (right) {
             if (user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR) {
                 user.moveRight();
@@ -87,4 +95,34 @@ public class Controleur {
             };
             this.aff.getActionMap().put("Left", action2);
         }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_LEFT){
+            this.keyCont.setDir(KeyContinue.Direction.LEFT);
+        }
+
+        if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+            this.keyCont.setDir(KeyContinue.Direction.RIGHT);
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        //La verification supplementaire permet d eviter que lacher une touche annule une autre qui etait deja enfoncee
+        //Evite donc un nouveau lag
+        if(e.getKeyCode() == KeyEvent.VK_LEFT && this.keyCont.getDir() != KeyContinue.Direction.RIGHT){
+            this.keyCont.setDir(KeyContinue.Direction.NOTHING);
+        }
+
+        if(e.getKeyCode() == KeyEvent.VK_RIGHT && this.keyCont.getDir() != KeyContinue.Direction.LEFT){
+            this.keyCont.setDir(KeyContinue.Direction.NOTHING);
+        }
+
+    }
 }

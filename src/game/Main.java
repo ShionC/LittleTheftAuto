@@ -62,7 +62,7 @@ class Main {
         Controleur ctrl = new Controleur(user, route);
         Affichage affichage = new Affichage(ctrl, user, route);
         ctrl.setAffichage(affichage);
-        ctrl.setCmds();
+        //ctrl.setCmds();
         Deplace deplace = new Deplace(user, route, affichage);
 
         deplace.start();//Voir qui le lance, en fonction de si il y a une fenetre de demarage ou pas

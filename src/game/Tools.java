@@ -116,7 +116,7 @@ public class Tools {
 
     /**
      * Verifie si il y a une collision entre les 2 objets definis par une Area, cad si ils se chevauchent.
-     * Une Area peut etre construite a partir d une Shape avec Area a = new Area(Shape s)
+     * <br/>Une Area peut etre construite a partir d une Shape avec Area a = new Area(Shape s)
      * @param a1 le premier objet a verifier
      * @param a2 le 2e objet a verifier
      * @return

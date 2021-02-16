@@ -87,12 +87,12 @@ public class Deplace extends Thread {
                 Point p2 = listRoute.get(1);
                 int i = 1;
                 while (obj.getPosY()<p2.y && i<listRoute.size()-1){
-                    if(i+1 >= listRoute.size()){  //A modifier pour le cas des concurrents qui vont devant et peuvent sortir de Array
+                    if(i+1 >= listRoute.size()){  //Pour le cas des concurrents qui vont devant et peuvent sortir de Array
                         modifier = false;
                         break;
                     } else if (modifier) {
                         p1 = listRoute.get(i);
-                        if(i+1 >= listRoute.size()){  //A modifier pour le cas des concurrents qui vont devant et peuvent sortir de Array
+                        if(i+1 >= listRoute.size()){  //Juste au cas ou
                             System.out.println("Sortie de array");
                         }
                         p2 = listRoute.get(i+1);
@@ -135,12 +135,10 @@ public class Deplace extends Thread {
                 }
 
 
-                //modVit =
-                //modVit = 5f;
                 if(this.user.getVitesse()+modVit == 0){
                     System.out.println("Vitesse nulle sur la route !!");
                 }
-                System.out.println("On Road");
+                //System.out.println("On Road");
 
             }
 
@@ -148,7 +146,7 @@ public class Deplace extends Thread {
         } else {
             //onRoad = false;
             obj.isOnRoad = false;
-            System.out.println("Out of Road");
+            //System.out.println("Out of Road");
             if(obj.getVitesse()>0){
                 modVit = -2;
             }
@@ -156,7 +154,7 @@ public class Deplace extends Thread {
         }
 
         obj.modVitesse(modVit);
-        System.out.println("Vitesse user : "+this.user.getVitesse());
+        //System.out.println("Vitesse user : "+this.user.getVitesse());
 
     }
 
@@ -167,93 +165,16 @@ public class Deplace extends Thread {
             //Calcul de la vitesse
             this.calculVitObj(this.user, this.aff.vueUser.getShapeCar());
 
-            /*
-            double modVit = 0;
-            boolean onRoad;
-            if (Tools.collision(this.aff.vueUser.getShapeCar(), this.aff.bmg.getShapeRoute())) {
-                this.user.isOnRoad = true;
-                onRoad = true;
-                if(this.user.getVitesse()<this.user.getVitesseMax()){
-                    //Touver le bon point sur la route
-                    ArrayList<Point> listRoute = this.route.getRoute();
-                    Point p1 = listRoute.get(0);
-                    Point p2 = listRoute.get(1);
-                    int i = 1;
-                    while (this.user.getPosY()<p2.y && i<listRoute.size()-1){
-                        p1 = listRoute.get(i);
-                        if(i+1 >= listRoute.size()){
-                            System.out.println("Sortie de array");
-                        }
-                        p2 = listRoute.get(i+1);
-                        i++;
-                    }
-                    i--;//Car on a fait +1 apres avoir change p1 et p2
-                    ArrayList<Integer> listRange = this.aff.bmg.getRangeRoute();
-                    if(listRange.size() == 0){
-                        System.out.println("ListRange size == 0 !!!");
-                    }
-                    int xMax = Tools.findX(this.user.getPosY(), p2, p1); //Le centre de la route au niveau de User
-                    int xMin = Tools.findX(this.user.getPosY(), new Point(p2.x-listRange.get(i),p2.y),
-                            new Point(p1.x-listRange.get(i+1),p1.y)); //Calcul par la gauche
-                    int rangeMax = xMax - xMin; //La distance maximale que user peut etre par rapport au centre de la route.
-
-                    double modVitMin = 1; //Lorsque la distance est maximale, la vitesse est minimale
-
-                    float dist = (float) Tools.distance(new Point(this.user.getPosX(),this.user.getPosY()),
-                            new Point(xMax, this.user.getPosY()));
-                    //Produit en croix
-                    modVit = (modVitMin*dist)/(double) rangeMax;
-                    if(modVit < 0){
-                        System.out.println("Alerte ! ModVit < 0 on road!!!");
-                    }
-
-                    double maxModVit = 40; //La mod maximale de la vitesse
-                    if(modVit>maxModVit){
-                        modVit = maxModVit;
-                    } else if(modVit < 0) {//On est deja tombees sur modVit = -111
-                        modVit = 0;
-                    }
-
-
-                    //modVit =
-                    //modVit = 5f;
-                    if(this.user.getVitesse()+modVit == 0){
-                        System.out.println("Vitesse nulle sur la route !!");
-                    }
-                    System.out.println("On Road");
-
-                }
-
-
-                } else {
-                onRoad = false;
-                this.user.isOnRoad = false;
-                System.out.println("Out of Road");
-                    if(this.user.getVitesse()>0){
-                        modVit = -2;
-                    }
-
-                }
-
-            this.user.modVitesse(modVit);
-            System.out.println("Vitesse user : "+this.user.getVitesse());
-            if(onRoad && this.user.getVitesse()==0){
-                System.out.println("Problem vitesse 0 on Road");
-            }
-
-             */
-
-            //Deplace les diff objets
-            //TODO
-
-            //Calcul de la vitesse selon les formules physiques
+            //Calcul de la position selon les formules physiques
             ////xt = v*t + x0 -> modPos = v*t, t en secondes
             double modPos = calcul_dPos(this.user.getVitesse(),varTime);
 
 
             //Application de la modification de la position
+            //Deplace les diff objets
             double facPos = 10; //Pour ajuster la vitesse selon les besoins /!\ min = 1 !!
             this.route.moveRoute(modPos*facPos);
+            //TODO obstacles & concurrents
 
             //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu
             //TODO

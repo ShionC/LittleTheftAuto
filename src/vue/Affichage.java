@@ -5,6 +5,8 @@ import model.Route;
 import model.User;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 
@@ -30,7 +32,11 @@ public class Affichage extends JPanel {
 
         this.vueUser = new VueUser(this);
         this.bmg = new VueBackground(this);
+        setFocusable(true);
     }
+
+
+
 
     // ********************************** 3) Méthodes **********************************
 
@@ -57,5 +63,6 @@ public class Affichage extends JPanel {
         repaint();
         //System.out.println("\n     *Update*");
     }
+
 
 }
