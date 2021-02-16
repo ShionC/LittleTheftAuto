@@ -77,7 +77,7 @@ public class Tools {
         float pente = (p2.y - p1.y) / ((float)p2.x - (float)p1.x);
         //float y = p1.y - pente *(float)(p1.x - x);
         float y = pente * (float)(x - p1.x) + p1.y;
-        if((y<p1.y&&y<p2.Y)||(y>p1.y&&y>p2.y))){
+        if((y<p1.y&&y<p2.y)||(y>p1.y&&y>p2.y)){
             System.out.println("Y hors segment !!");
         }
         
@@ -94,7 +94,9 @@ public class Tools {
     public static int findX(int y, Point p1, Point p2){
         float pente = (p2.y - p1.y) / ((float)p2.x - (float)p1.x);
         float x = (y - p1.y) / pente + p1.x;
-        if((y<p1.y&&y<p2.y)||(y>p1.y&&y>p2.y)){
+        if((x<p1.x&&x<p2.x)||(x>p1.x&&x>p2.x)){
+            System.out.println("X hors segment !!");
+        }
             
         return Math.round(x);
     }

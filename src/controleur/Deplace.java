@@ -60,7 +60,7 @@ public class Deplace extends Thread {
             if (Tools.collision(this.aff.vueUser.getShapeCar(), this.aff.bmg.getShapeRoute())) {
                 this.user.isOnRoad = true;
                 onRoad = true;
-                if(this.user.getVitesse()<100){
+                if(this.user.getVitesse()<this.user.getVitesseMax()){
                     //Touver le bon point sur la route
                     ArrayList<Point> listRoute = this.route.getRoute();
                     Point p1 = listRoute.get(0);
@@ -129,6 +129,7 @@ public class Deplace extends Thread {
             }
 
             //Deplace les diff objets
+
             //int modPos = Math.round(this.user.getVitesse()*(double)varTime/1000);// div 1000 car ce sont des mili secondes
             int modPos = Math.round((float)this.user.getVitesse()*(float)(varTime/1000));//xt = v*t + x0 -> modPos = v*t, t en secondes
             //int modPos = Math.round((float)this.user.getVitesse()*(float)(varTime/100));

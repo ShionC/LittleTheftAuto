@@ -13,7 +13,7 @@ public class Affichage extends JPanel {
 
     // Largeur et longueur de la fenêtre
     public static final int LARGEUR = 600;
-    public static final int HAUTEUR = 800;
+    public static final int HAUTEUR = 650; //Ou 800, mais c est trop grand pour l ecran de Mathilde
 
     public VueUser vueUser;
     User user;

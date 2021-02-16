@@ -22,6 +22,9 @@ public class User extends Thread {
     /**La vitesse de User, et par extention la vitesse de la route**/
     private double vitesse;
 
+    /**La vitesse maximale de User**/
+    private final double vitesseMax;
+
     /**L etat actuel de user {-1,0,1}**/
     private int etat = 0;
     /**Le temps qu il faut attendre pour que l etat revienne a 0**/
@@ -38,8 +41,9 @@ public class User extends Thread {
     public User(){
         this.posX = Affichage.LARGEUR/2;
         this.posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
-        this.saut = 10;
+        this.saut = 15;
         this.vitesse = 10;
+        this.vitesseMax = 100;
     }
 
     // ********************************** 3) Méthodes **********************************
@@ -51,7 +55,16 @@ public class User extends Thread {
     public double getVitesse(){return this.vitesse;};
 
     /**
+     * Renvoie la vitesse maximale a laquelle peut aller user.
+     * @return
+     */
+    public double getVitesseMax() {
+        return vitesseMax;
+    }
+
+    /**
      * Modifie la vitesse de User en lui ajoutant la nouvelle vitesse
+     * La nouvelle vitesse est comprise entre [0, vitesseMax]
      * @param vitesse le modificateur de la vitesse
      * @return
      */
@@ -60,8 +73,11 @@ public class User extends Thread {
         if(this.isOnRoad && this.vitesse == 0){
             System.out.println("Vitesse nulle malgre la route !!");
         }
+        //Limitation maximale et minimale de la vitesse
         if(this.vitesse<0){
             this.vitesse = 0;
+        } else if (this.vitesse>this.vitesseMax){
+            this.vitesse = this.vitesseMax;
         }
     };
 
