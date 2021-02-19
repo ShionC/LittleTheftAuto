@@ -1,6 +1,7 @@
 package vue;
 
 import game.Tools;
+import model.Obstacle;
 
 import java.awt.*;
 import javax.imageio.ImageIO;
@@ -29,8 +30,16 @@ public class VueBackground {
     private ArrayList<Point> clouds = new ArrayList<>();
     /**Le type de nuage**/
     private ArrayList<Integer> cloudTypes = new ArrayList<>();
+
+    /**La liste de la largeur de la route pour chaque point. <br/>Permet un effet de profondeur**/
     private ArrayList<Integer> rangeroute = new ArrayList<>();
+    /**Mutex de rangeRoute**/
     private final ReentrantLock rangeMutex = new ReentrantLock();
+
+    /**
+     * La liste des obstacles
+     */
+    private ArrayList<Obstacle> listObstacles = new ArrayList<>();
 
     //Images nuages :
     BufferedImage cloud1;
@@ -121,6 +130,10 @@ public class VueBackground {
         //Initialiser nuages
         this.initClouds();
         this.setShapeRoute();
+
+
+        //Initialiser les obstacles
+        //TODO les images
     }
 
     // ********************************** 3) Méthodes **********************************
@@ -221,19 +234,60 @@ public class VueBackground {
     }
 
     /**
-     * Renvoie la distance entre le bord de la route et le milieu de la route pour chaque point correspondant a la route
+     * Renvoie un clone de la distance entre le bord de la route et le milieu de la route pour chaque point correspondant a la route
+     * <br/>Protege par un mutex
      * @return range list
      */
     public ArrayList<Integer> getRangeRoute(){
         synchronized (this.rangeroute){
             try{
                 this.rangeMutex.lock();
-                return this.rangeroute;
+                return (ArrayList<Integer>) this.rangeroute.clone();
             } finally {
                 this.rangeMutex.unlock();
             }
 
         }
+    }
+
+    /**
+     * Renvoie range au point p sur la route
+     * @param p Le point p sur la route (p.x n est pas oblige d etre sur la route)
+     * @return -1 si p.y est sortit de la route
+     */
+    public int getRange(Point p){
+        ArrayList<Point> listRoute = this.aff.route.getRoute();
+        //Touver le bon point sur le segment de route
+        boolean inRoute = true; //Si l obstacle est toujours au niveau de la route
+        Point p1 = listRoute.get(0); //p1>p2
+        Point p2 = listRoute.get(1);
+        int i = 1;
+        while (p.y<p2.y && i<listRoute.size()-1){
+            if(p.y>=p1.y){ //Sortit par le bas
+                inRoute = false;
+                break;
+            }
+            if(i+1 >= listRoute.size()){  //Pour le cas des objets au dessus de l horizon
+                inRoute = false;
+                break;
+            } else if (inRoute) {
+                p1 = listRoute.get(i);
+                if(i+1 >= listRoute.size()){  //Juste au cas ou
+                    System.out.println("Sortie de array");
+                }
+                p2 = listRoute.get(i+1);
+            }
+
+            i++;
+        }
+        i--; //Car on a fait +1 apres avoir change p1 et p2.
+
+        if(inRoute){
+            return (this.getRangeRoute().get(i)*(p.y- VueBackground.horizon +50))/(p1.y- VueBackground.horizon +50);//Produit en croix
+        } else {
+            return -1;
+        }
+
     }
 
     /**
@@ -255,6 +309,40 @@ public class VueBackground {
             this.clouds.add(random_point);
             this.cloudTypes.add(Tools.rangedRandomInt(0, nb_cloudTypes));
         }
+    }
+
+    /**
+     * Renvoie la forme de l obstacle
+     * <br/>Utilise pour les formules de collision
+     * @param obs
+     * @return
+     */
+    public Area getShapeObstacle(Obstacle obs){
+        //TODO
+        return null;
+    }
+
+    /**
+     * Met a jour la liste des obstacles : En ajoute si il reste de la place, en enleve si ils sont sortis de la fenetre
+     */
+    public void updateObstacles(){
+        //TODO update listObstacles
+    }
+
+    /**
+     * Dessine tous les obstacles en fonction de leur type
+     * @param g2
+     */
+    private void drawObstacles(Graphics2D g2){
+        //TODO ne pas oublier de scale l obstacle lui meme !
+    }
+
+    /**
+     * Renvoie la liste des obstacles
+     * @return
+     */
+    public ArrayList<Obstacle> getListObstacles() {
+        return listObstacles;
     }
 
     /**
@@ -359,7 +447,8 @@ public class VueBackground {
             g2.drawLine(p1.x,p1.y,p2.x,p2.y);
         }
 
-
+        //Obstacles
+        this.drawObstacles(g2);
 
         g2.setColor(oldColor);
         g2.setStroke(oldStroke);

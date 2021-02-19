@@ -1,5 +1,6 @@
 package controleur;
 
+import model.Obstacle;
 import vue.Affichage;
 
 import java.awt.*;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import model.User;
 import model.Route;
 import game.Tools;
+import vue.VueBackground;
 import vue.VueUser;
 
 public class Deplace extends Thread {
@@ -184,12 +186,84 @@ public class Deplace extends Thread {
                 }
             }
 
+            /*Algo transfere dans la methode getRange() de VueBackground
+
+            ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
+            ArrayList<Integer> listRange = this.aff.bmg.getRangeRoute();
+            ArrayList<Integer> rangeObstacle = new ArrayList<>();
+
+            ArrayList<Point> listRoute = this.route.getRoute();
+
+            for (Obstacle obs: listObstacles) {
+
+
+                //Touver le bon point sur le segment de route
+                boolean inRoute = true; //Si l obstacle est toujours au niveau de la route
+                Point p1 = listRoute.get(0); //p1>p2
+                Point p2 = listRoute.get(1);
+                int i = 1;
+                while (obs.getPosY()<p2.y && i<listRoute.size()-1){
+                    if(obs.getPosY()>=p1.y){ //Sortit par le bas
+                        inRoute = false;
+                        break;
+                    }
+                    if(i+1 >= listRoute.size()){  //Pour le cas des objets au dessus de l horizon
+                        inRoute = false;
+                        break;
+                    } else if (inRoute) {
+                        p1 = listRoute.get(i);
+                        if(i+1 >= listRoute.size()){  //Juste au cas ou
+                            System.out.println("Sortie de array");
+                        }
+                        p2 = listRoute.get(i+1);
+                    }
+
+                    i++;
+                }
+                i--; //Car on a fait +1 apres avoir change p1 et p2.
+
+                //Mod de rangeObstacles
+                if(inRoute){
+
+                    int range = (listRange.get(i)*obs.getPosY())/(p1.y- VueBackground.horizon +50);//Produit en croix
+                    rangeObstacle.add(range);
+                }
+
+                 */
+
+            ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
+            for(Obstacle obs : listObstacles){
+                int range = this.aff.bmg.getRange(new Point(obs.getPosX(),obs.getPosY()));
+
+                //Mod obstacle
+                if(range != -1){
+                    obs.move(range, modPos*facPos);
+                } else {
+                    obs.move(obs.getDistToRoute(), modPos*facPos);
+                }
+
+            }
+
+
 
             //TODO obstacles & concurrents
+            //Deceleration selon obstacle :
+
+            double decObs = -30; //Pour les obstacles
+            double decConc = 0; //Pour les concurrents
 
             //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu
-            //TODO
+            for(Obstacle obs : listObstacles){
+                //Si collision entre voiture et obstacle
+                if(Tools.collision(this.aff.vueUser.getShapeCar(), this.aff.bmg.getShapeObstacle(obs))){
+                    //Decelere User
+                    this.user.modVitesse(decObs);
+                    //Rebond de user de l autre cote de l obstacle
+                    this.user.rebond(2, ! obs.isRightPoint(new Point(this.user.getPosX(), this.user.getPosY())));
+                }
+            }
 
+            this.aff.bmg.updateObstacles();
             this.aff.update();
             try {
                 Thread.sleep(this.varTime);

@@ -2,6 +2,7 @@ package model;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 import game.Tools;
 import vue.Affichage;
@@ -11,6 +12,8 @@ public class Route {
     // ********************************** 1) Attributs **********************************
     /** Pour la ligne brisée principale**/
     private ArrayList<Point> listePoints = new ArrayList<>();
+    /**Mutex de listePoints**/
+    private final ReentrantLock routeMutex = new ReentrantLock();
 
     /**Valeur d un accumule**/
     private double sautCharge;
@@ -65,46 +68,54 @@ public class Route {
      */
     private void updateRoute() {
         synchronized (this.listePoints){
-            //Ajoute des points au besoin
-            if(this.listePoints.get(this.listePoints.size()-1).y>=VueBackground.horizon){
-                int range = 90; //Deviation de x autorisee
+            try {
+                this.routeMutex.lock();
 
-                int y = this.listePoints.get(this.listePoints.size()-1).y - Tools.rangedRandomInt(40, 200);
-                int x = this.listePoints.get(this.listePoints.size()-1).x;
-                //Cherche un y pas trop loin de l ancien, pour la beaute de la courbe
-                int newx;
-                if(x-range<0){
-                    newx = Tools.rangedRandomInt(x, x+range);
-                } else {
-                    newx = Tools.rangedRandomInt(x-range, x+range);
-                }
-                while((newx > Affichage.LARGEUR -50) || (newx < 50)){ //Zone d appartition de la courbe, voir avec affichage
-                    if(newx < 50){
+                //Ajoute des points au besoin
+                if(this.listePoints.get(this.listePoints.size()-1).y>=VueBackground.horizon){
+                    int range = 90; //Deviation de x autorisee
+
+                    int y = this.listePoints.get(this.listePoints.size()-1).y - Tools.rangedRandomInt(40, 200);
+                    int x = this.listePoints.get(this.listePoints.size()-1).x;
+                    //Cherche un y pas trop loin de l ancien, pour la beaute de la courbe
+                    int newx;
+                    if(x-range<0){
                         newx = Tools.rangedRandomInt(x, x+range);
                     } else {
-                        newx = Tools.rangedRandomInt(x-range, x);
+                        newx = Tools.rangedRandomInt(x-range, x+range);
+                    }
+                    while((newx > Affichage.LARGEUR -50) || (newx < 50)){ //Zone d appartition de la courbe, voir avec affichage
+                        if(newx < 50){
+                            newx = Tools.rangedRandomInt(x, x+range);
+                        } else {
+                            newx = Tools.rangedRandomInt(x-range, x);
+                        }
+                    }
+                    x = newx;
+                    if(x>Affichage.LARGEUR){
+                        System.out.println("y = "+y+" out of range "+Affichage.LARGEUR+" !!");
+                    }
+                    listePoints.add(new Point(x, y));
+
+                }
+
+                //Enleve des points au besoin
+                if(this.listePoints.size()<1){
+                    System.out.println("        La liste des points de la route ne s est pas actualisee !!");
+                } else {
+                    if(this.listePoints.get(1).y>Affichage.HAUTEUR){
+                        if(this.listePoints.size()<2){
+                            System.out.println("Liste des points de route < 2 !!!");
+                        } else {
+                            this.listePoints.remove(0);
+                        }
                     }
                 }
-                x = newx;
-                if(x>Affichage.LARGEUR){
-                    System.out.println("y = "+y+" out of range "+Affichage.LARGEUR+" !!");
-                }
-                listePoints.add(new Point(x, y));
 
+            } finally {
+                this.routeMutex.unlock();
             }
 
-            //Enleve des points au besoin
-            if(this.listePoints.size()<1){
-                System.out.println("        La liste des points de la route ne s est pas actualisee !!");
-            } else {
-                if(this.listePoints.get(1).y>Affichage.HAUTEUR){
-                    if(this.listePoints.size()<2){
-                        System.out.println("Liste des points de route < 2 !!!");
-                    } else {
-                        this.listePoints.remove(0);
-                    }
-                }
-            }
         }
 
 
@@ -133,11 +144,17 @@ public class Route {
 
             //Modification des points
             synchronized (this.listePoints){
-                for(int i = 0; i<this.listePoints.size(); i++){
-                    this.listePoints.get(i).move(this.listePoints.get(i).x, this.listePoints.get(i).y+currentSaut);
+                try {
+                    this.routeMutex.lock();
+                    for(int i = 0; i<this.listePoints.size(); i++){
+                        this.listePoints.get(i).move(this.listePoints.get(i).x, this.listePoints.get(i).y+currentSaut);
+                    }
+                    this.y_ptCtrl += currentSaut;
+                    this.updateRoute();
+                } finally {
+                    this.routeMutex.unlock();
                 }
-                this.y_ptCtrl += currentSaut;
-                this.updateRoute();
+
             }
             this.kilometrage += currentSaut;
 
@@ -164,16 +181,24 @@ public class Route {
      */
     public ArrayList<Point> getRoute() {
         synchronized (this.listePoints){
-            ArrayList<Point> newList = new ArrayList<>();
-            for(int i = 0; i< this.listePoints.size(); i++){
-                newList.add((Point)this.listePoints.get(i).clone());
-            }
-            if(newList.size() == 0){ //Pour eviter les bugs
-                newList.add(new Point(Affichage.LARGEUR/2, Affichage.HAUTEUR));
-                newList.add(new Point(Affichage.LARGEUR/2, VueBackground.horizon));
+            try {
+                this.routeMutex.lock();
+
+                ArrayList<Point> newList = new ArrayList<>();
+                for(int i = 0; i< this.listePoints.size(); i++){
+                    newList.add((Point)this.listePoints.get(i).clone());
+                }
+                if(newList.size() == 0){ //Pour eviter les bugs
+                    newList.add(new Point(Affichage.LARGEUR/2, Affichage.HAUTEUR));
+                    newList.add(new Point(Affichage.LARGEUR/2, VueBackground.horizon));
+                }
+
+                return newList;
+
+            } finally {
+                this.routeMutex.unlock();
             }
 
-            return newList;
         }
     }
 
@@ -181,11 +206,11 @@ public class Route {
      * Remplace l'ancien point de contrôle par un nouveau
      */
     public void newPtControle() {
-
+        //TODO
     }
 
     /**
-     * Renvoie la coordonnee y RELATIVE du point de contrôle
+     * Renvoie la coordonnee y du point de contrôle
      * @return
      */
     public int getCtrl() {
