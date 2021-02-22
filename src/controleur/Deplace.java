@@ -49,7 +49,7 @@ public class Deplace extends Thread {
         this.aff = ctrl.aff;
         this.newPartie();
 
-        this.modVitesse = 10;
+        this.modVitesse = 5;
     }
 
     /**

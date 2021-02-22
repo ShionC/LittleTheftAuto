@@ -36,7 +36,7 @@ public class Data {
     }
 
     /**
-     * Compare les data de la partie en cours avec les meilleurs
+     * Compare les data de la partie en cours avec les meilleurs, et met a jour les statistiques
      */
     public static void push(){
         currentDurationPartie = Duration.between(startPartie, Instant.now());
@@ -63,6 +63,9 @@ public class Data {
         currentNbCtrlPt = 0;
     }
 
+    /**
+     * Initialise le jeu. N est utilise qu une seule fois lors du lancement du jeu
+     */
     public static void initGame(){
         startGame = Instant.now();
         startPartie = Instant.now();

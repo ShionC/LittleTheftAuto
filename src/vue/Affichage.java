@@ -23,6 +23,7 @@ public class Affichage extends JPanel {
     public VueBackground bmg;
     Controleur ctrl;
 
+    /**La partie est toujours en cours**/
     boolean partieEnCours;
 
     public Affichage(User user, Route route) {

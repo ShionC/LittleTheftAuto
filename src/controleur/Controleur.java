@@ -72,12 +72,15 @@ public class Controleur implements KeyListener {
      * Met fin a la partie et aux mouvements.
      */
     public void endPartie(){
+        /*
         if(this.partieEnCours){
             System.out.println("End game ctrl");
             this.partieEnCours = false;
             this.aff.endPartie();
             Data.push();
         }
+
+         */
     }
 
     /**

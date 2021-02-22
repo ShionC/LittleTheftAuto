@@ -12,10 +12,12 @@ public class User extends Thread {
 
     public boolean isOnRoad = true;
 
+    private boolean derapage = true;
+
     /**
      * La position sur l axe X de User
      */
-    private int posX;
+    private float posX;
     /**La position sur l axe Y de User**/
     public static final int posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
     /**La valeur max d un deplacement lateral**/
@@ -23,7 +25,13 @@ public class User extends Thread {
 
     /**La valeur actuelle d un saut. Comprise entre [-saut,saut]
      * Permet un derapage**/
-    private int inertie;
+    private float inertie;
+
+    /**Valeur de la mod d inertie lors d un mouvement**/
+    private float sautInertie = 3;
+
+    /**Variation de temps entre 2 calculs**/
+    private int dt = 20;
 
     /**La vitesse de User, et par extention la vitesse de la route**/
     private double vitesse;
@@ -106,7 +114,16 @@ public class User extends Thread {
      * Deplace user selon son inertie laterale
      */
     public void move(){
-        this.posX += this.inertie;
+        if(derapage){
+            this.posX += this.inertie;
+        } else {
+            float dt = ((float)this.dt)/1000f; //Conversion en secondes
+            float dx = this.inertie*dt;
+            this.posX += dx*4;
+            System.out.println("Inertie : "+this.inertie);
+            System.out.println("dx : "+dx);
+        }
+
     }
 
     /**
@@ -118,9 +135,9 @@ public class User extends Thread {
         this.currentWaitEtat = 0;
         if(this.inertie<this.saut){
             if(this.inertie>0){
-                this.inertie+=3;
+                this.inertie+=this.sautInertie;
             } else {
-                this.inertie+=3; //Plus rapide lors de changement de direction
+                this.inertie+=this.sautInertie; //Plus rapide lors de changement de direction
             }
         }
         //this.posX += this.inertie;  //Le faire dans run()
@@ -136,9 +153,9 @@ public class User extends Thread {
         this.currentWaitEtat = 0;
         if(this.inertie>-this.saut){
             if(this.inertie<0){
-                this.inertie-=3;
+                this.inertie-=this.sautInertie;
             } else {
-                this.inertie-=3; //Plus rapide lors de changement de direction
+                this.inertie-=this.sautInertie; //Plus rapide lors de changement de direction
             }
 
         }
@@ -150,7 +167,7 @@ public class User extends Thread {
      * @return inertie/derapage
      */
     public int getInertie() {
-        return inertie;
+        return Math.round(inertie);
     }
 
 
@@ -204,7 +221,7 @@ public class User extends Thread {
     }
 
     public int getPosX() {
-        return posX;
+        return Math.round(posX);
     }
 
     public int getPosY() {
@@ -223,34 +240,44 @@ public class User extends Thread {
     public void run() {
         while(run){
 
-            //Revient progressivement a this.inertie == 0
-            int change = 2;
-            if(this.inertie<0){
-                if(this.inertie+change>0){ //Si depassement, evite tremblotement de user
-                    this.inertie = 0;
-                } else {
-                    this.inertie+=change;
-                }
-            } else if(this.inertie>0){
-                if(this.inertie-change<0){
-                    this.inertie = 0;
-                } else {
-                    this.inertie-=change;
+            if(derapage){
+                //Revient progressivement a this.inertie == 0
+
+                int change = 2;
+                if(this.inertie<0){
+                    if(this.inertie+change>0){ //Si depassement, evite tremblotement de user
+                        this.inertie = 0;
+                    } else {
+                        this.inertie+=change;
+                    }
+                } else if(this.inertie>0){
+                    if(this.inertie-change<0){
+                        this.inertie = 0;
+                    } else {
+                        this.inertie-=change;
+                    }
                 }
             }
+
+
+
             //Gestion bordure d ecran
-            if(this.posX > 0 && this.posX + VueUser.LARG_CAR < Affichage.LARGEUR){
+            if(this.posX >= 0 && this.posX + VueUser.LARG_CAR <= Affichage.LARGEUR){
                 //this.posX += this.inertie;
                 this.move();
             } else if (this.posX <= 0){
                 //this.posX += 30; //Effet rebond
                 //this.inertie=50;//Repars le l autre cote
-                this.rebond(1,true);
+                //this.rebond(1,true);
+                this.inertie = 0;
+                this.posX = 0;
             } else //noinspection ConstantConditions
                 if(this.posX + VueUser.LARG_CAR >= Affichage.LARGEUR){
                 //this.posX -= 30;
                 //this.inertie = -50;
-                this.rebond(1,false);
+                //this.rebond(1,false);
+                    this.inertie = 0;
+                    this.posX = Affichage.LARGEUR - VueUser.LARG_CAR;
             }
 
 
@@ -263,7 +290,7 @@ public class User extends Thread {
 
             try {
                 //noinspection BusyWait
-                Thread.sleep(20);
+                Thread.sleep(dt);
             } catch(Exception e) {
                 e.printStackTrace();
             }
