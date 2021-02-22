@@ -26,7 +26,7 @@ public class Obstacle {
 
     public Obstacle(){
         //TODO
-        this.LargeurInit = 0; //TODO
+        this.LargeurInit = 0; //TODO initialiser
         this.HauteurInit = 0;
         this.LARGEUR = this.LargeurInit;
         this.HAUTEUR = this.HauteurInit;

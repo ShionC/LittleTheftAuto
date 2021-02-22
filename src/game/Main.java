@@ -59,13 +59,14 @@ class Main {
 
         Route route = new Route();
         User user = new User();
-        Controleur ctrl = new Controleur(user, route);
-        Affichage affichage = new Affichage(ctrl, user, route);
-        ctrl.setAffichage(affichage);
-        //ctrl.setCmds();
-        Deplace deplace = new Deplace(user, route, affichage);
 
-        deplace.start();//Voir qui le lance, en fonction de si il y a une fenetre de demarage ou pas
+        Affichage affichage = new Affichage(user, route);
+        Controleur ctrl = new Controleur(affichage, user, route);
+        //ctrl.setAffichage(affichage);
+        //ctrl.setCmds();
+        //Deplace deplace = new Deplace(user, route, affichage);
+
+        //deplace.start();//Voir qui le lance, en fonction de si il y a une fenetre de demarage ou pas
         user.start(); //Redresse constament user (etat = 0)
 
         fenetre.add(affichage);

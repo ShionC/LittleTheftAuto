@@ -17,7 +17,7 @@ public class User extends Thread {
      */
     private int posX;
     /**La position sur l axe Y de User**/
-    private final int posY;
+    public static final int posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
     /**La valeur max d un deplacement lateral**/
     private final int saut;
 
@@ -29,7 +29,7 @@ public class User extends Thread {
     private double vitesse;
 
     /**La vitesse maximale de User**/
-    private final double vitesseMax;
+    public static final double vitesseMax = 100;
 
     /**L etat actuel de user {-1,0,1}**/
     private int etat = 0;
@@ -44,15 +44,17 @@ public class User extends Thread {
 
     /**
      * Cree un nouvel utilisateur qui peut bouger a droite et a gauche
-     * <br/>Sa methode thread met constanment son etat a 0, cad qu elle redresse user
+     * <br/> Un user a une vitesse maximale (statique), une vitesse, une position x et y (y est statique) et
+     * un etat qui indique son inclinaison
+     * <br/>Sa methode run met constanment son etat a 0, cad qu elle redresse user.
+     * User peut se deplacer a droite et a gauche et possede un effet de derapage.
      */
     public User(){
         this.posX = Affichage.LARGEUR/2;
-        this.posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
+        //this.posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
         this.saut = 25;
         this.inertie = 0;
         this.vitesse = 10;
-        this.vitesseMax = 100;
     }
 
     // ********************************** 3) Méthodes **********************************

@@ -18,24 +18,45 @@ public class Controleur implements KeyListener {
     User user;
     Route route;
 
+    TimeManager timeManager;
+    Deplace deplace;
+
     KeyContinue keyCont;
 
     // ********************************** 2) Constructeur **********************************
 
-    public Controleur(User user, Route route){
+    /**
+     * Le controleur principal
+     * @param aff l affichage principal
+     * @param user la voiture controlee par le joueur pour la 1ere partie
+     * @param route Le circuit automobile pour la 1ere partie
+     */
+    public Controleur(Affichage aff, User user, Route route){
         this.user = user;
         this.route = route;
+        this.aff = aff;
+        this.aff.setControleur(this);
+        this.aff.addKeyListener(this);
+
         this.keyCont = new KeyContinue(this);
         this.keyCont.start();
+
+        this.deplace = new Deplace(this);
+        deplace.start();
+
+        this.timeManager = new TimeManager(this);
+        timeManager.start();
 
     }
 
     // ********************************** 3) Méthodes **********************************
 
-    /**Lie l affichage**/
-    public void setAffichage(Affichage aff){
-        this.aff = aff;
-        this.aff.addKeyListener(this);
+    /**
+     * Renvoie le timer du point de controle en cours
+     * @return le timer
+     */
+    public Timer getTimerPtCtrl(){
+        return this.timeManager.getTimerPtCtrl();
     }
 
     /**
@@ -65,7 +86,7 @@ public class Controleur implements KeyListener {
     }
 
         /**
-         * Defini les commandes au clavier pour faire bouger User
+         * Defini les commandes au clavier pour faire bouger User avec la methode de KeyBinding
          */
         public void setCmds () {
 

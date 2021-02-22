@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -109,6 +110,31 @@ public class Tools {
         double dx = p1.x - p2.x;
         double dy = p1.y - p2.y;
         return Math.sqrt(dx*dx+dy*dy);
+    }
+
+    /**
+     * Dans une liste de points, retrouve l index du premier point inferieur a p <i>sur l axe Y</i>
+     * @param p le point a comparer
+     * @param list Une liste de point dont l axe y est <b>decroissant</b>
+     * @return -1 si p.y <i>plus grand</i> que le premier de la liste et -2 si p.y <i>plus petit</i> que le dernier
+     */
+    public static int findIdxFirstInfByY(Point p, ArrayList<Point> list){
+        Point p1 = list.get(0); //p1>p2
+        Point p2 = list.get(1);
+        int i = 1;
+        while (p.y<p2.y && i<list.size()-1){
+            if(p.y>=p1.y){ //Sortie par le debut de la liste
+                return -1;
+            } else if(i+1 >= list.size()){  //Sortie par la fin de la liste
+                return -2;
+            } else {
+                p1 = list.get(i);
+                p2 = list.get(i+1);
+            }
+
+            i++;
+        }
+        return i;
     }
 
 

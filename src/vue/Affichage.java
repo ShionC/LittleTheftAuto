@@ -23,10 +23,10 @@ public class Affichage extends JPanel {
     public VueBackground bmg;
     Controleur ctrl;
 
-    public Affichage(Controleur controleur, User user, Route route) {
+    public Affichage(User user, Route route) {
         // Dimensions de la fenêtre
         this.setPreferredSize(new Dimension(LARGEUR, HAUTEUR));
-        this.ctrl = controleur;
+
         this.user = user;
         this.route = route;
 
@@ -39,6 +39,14 @@ public class Affichage extends JPanel {
 
 
     // ********************************** 3) Méthodes **********************************
+
+    /**
+     * Lie le controleur a l affichage. Se fait des l initialisation du controleur
+     * @param ctrl le controleur
+     */
+    public void setControleur(Controleur ctrl){
+        this.ctrl = ctrl;
+    }
 
     /**
      * Fonction pour dessiner

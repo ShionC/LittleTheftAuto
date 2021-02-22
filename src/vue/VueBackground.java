@@ -258,6 +258,7 @@ public class VueBackground {
     public int getRange(Point p){
         ArrayList<Point> listRoute = this.aff.route.getRoute();
         //Touver le bon point sur le segment de route
+        /*
         boolean inRoute = true; //Si l obstacle est toujours au niveau de la route
         Point p1 = listRoute.get(0); //p1>p2
         Point p2 = listRoute.get(1);
@@ -280,9 +281,14 @@ public class VueBackground {
 
             i++;
         }
-        i--; //Car on a fait +1 apres avoir change p1 et p2.
 
-        if(inRoute){
+         */
+        int i = Tools.findIdxFirstInfByY(p, listRoute);
+        i--; //Car on veux dernier superieur
+
+
+        if(i>=0){ //Si l obstacle est toujours au niveau de la route
+            Point p1 = listRoute.get(i);
             return (this.getRangeRoute().get(i)*(p.y- VueBackground.horizon +50))/(p1.y- VueBackground.horizon +50);//Produit en croix
         } else {
             return -1;
@@ -436,16 +442,28 @@ public class VueBackground {
         //Ligne au milieu
         g2.setColor(new Color(250, 240, 230)); //Blanc
 
-        ArrayList<Point> list = this.aff.route.getRoute();
-        for(int i = 1; i<list.size(); i++){
+        ArrayList<Point> listRoute = this.aff.route.getRoute();
+        for(int i = 1; i<listRoute.size(); i++){
 
-            Point p1 = list.get(i-1);
-            Point p2 = list.get(i);
+            Point p1 = listRoute.get(i-1);
+            Point p2 = listRoute.get(i);
             if(p2.y < horizon){
                 p2.move(Tools.findX(horizon,p2,p1), horizon); //N affiche que les points sous l horizon !
             }
             g2.drawLine(p1.x,p1.y,p2.x,p2.y);
         }
+
+        //Point de controle
+        int yPtCtrl = this.aff.route.getCtrl();
+        if(yPtCtrl>horizon && yPtCtrl<Affichage.HAUTEUR){
+            int idxRouteCtrl = Tools.findIdxFirstInfByY(new Point(0, yPtCtrl), listRoute);
+            int xOnRoute = Tools.findX(yPtCtrl, listRoute.get(idxRouteCtrl-1), listRoute.get(idxRouteCtrl));
+            int rangePtCtrl = this.getRange(new Point(0, yPtCtrl)) + 30; //depasse de la route sur l axe X
+            g2.drawLine(xOnRoute-rangePtCtrl, yPtCtrl, xOnRoute+rangePtCtrl, yPtCtrl);
+        }
+
+
+
 
         //Obstacles
         this.drawObstacles(g2);
@@ -460,17 +478,25 @@ public class VueBackground {
      */
     public void drawData(Graphics2D g2){
         Font oldFont = g2.getFont();
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Arial", Font.BOLD, 20));
+
         String str1 = "Vitesse m/s : "+Math.round(this.aff.user.getVitesse());
         String str2 = "Kilometrage : "+this.aff.route.getKilometrage();
+        String temps = "Temps restant";
+        String timer = this.aff.ctrl.getTimerPtCtrl().toString();
 
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Arial", Font.BOLD, 20));
+
+        g2.drawString(temps, Affichage.LARGEUR - 154, Affichage.HAUTEUR-159);
+        g2.drawString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139);
         g2.drawString(str1, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99);
         g2.drawString(str2, Affichage.LARGEUR - 189, Affichage.HAUTEUR-59);
 
         //Reecrit tout avec x et y +1, pour un effet de decalage pour mieux voir
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
+        g2.drawString(temps, Affichage.LARGEUR - 155, Affichage.HAUTEUR-160);
+        g2.drawString(timer, Affichage.LARGEUR - 100, Affichage.HAUTEUR-140);
         g2.drawString(str1, Affichage.LARGEUR - 205, Affichage.HAUTEUR-100);
         g2.drawString(str2, Affichage.LARGEUR - 190, Affichage.HAUTEUR-60);
 

@@ -19,28 +19,42 @@ public class Deplace extends Thread {
     private boolean run = true;
 
     /**
+     * La partie est en cours
+     */
+    private boolean inPartie = false;
+
+    /**
      * La route se met a jour toutes les varTime milisecondes
      */
     private int varTime = 40;
 
     //Lien vers les autres classes
+    private Controleur ctrl;
 
+    /**Est a l origine de la vitesse**/
     private User user;
+    /**Est deplace selon la vitesse de User**/
     private Route route;
+    /**Permet de faire la modification**/
     private Affichage aff;
+
+    /**La modification que on applie au deplacement, pour gerer la vitesse selon les besoins.
+     * <br/> /!\ min = 1 !!**/
+    double modVitesse = 1;
+
 
     /**
      * Ce thread calcule la vitesse de la route,
      * et fait se deplacer tous les objets en fonction de la vitesse a laquelle ils sont relies.
-     * @param user Est a l origine de la vitesse.
-     * @param route Est deplace selon la vitesse de User
-     * @param aff Permet de faire la modification
+     * @param ctrl le controleur principal
      */
-    public Deplace(User user, Route route, Affichage aff){
+    public Deplace(Controleur ctrl){
         //Lie toutes les autres classes
-        this.user = user;
-        this.route = route;
-        this.aff = aff;
+        this.ctrl = ctrl;
+        this.aff = ctrl.aff;
+        this.newPartie();
+
+        this.modVitesse = 10;
     }
 
     /**
@@ -51,9 +65,23 @@ public class Deplace extends Thread {
     }
 
     /**
-     *
-     * @return dt
+     * Commence la partie en initialisant la route et user.
+     * <br/> Permet a run de faire les calculs necessaire de la partie
      */
+    void newPartie(){
+        this.user = ctrl.user;
+        this.route = ctrl.route;
+        this.inPartie = true;
+    }
+
+    /**
+     * Termine la partie, ne fais plus aucune modification
+     */
+    void endPartie(){
+        this.inPartie = false;
+    }
+
+
     /**
      * Fait le calcul physique de la modification de la position selon la vitesse :
      * <br/>xt = dx + x0,
@@ -165,26 +193,28 @@ public class Deplace extends Thread {
     public void run() {
         while(run){
 
-            //Calcul de la vitesse
-            this.calculVitObj(this.user, this.aff.vueUser.getShapeCar());
-
-            //Calcul de la position selon les formules physiques
-            ////xt = v*t + x0 -> modPos = v*t, t en secondes
-            double modPos = calcul_dPos(this.user.getVitesse(),varTime);
+            if(inPartie){
 
 
-            //Application de la modification de la position
-            //Deplace les diff objets
-            double facPos = 10; //Pour ajuster la vitesse selon les besoins /!\ min = 1 !!
-            this.route.moveRoute(modPos*facPos);
+                //Calcul de la vitesse
+                this.calculVitObj(this.user, this.aff.vueUser.getShapeCar());
 
-            //Decors
-            if(this.user.getPosX() > 50 && this.user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR-50){
-                int inertieUser = this.user.getInertie();
-                if(inertieUser != 0){
-                    this.aff.bmg.moveDecors(inertieUser>0);
+                //Calcul de la position selon les formules physiques
+                ////xt = v*t + x0 -> modPos = v*t, t en secondes
+                double modPos = calcul_dPos(this.user.getVitesse(),varTime);
+
+
+                //Application de la modification de la position
+                //Deplace les diff objets
+                this.route.moveRoute(modPos*modVitesse);
+
+                //Decors
+                if(this.user.getPosX() > 50 && this.user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR-50){
+                    int inertieUser = this.user.getInertie();
+                    if(inertieUser != 0){
+                        this.aff.bmg.moveDecors(inertieUser>0);
+                    }
                 }
-            }
 
             /*Algo transfere dans la methode getRange() de VueBackground
 
@@ -231,40 +261,44 @@ public class Deplace extends Thread {
 
                  */
 
-            ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
-            for(Obstacle obs : listObstacles){
-                int range = this.aff.bmg.getRange(new Point(obs.getPosX(),obs.getPosY()));
+                ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
+                for(Obstacle obs : listObstacles){
+                    int range = this.aff.bmg.getRange(new Point(obs.getPosX(),obs.getPosY()));
 
-                //Mod obstacle
-                if(range != -1){
-                    obs.move(range, modPos*facPos);
-                } else {
-                    obs.move(obs.getDistToRoute(), modPos*facPos);
+                    //Mod obstacle
+                    if(range != -1){
+                        obs.move(range, modPos*modVitesse);
+                    } else {
+                        obs.move(obs.getDistToRoute(), modPos*modVitesse);
+                    }
+
                 }
+
+
+
+                //TODO obstacles & concurrents
+                //Deceleration selon obstacle :
+
+                double decObs = -30; //Pour les obstacles
+                double decConc = 0; //Pour les concurrents
+
+                //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu
+                for(Obstacle obs : listObstacles){
+                    //Si collision entre voiture et obstacle
+                    if(Tools.collision(this.aff.vueUser.getShapeCar(), this.aff.bmg.getShapeObstacle(obs))){
+                        //Decelere User
+                        this.user.modVitesse(decObs);
+                        //Rebond de user de l autre cote de l obstacle
+                        this.user.rebond(2, ! obs.isRightPoint(new Point(this.user.getPosX(), this.user.getPosY())));
+                    }
+                }
+
+                this.aff.bmg.updateObstacles();
+                this.aff.update();
 
             }
 
 
-
-            //TODO obstacles & concurrents
-            //Deceleration selon obstacle :
-
-            double decObs = -30; //Pour les obstacles
-            double decConc = 0; //Pour les concurrents
-
-            //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu
-            for(Obstacle obs : listObstacles){
-                //Si collision entre voiture et obstacle
-                if(Tools.collision(this.aff.vueUser.getShapeCar(), this.aff.bmg.getShapeObstacle(obs))){
-                    //Decelere User
-                    this.user.modVitesse(decObs);
-                    //Rebond de user de l autre cote de l obstacle
-                    this.user.rebond(2, ! obs.isRightPoint(new Point(this.user.getPosX(), this.user.getPosY())));
-                }
-            }
-
-            this.aff.bmg.updateObstacles();
-            this.aff.update();
             try {
                 Thread.sleep(this.varTime);
             } catch(Exception e) {

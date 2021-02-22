@@ -21,7 +21,11 @@ public class Route {
     /**Coordonnee du point de controle sur l axe Y**/
     private int y_ptCtrl = 0;
 
+    /**La valeur en point que rapporte le depassement a user**/
+    private int valueCtrl;
+
     private int kilometrage = 0;
+
 
     // ********************************** 2) Constructeur **********************************
 
@@ -58,6 +62,9 @@ public class Route {
 
         //Initialisation du saut. On peut penser que le saut "charge" jusqu a atteindre une valeur convenable (1)
         this.sautCharge = 0;
+
+        //Initialisation du pt de ctrl. Initialise par TimeManager mais pour eviter les problemes
+        this.y_ptCtrl = 0;
 
     }
 
@@ -132,7 +139,7 @@ public class Route {
     /**
      * Défilement de la route, modifie liste.
      * <br/>La modification de delacement dy est chargee jusqu a obtenir un int non null avant de deplacer les points
-     * <br/>Mettre aussi a jour le point de controle
+     * <br/>Met aussi a jour le point de controle
      * @param saut le deplacement de tous les points. Est mis a charger et lorsque il atteint une valeur > 1 fait bouger les points
      */
     public void moveRoute(double saut) {
@@ -202,11 +209,20 @@ public class Route {
         }
     }
 
+
+    /**
+     *
+     * @param posY
+     */
     /**
      * Remplace l'ancien point de contrôle par un nouveau
+     * @param posY la distance du nouveau point de controle par rapport a user
+     * @param valueCtrl en valeur du point de controle pour le score de user
      */
-    public void newPtControle() {
-        //TODO
+    public void newPtControle(int posY, int valueCtrl) {
+        int posUser = User.posY;
+        this.y_ptCtrl = posUser - posY;
+        this.valueCtrl = valueCtrl;
     }
 
     /**
@@ -217,6 +233,11 @@ public class Route {
         return this.y_ptCtrl;
     }
 
-
-
+    /**
+     * Renvoie la valeur du point de controle actuel
+     * @return la valeur pour le score de user
+     */
+    public int getValueCtrl() {
+        return valueCtrl;
+    }
 }
