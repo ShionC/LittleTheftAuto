@@ -1,6 +1,8 @@
 package vue;
 
+import controleur.MyTimer;
 import game.Tools;
+import model.Data;
 import model.Obstacle;
 
 import java.awt.*;
@@ -358,15 +360,24 @@ public class VueBackground {
      */
     public void moveDecors(boolean right){
         int sautClouds = 1;
-        int sautMontagnes = 1;
+        int sautMontagnes = 2;
         for (int i = 0; i < this.clouds.size(); i++) {
             if (right) {
                 this.clouds.get(i).move(this.clouds.get(i).x + sautClouds, this.clouds.get(i).y);
-                this.modMontagnes += sautMontagnes;
+                //this.modMontagnes += sautMontagnes;
             } else {
                 this.clouds.get(i).move(this.clouds.get(i).x - sautClouds, this.clouds.get(i).y);
-                this.modMontagnes -= sautMontagnes;
+                //this.modMontagnes -= sautMontagnes;
             }
+        }
+        if(right){
+            this.modMontagnes += sautMontagnes;
+        } else {
+            this.modMontagnes -= sautMontagnes;
+        }
+        //Pour eviter les depassements
+        if(this.initXMontagnes+this.modMontagnes>0){
+            this.modMontagnes = -this.initXMontagnes; //Le stabilise a 0
         }
     }
 
@@ -479,13 +490,24 @@ public class VueBackground {
     public void drawData(Graphics2D g2){
         Font oldFont = g2.getFont();
 
-        String str1 = "Vitesse m/s : "+Math.round(this.aff.user.getVitesse());
-        String str2 = "Kilometrage : "+this.aff.route.getKilometrage();
+        String str1 = "Vitesse m/s : "+ Math.round((long)this.aff.user.getVitesse());
+        String str2 = "Kilometrage : "+Tools.toStringInt(this.aff.route.getKilometrage());
         String temps = "Temps restant";
-        String timer = this.aff.ctrl.getTimerPtCtrl().toString();
+        String timer;
+        MyTimer timerPtCtrl = this.aff.ctrl.getTimerPtCtrl();
+        if(timerPtCtrl.getLeftoverTime().isNegative()){
+            timer = "00";
+        } else {
+            timer = timerPtCtrl.toString();
+        }
+        String score = "Score : ";
+        String scoreVal = Tools.toStringInt(Data.getCurrentScore());
 
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
+
+        g2.drawString(score, Affichage.LARGEUR-90, 40);
+        g2.drawString(scoreVal, Affichage.LARGEUR-90, 80);
 
         g2.drawString(temps, Affichage.LARGEUR - 154, Affichage.HAUTEUR-159);
         g2.drawString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139);
@@ -495,6 +517,10 @@ public class VueBackground {
         //Reecrit tout avec x et y +1, pour un effet de decalage pour mieux voir
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
+
+        g2.drawString(score, Affichage.LARGEUR-91, 41);
+        g2.drawString(scoreVal, Affichage.LARGEUR-91, 81);
+
         g2.drawString(temps, Affichage.LARGEUR - 155, Affichage.HAUTEUR-160);
         g2.drawString(timer, Affichage.LARGEUR - 100, Affichage.HAUTEUR-140);
         g2.drawString(str1, Affichage.LARGEUR - 205, Affichage.HAUTEUR-100);

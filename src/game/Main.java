@@ -2,6 +2,7 @@ package game;
 
 import controleur.Controleur;
 import controleur.Deplace;
+import model.Data;
 import model.Route;
 import model.User;
 import vue.Affichage;
@@ -67,6 +68,7 @@ class Main {
         //Deplace deplace = new Deplace(user, route, affichage);
 
         //deplace.start();//Voir qui le lance, en fonction de si il y a une fenetre de demarage ou pas
+        Data.initGame();
         user.start(); //Redresse constament user (etat = 0)
 
         fenetre.add(affichage);

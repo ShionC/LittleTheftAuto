@@ -1,5 +1,6 @@
 package controleur;
 
+import model.Data;
 import model.Route;
 import model.User;
 import vue.Affichage;
@@ -23,6 +24,11 @@ public class Controleur implements KeyListener {
 
     KeyContinue keyCont;
 
+    /**
+     * La partie est en cours
+     */
+    boolean partieEnCours;
+
     // ********************************** 2) Constructeur **********************************
 
     /**
@@ -37,6 +43,8 @@ public class Controleur implements KeyListener {
         this.aff = aff;
         this.aff.setControleur(this);
         this.aff.addKeyListener(this);
+
+        this.partieEnCours = true;
 
         this.keyCont = new KeyContinue(this);
         this.keyCont.start();
@@ -55,8 +63,21 @@ public class Controleur implements KeyListener {
      * Renvoie le timer du point de controle en cours
      * @return le timer
      */
-    public Timer getTimerPtCtrl(){
+    public MyTimer getTimerPtCtrl(){
         return this.timeManager.getTimerPtCtrl();
+    }
+
+
+    /**
+     * Met fin a la partie et aux mouvements.
+     */
+    public void endPartie(){
+        if(this.partieEnCours){
+            System.out.println("End game ctrl");
+            this.partieEnCours = false;
+            this.aff.endPartie();
+            Data.push();
+        }
     }
 
     /**
@@ -71,17 +92,19 @@ public class Controleur implements KeyListener {
      * @param right
      */
     void move(boolean right) {
-        if (right) {
-            if (user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR) {
-                user.moveRight();
-                //aff.bmg.moveDecors(! right);
+        if(this.partieEnCours){
+            if (right) {
+                if (user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR) {
+                    user.moveRight();
+                    //aff.bmg.moveDecors(! right);
+                }
+            } else {
+                if (user.getPosX() > 0) {
+                    user.moveLeft();
+                    //aff.bmg.moveDecors(! right);
+                }
+                aff.update();
             }
-        } else {
-            if (user.getPosX() > 0) {
-                user.moveLeft();
-                //aff.bmg.moveDecors(! right);
-            }
-            aff.update();
         }
     }
 

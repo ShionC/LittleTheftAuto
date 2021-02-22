@@ -1,12 +1,10 @@
 package controleur;
 
 import game.Tools;
+import model.Data;
 import model.Route;
 import model.User;
-import vue.Affichage;
-import vue.VueUser;
 
-import java.time.Duration;
 import java.time.Instant;
 
 public class TimeManager extends Thread {
@@ -14,10 +12,6 @@ public class TimeManager extends Thread {
     /**Flag d arret du thread**/
     private boolean run = true;
 
-    /**
-     * La partie est en cours
-     */
-    private boolean inPartie = false;
 
     private Controleur ctrl;
 
@@ -27,7 +21,7 @@ public class TimeManager extends Thread {
     private Instant startGame;
 
     /**Timer du point de controle**/
-    private Timer timerPtCtrl;
+    private MyTimer timerPtCtrl;
 
 
 
@@ -52,16 +46,9 @@ public class TimeManager extends Thread {
      */
     void newPartie(){
         this.route = ctrl.route;
-        this.inPartie = true;
         this.createNewPtCtrl();
     }
 
-    /**
-     * Termine la partie, ne fais plus aucune modification
-     */
-    void endPartie(){
-        this.inPartie = false;
-    }
 
 
     /**
@@ -86,7 +73,7 @@ public class TimeManager extends Thread {
      * Renvoie le timer du point de controle en cours
      * @return
      */
-    public Timer getTimerPtCtrl() {
+    public MyTimer getTimerPtCtrl() {
         return timerPtCtrl;
     }
 
@@ -103,25 +90,30 @@ public class TimeManager extends Thread {
         int valueCtrl = distancePtCtrl;
 
         this.route.newPtControle(distancePtCtrl, valueCtrl);
-        this.timerPtCtrl = new Timer(timer);
+        this.timerPtCtrl = new MyTimer(timer);
     }
 
     @Override
     public void run() {
         while(run){
 
-            if(inPartie){
+            if(this.ctrl.partieEnCours){
 
                 if(this.timerPtCtrl.isOver()){
                     if(User.posY <= this.route.getCtrl()){ //Si user depasse le point de controle
+                        Data.addScore(this.route.getValueCtrl()+1);
+                        Data.addCtrlPt();
                         this.createNewPtCtrl();
                         //Augmente score de user ?
                     } else {
                         //Termine Fin de la partie
+                        this.ctrl.endPartie();
                         System.out.println("Course terminee, partie perdue !!");
                     }
                 } else {
                     if(User.posY <= this.route.getCtrl()){ //Si user depasse le point de controle
+                        Data.addScore(this.route.getValueCtrl()+1);
+                        Data.addCtrlPt();
                         this.createNewPtCtrl();
                         //Augmente score de user ?
                     }

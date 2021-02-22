@@ -19,11 +19,6 @@ public class Deplace extends Thread {
     private boolean run = true;
 
     /**
-     * La partie est en cours
-     */
-    private boolean inPartie = false;
-
-    /**
      * La route se met a jour toutes les varTime milisecondes
      */
     private int varTime = 40;
@@ -71,15 +66,8 @@ public class Deplace extends Thread {
     void newPartie(){
         this.user = ctrl.user;
         this.route = ctrl.route;
-        this.inPartie = true;
     }
 
-    /**
-     * Termine la partie, ne fais plus aucune modification
-     */
-    void endPartie(){
-        this.inPartie = false;
-    }
 
 
     /**
@@ -193,7 +181,7 @@ public class Deplace extends Thread {
     public void run() {
         while(run){
 
-            if(inPartie){
+            if(this.ctrl.partieEnCours){
 
 
                 //Calcul de la vitesse

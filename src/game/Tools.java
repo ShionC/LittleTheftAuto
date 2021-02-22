@@ -1,5 +1,6 @@
 package game;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Random;
 import java.awt.*;
@@ -154,5 +155,46 @@ public class Tools {
             }
         }
         return false;
+    }
+
+    /**
+     * Renvoie le temps restant du timer sous forme <i><b>x</b>h <b>x</b>min <b>x</b>sec</i>
+     * @param d la duree
+     * @return le string correspondant
+     */
+    public static String toStringDuration(Duration d){
+        int h = d.toHoursPart();
+        int m = d.toMinutesPart();
+        int sec = d.toSecondsPart();
+        String str = "";
+        if( h!=0 ) {
+            str += String.valueOf(h) + "h ";
+        }
+        if( m!=0 ) {
+            str += String.valueOf(m) + "min ";
+        }
+        if( sec!=0 ) {
+            str += String.valueOf(sec) + "sec ";
+        }
+        return str;
+    }
+
+    /**
+     * Convertit le int en string tout en simplifiant l affichange pour les grands nombres a l aide des abreviations k et M
+     * @param val
+     * @return
+     */
+    public static String toStringInt(int val){
+        int rest;
+        String str = Integer.toString(val);
+        if(val >= 10000){
+            rest = val/1000;
+            str = rest + "k";
+        }
+        if(val >= 1000000){
+            rest = val/1000000;
+            str = rest + "M";
+        }
+        return str;
     }
 }

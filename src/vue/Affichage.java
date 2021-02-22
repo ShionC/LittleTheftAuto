@@ -23,12 +23,15 @@ public class Affichage extends JPanel {
     public VueBackground bmg;
     Controleur ctrl;
 
+    boolean partieEnCours;
+
     public Affichage(User user, Route route) {
         // Dimensions de la fenêtre
         this.setPreferredSize(new Dimension(LARGEUR, HAUTEUR));
 
         this.user = user;
         this.route = route;
+        this.partieEnCours = true;
 
         this.vueUser = new VueUser(this);
         this.bmg = new VueBackground(this);
@@ -39,6 +42,17 @@ public class Affichage extends JPanel {
 
 
     // ********************************** 3) Méthodes **********************************
+
+    /**
+     * Met fin a la partie et aux mouvements.
+     */
+    public void endPartie(){
+        if(this.partieEnCours){
+            System.out.println("End game aff");
+            this.partieEnCours = false;
+            this.update();
+        }
+    }
 
     /**
      * Lie le controleur a l affichage. Se fait des l initialisation du controleur
@@ -53,22 +67,29 @@ public class Affichage extends JPanel {
      * @param g
      */
     public void paint(Graphics g) {
-        super.paint(g);
-        super.revalidate();
-        super.repaint();
         Graphics2D g2 = (Graphics2D) g;
-        this.bmg.drawBackground(g2);
-        this.vueUser.drawCar(g2);
-        this.bmg.drawData(g2);
+        if(! this.partieEnCours){
+            g2.setColor(new Color(193, 191, 177, 100));
+            g2.fillRect(0, 0, Affichage.LARGEUR, Affichage.HAUTEUR);
+        } else {
+            super.paint(g);
+            super.revalidate();
+            super.repaint();
+            this.bmg.drawBackground(g2);
+            this.vueUser.drawCar(g2);
+            this.bmg.drawData(g2);
+        }
 
-        //afficheCar(g);
     }
 
     /**
      * Met a jour l affichage
      */
     public void update() {
-        repaint();
+        if(this.partieEnCours){
+            repaint();
+        }
+
         //System.out.println("\n     *Update*");
     }
 

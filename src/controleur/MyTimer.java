@@ -3,7 +3,7 @@ package controleur;
 import java.time.Duration;
 import java.time.Instant;
 
-public class Timer {
+public class MyTimer {
 
     /**Le debut du timer**/
     private Instant startTimer;
@@ -17,7 +17,7 @@ public class Timer {
      * Le timer permet de gerer un decompte de temps
      * @param sec le temps que dure le timer <b>en secondes</b>
      */
-    public Timer(long sec){
+    public MyTimer(long sec){
         this.startTimer = Instant.now();
         this.time = sec;
     }
