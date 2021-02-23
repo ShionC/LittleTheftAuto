@@ -11,6 +11,12 @@ public class MyTimer {
     /**Le temps que le timer prends**/
     private long time;
 
+    /**Le debut de la pause**/
+    private Instant startPause;
+
+    /**Est en pause**/
+    private boolean pause;
+
 
     /**
      * Cree un timer qui se declanche des son initialisation.
@@ -20,8 +26,37 @@ public class MyTimer {
     public MyTimer(long sec){
         this.startTimer = Instant.now();
         this.time = sec;
+        this.pause = false;
     }
 
+
+    /**
+     * Met en pause le timer, le decompte ne se fait plus.
+     * <br/>Le timer peut etre repris par restart()
+     */
+    public void pause(){
+        this.pause = true;
+        this.startPause = Instant.now();
+    }
+
+    /**
+     * Reprends le timer apres une pause, au moment ou il est etait avant la pause.
+     */
+    public void restart(){
+        this.pause = false;
+        Instant restart = Instant.now();
+        long pause = Duration.between(this.startPause, restart).toSeconds();
+        this.startTimer = this.startTimer.plusSeconds(pause);//Ajoute la longueur de la pause au temps initial
+
+    }
+
+    /**
+     * Verifie si le timer est en pause
+     * @return true si le timer est en pause, false sinon
+     */
+    public boolean isPaused(){
+        return this.pause;
+    }
 
     /**
      * Renvoie la duree du timer
@@ -52,7 +87,12 @@ public class MyTimer {
      * @return true si le timer est termine, false sinon
      */
     public boolean isOver(){
-        Duration d = Duration.between(this.startTimer, Instant.now());
+        Duration d;
+        if(pause){
+            d = Duration.between(this.startTimer, this.startPause);
+        } else {
+            d = Duration.between(this.startTimer, Instant.now());
+        }
         return d.toSeconds() >= this.time;
     }
 
@@ -62,7 +102,13 @@ public class MyTimer {
      * @return le temps restant sous forme de Duration
      */
     public Duration getLeftoverTime(){
-        return Duration.between(Instant.now(), this.startTimer.plusSeconds(this.time));
+        Duration d;
+        if(pause){
+            d = Duration.between(this.startPause, this.startTimer.plusSeconds(this.time));
+        } else {
+            d = Duration.between(Instant.now(), this.startTimer.plusSeconds(this.time));
+        }
+        return d;
     }
 
     /**

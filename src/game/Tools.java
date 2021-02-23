@@ -197,4 +197,28 @@ public class Tools {
         }
         return str;
     }
+
+    /**
+     * Dessine un string sur un graphics de 2 couleurs superposees mais legerement decalees
+     * @param str le string a afficher
+     * @param x la position x sur l interface graphique
+     * @param y la position y sur l interface graphique
+     * @param g2 l interface graphique
+     * @param font Le style de string
+     * @param c1 La couleur du dessus
+     * @param c2 La couleur du dessous
+     */
+    public static void drawDoubleString(String str, int x, int y, Graphics2D g2, Font font, Color c1, Color c2){
+        Font oldFont = g2.getFont();
+        Color oldColor = g2.getColor();
+
+        g2.setFont(font);
+        g2.setColor(c2);
+        g2.drawString(str, x+1, y+1);
+        g2.setColor(c1);
+        g2.drawString(str, x, y);
+
+        g2.setColor(oldColor);
+        g2.setFont(oldFont);
+    }
 }

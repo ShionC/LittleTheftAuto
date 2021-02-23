@@ -1,6 +1,7 @@
 package vue;
 
 import controleur.Controleur;
+import game.Tools;
 import model.Route;
 import model.User;
 
@@ -25,6 +26,8 @@ public class Affichage extends JPanel {
 
     /**La partie est toujours en cours**/
     boolean partieEnCours;
+    /**La partie est mise en pause**/
+    boolean enPause;
 
     public Affichage(User user, Route route) {
         // Dimensions de la fenêtre
@@ -56,6 +59,28 @@ public class Affichage extends JPanel {
     }
 
     /**
+     * Met la partie en pause, arrete tous les threads necessaires et affiche l ecran de pause
+     */
+    public void pause(){
+        if(this.partieEnCours && ! this.enPause){
+            this.partieEnCours = false;
+            this.enPause = true;
+            this.update();
+        }
+    }
+
+    /**
+     * Reprends la partie pausee, enleve l ecran de pause
+     */
+    public void restart(){
+        if(! this.partieEnCours && this.enPause){
+            this.partieEnCours = true;
+            this.enPause = false;
+            this.update();
+        }
+    }
+
+    /**
      * Lie le controleur a l affichage. Se fait des l initialisation du controleur
      * @param ctrl le controleur
      */
@@ -64,21 +89,53 @@ public class Affichage extends JPanel {
     }
 
     /**
+     * Dessine l ecran de pause
+     * @param g2
+     */
+    private void drawPauseScreen(Graphics2D g2){
+        Font oldFont = g2.getFont();
+        String restart = "Reprendre la partie";
+        int yRestart = (Affichage.HAUTEUR/2)-100;
+        int xRestart = (Affichage.LARGEUR/2)-50;
+        String stop = "Arreter la partie";
+        int yStop = yRestart + 60;
+        int xStop = (Affichage.LARGEUR/2)-50;
+
+        Font font = new Font("Arial", Font.BOLD, 20);
+        Tools.drawDoubleString(restart, xRestart, yRestart, g2, font, Color.BLACK, Color.WHITE);
+        Tools.drawDoubleString(stop, xStop, yStop, g2, font, Color.BLACK, Color.WHITE);
+
+        int tailleOval = 30;
+        g2.setColor(Color.RED);
+        if(this.ctrl.getPauseChoice() == 1){
+            g2.fillOval(xRestart - tailleOval - 10, yRestart-20, tailleOval, tailleOval);
+        } else if(this.ctrl.getPauseChoice() == 2){
+            g2.fillOval(xStop - tailleOval - 10, yStop-20, tailleOval, tailleOval);
+        }
+
+        g2.setFont(oldFont);
+    }
+
+    /**
      * Fonction pour dessiner
      * @param g
      */
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        if(! this.partieEnCours){
-            g2.setColor(new Color(193, 191, 177, 100));
-            g2.fillRect(0, 0, Affichage.LARGEUR, Affichage.HAUTEUR);
-        } else {
+
             super.paint(g);
             super.revalidate();
             super.repaint();
             this.bmg.drawBackground(g2);
             this.vueUser.drawCar(g2);
             this.bmg.drawData(g2);
+
+        if(! this.partieEnCours){
+            g2.setColor(new Color(193, 191, 177, 100));
+            g2.fillRect(0, 0, Affichage.LARGEUR, Affichage.HAUTEUR);
+        }
+        if(! this.partieEnCours && this.enPause){
+            this.drawPauseScreen(g2);
         }
 
     }
@@ -87,8 +144,9 @@ public class Affichage extends JPanel {
      * Met a jour l affichage
      */
     public void update() {
+        repaint();
         if(this.partieEnCours){
-            repaint();
+            //Les updates
         }
 
         //System.out.println("\n     *Update*");
