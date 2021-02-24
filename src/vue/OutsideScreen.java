@@ -72,7 +72,6 @@ public class OutsideScreen  extends JPanel {
         JLabel l1 = new JLabel("<html><body><u>"+"Stats"+"</u></body></html>", JLabel.CENTER);
         l1.setFont(new Font("Arial",Font.BOLD,30));
         l1.setLocation((Affichage.LARGEUR/2)-20, 200);
-        //this.add(l1);
         this.stats.add(l1);
         Jstats.add(l1, c);
         l1.setVisible(true);
@@ -83,7 +82,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel l2 = new JLabel("Score actuel : ", JLabel.CENTER);
         l2.setFont(fontText);
-        //l2.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.stats.add(l2);
         Jstats.add(l2, c);
         i++;
@@ -91,15 +89,13 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i-1;
         JLabel l3 = new JLabel("Meilleur Score : ", JLabel.CENTER);
         l3.setFont(fontText);
-        //l3.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.stats.add(l3);
         Jstats.add(l3, c);
         i++;
         c.gridx = 1;
         c.gridy = i;
-        JLabel l4 = new JLabel("Nombre de points de controle depasses : ", JLabel.CENTER);
+        JLabel l4 = new JLabel("Nombre de points de controle dépassés : ", JLabel.CENTER);
         l4.setFont(fontText);
-        //l4.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.stats.add(l4);
         Jstats.add(l4, c);
         i++;
@@ -107,7 +103,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i-1;
         JLabel l5 = new JLabel("Nombre de points de controle maximal : ", JLabel.CENTER);
         l5.setFont(fontText);
-        //l5.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.stats.add(l5);
         Jstats.add(l5, c);
         i++;
@@ -115,7 +110,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel l6 = new JLabel("Nombre de parties jouees : ", JLabel.CENTER);
         l6.setFont(fontText);
-        //l4.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.stats.add(l6);
         Jstats.add(l6, c);
         i++;
@@ -123,15 +117,13 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel l7 = new JLabel("Duree de la partie : ", JLabel.CENTER);
         l7.setFont(fontText);
-        //l4.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.stats.add(l7);
         Jstats.add(l7, c);
         i++;
         c.gridx = 3;
         c.gridy = i-1;
-        JLabel l8 = new JLabel("Duree maximale d une partie : ", JLabel.CENTER);
+        JLabel l8 = new JLabel("Duree maximale d'une partie : ", JLabel.CENTER);
         l8.setFont(fontText);
-        //l5.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.stats.add(l8);
         Jstats.add(l8, c);
         i++;
@@ -139,7 +131,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel l9 = new JLabel("Temps de jeu : ", JLabel.CENTER);
         l9.setFont(fontText);
-        //l4.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.stats.add(l9);
         Jstats.add(l9, c);
         i++;
@@ -147,9 +138,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel c1 = new JLabel("Retour", JLabel.CENTER);
         c1.setFont(new Font("Arial",Font.BOLD,22));
-        //c1.setLocation((Affichage.LARGEUR/2)-20, 400);
-        c1.setIcon(null); //Pour laffichage de la selection
-        //this.add(c1);
         this.stats.add(c1);
         this.idxChoiceStats.add(i);
         Jstats.add(c1, c);
@@ -184,7 +172,6 @@ public class OutsideScreen  extends JPanel {
                 }
             }
 
-            //TODO modifier les string pour avoir les bonnes stats
             int i = 1;
             this.stats.get(i).setText("Score actuel : "+ Data.getCurrentScore());
             i++;
@@ -215,19 +202,18 @@ public class OutsideScreen  extends JPanel {
         int i = 0;
         c.gridy = i;
         JLabel l1 = new JLabel("<html><body><u>"+"Regles du jeu"+"</u></body></html>", JLabel.CENTER);
-        l1.setFont(new Font("Arial",Font.BOLD,20));
+        l1.setFont(new Font("Arial",Font.BOLD,30));
         l1.setLocation((Affichage.LARGEUR/2)-20, 200);
-        //this.add(l1);
         this.reglesDuJeu.add(l1);
         Jregles.add(l1, c);
         l1.setVisible(true);
         i++;
+        //Choix
         c.gridy = i;
         JLabel c1 = new JLabel("Retour", JLabel.CENTER);
         c1.setFont(new Font("Arial",Font.BOLD,20));
         c1.setLocation((Affichage.LARGEUR/2)-20, 400);
         c1.setIcon(null); //Pour laffichage de la selection
-        //this.add(c1);
         this.reglesDuJeu.add(c1);
         this.idxChoiceRegles.add(i);
         Jregles.add(c1, c);
@@ -242,14 +228,7 @@ public class OutsideScreen  extends JPanel {
         boolean draw = this.acc.regles;
         if(draw){
             cl.show(this, "Regles");
-            System.out.println("Draw regles");
         }
-        /*
-        for(JLabel l : this.reglesDuJeu){
-            l.setVisible(draw);
-        }
-
-         */
     }
 
     private void updateRegles(){
@@ -273,14 +252,14 @@ public class OutsideScreen  extends JPanel {
         int i = 0;
         c.gridy = i;
         JLabel l1 = new JLabel("<html><body><u>"+"Bienvenue dans Little Theft Auto !"+"</u></body></html>", JLabel.CENTER);
-        l1.setFont(new Font("Arial",Font.BOLD,20));
+        l1.setFont(new Font("Arial",Font.BOLD,30));
         this.firstScreen.add(l1);
         JfirstScreen.add(l1, c);
         i++;
+        //Choix
         c.gridy = i+3;
         JLabel c1 = new JLabel("Commencer une partie", JLabel.CENTER);
         c1.setFont(new Font("Arial",Font.BOLD,20));
-        c1.setIcon(null); //Pour laffichage de la selection
         this.firstScreen.add(c1);
         this.idxChoiceFirstScreen.add(i);
         JfirstScreen.add(c1, c);
@@ -288,7 +267,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i+3;
         JLabel c2 = new JLabel("Regles du jeu", JLabel.CENTER);
         c2.setFont(new Font("Arial",Font.BOLD,20));
-        c2.setIcon(null); //Pour laffichage de la selection
         this.firstScreen.add(c2);
         this.idxChoiceFirstScreen.add(i);
         JfirstScreen.add(c2, c);
@@ -296,7 +274,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i+3;
         JLabel c3 = new JLabel("Quitter", JLabel.CENTER);
         c3.setFont(new Font("Arial",Font.BOLD,20));
-        c3.setIcon(null); //Pour laffichage de la selection
         this.firstScreen.add(c3);
         this.idxChoiceFirstScreen.add(i);
         JfirstScreen.add(c3, c);
@@ -308,15 +285,7 @@ public class OutsideScreen  extends JPanel {
         boolean draw = this.acc.premierEcran && !this.acc.regles;
         if(draw){
             cl.show(this, "FirstScreen");
-            //cl.previous(this);
-            //cl.show(this, "Regles");
         }
-        /*
-        for(JLabel l : this.firstScreen){
-            l.setVisible(draw);
-        }
-
-         */
     }
 
     /**
@@ -343,15 +312,15 @@ public class OutsideScreen  extends JPanel {
         int i = 0;
         c.gridy = i;
         JLabel l1 = new JLabel("<html><body><u>"+"Partie terminee !"+"</u></body></html>", JLabel.CENTER);
-        l1.setFont(new Font("Arial",Font.BOLD,20));
+        l1.setFont(new Font("Arial",Font.BOLD,30));
         l1.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.endGame.add(l1);
         JendGame.add(l1, c);
         i++;
+        //Choix
         c.gridy = i;
         JLabel c1 = new JLabel("Nouvelle partie", JLabel.CENTER);
         c1.setFont(new Font("Arial",Font.BOLD,20));
-        c1.setLocation((Affichage.LARGEUR/2)-20, 400);
         this.endGame.add(c1);
         this.idxChoiceEndGame.add(i);
         JendGame.add(c1, c);
@@ -359,7 +328,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel c2 = new JLabel("Regles du jeu", JLabel.CENTER);
         c2.setFont(new Font("Arial",Font.BOLD,20));
-        c2.setLocation((Affichage.LARGEUR/2)-20, 450);
         this.endGame.add(c2);
         this.idxChoiceEndGame.add(i);
         JendGame.add(c2, c);
@@ -367,7 +335,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel c3 = new JLabel("Stats", JLabel.CENTER);
         c3.setFont(new Font("Arial",Font.BOLD,20));
-        c3.setLocation((Affichage.LARGEUR/2)-20, 450);
         this.endGame.add(c3);
         this.idxChoiceEndGame.add(i);
         JendGame.add(c3, c);
@@ -375,7 +342,6 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel c4 = new JLabel("Quitter", JLabel.CENTER);
         c4.setFont(new Font("Arial",Font.BOLD,20));
-        c4.setLocation((Affichage.LARGEUR/2)-20, 450);
         this.endGame.add(c4);
         this.idxChoiceEndGame.add(i);
         JendGame.add(c4, c);
@@ -388,12 +354,6 @@ public class OutsideScreen  extends JPanel {
         if(draw){
             cl.show(this, "EndGame");
         }
-        /*
-        for(JLabel l : this.endGame){
-            l.setVisible(draw);
-        }
-
-         */
     }
 
     private void updateEndGame(){
@@ -414,7 +374,6 @@ public class OutsideScreen  extends JPanel {
     private void draw(){
 
         CardLayout cl = (CardLayout) this.getLayout();
-        //System.out.println(cl.toString());
         this.drawFirstScreen(cl);
         this.drawRegles(cl);
         this.drawStats(cl);

@@ -101,42 +101,30 @@ public class Deplace extends Thread {
             //onRoad = true;
             if(obj.getVitesse()<obj.getVitesseMax()){
                 //Touver le bon point sur le segment de route
-                boolean modifier = true;
                 ArrayList<Point> listRoute = this.route.getRoute();
-                Point p1 = listRoute.get(0);
-                Point p2 = listRoute.get(1);
-                int i = 1;
-                while (obj.getPosY()<p2.y && i<listRoute.size()-1){
-                    if(i+1 >= listRoute.size()){  //Pour le cas des concurrents qui vont devant et peuvent sortir de Array
-                        modifier = false;
-                        break;
-                    } else if (modifier) {
-                        p1 = listRoute.get(i);
-                        if(i+1 >= listRoute.size()){  //Juste au cas ou
-                            System.out.println("Sortie de array");
-                        }
-                        p2 = listRoute.get(i+1);
-                    }
-
-                    i++;
-                }
-                i--; //Car on a fait +1 apres avoir change p1 et p2.
+                boolean modifier;
+                int i = Tools.findIdxFirstInfByY(new Point(obj.getPosX(), obj.getPosY()), listRoute);
+                i--; //Car on veux dernier point superieur
+                modifier = i>=0;
                 if( ! modifier){
                     modVit = 0;
                 } else {
+                    Point p1 = listRoute.get(i);
+                    Point p2 = listRoute.get(i+1);
                     ArrayList<Integer> listRange = this.aff.bmg.getRangeRoute();
                     if(listRange.size() == 0){
                         System.out.println("ListRange size == 0 !!!");
                     }
-                    int xMax = Tools.findX(obj.getPosY(), p2, p1); //Le centre de la route au niveau de User
-                    int xMin = Tools.findX(obj.getPosY(), new Point(p2.x-listRange.get(i),p2.y),
-                            new Point(p1.x-listRange.get(i+1),p1.y)); //Calcul par la gauche
-                    int rangeMax = xMax - xMin; //La distance maximale que user peut etre par rapport au centre de la route.
+                    int xCenter = Tools.findX(obj.getPosY(), p2, p1); //Le centre de la route au niveau de User
+                    int xLeft = Tools.findX(obj.getPosY(), new Point(p2.x-listRange.get(i),p2.y),
+                            new Point(p1.x-listRange.get(i+1),p1.y)); //Calcul par la gauche, le point sur le bord de la route
+                    int rangeMax = xCenter - xLeft; //La distance maximale que user peut etre par rapport au centre de la route.
 
                     double modVitMin = 1; //Lorsque la distance est maximale, la vitesse est minimale
 
                     float dist = (float) Tools.distance(new Point(obj.getPosX(),obj.getPosY()),
-                            new Point(xMax, obj.getPosY()));
+                            new Point(xCenter, obj.getPosY())); //La distance de user par rapport qu milieu de la route
+                    dist = rangeMax-dist; //La distance de user par rapport aux bordS
                     //Produit en croix
                     modVit = (modVitMin*dist)/(double) rangeMax;
 

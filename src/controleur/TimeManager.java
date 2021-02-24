@@ -83,11 +83,20 @@ public class TimeManager extends Thread {
     private void createNewPtCtrl(){
 
         double modVitesse = this.ctrl.deplace.modVitesse;
-        int distancePtCtrl = Tools.rangedRandomInt(10000, 15000); //Random
-        //En considerant la vitesse max de user et la modification de la vitesse appliquee selon la formule x = v*t
+        int distancePtCtrl = 0;
+        long timer = 0;
         double marge = 40; //La marge que on laisse a user pour qu il n ai pas besoin de toujours aller a vitesse max
-        long timer = (long) (distancePtCtrl/((User.vitesseMax - marge)*modVitesse)) + 2; //+2 sec bonus
-        int valueCtrl = distancePtCtrl;
+        long bonus = 2; //Bonus de temps
+        //En considerant la vitesse max de user et la modification de la vitesse appliquee selon la formule x = v*t
+        /*
+        distancePtCtrl = Tools.rangedRandomInt(10000, 15000); //Random
+        timer = (long) (distancePtCtrl/((User.vitesseMax - marge)*modVitesse)) + bonus; //+2 sec bonus
+         */
+        timer = Tools.rangedRandomInt(15, 45); //Random
+        distancePtCtrl = (int) Math.round(((User.vitesseMax - marge)*modVitesse) * timer);
+        timer += bonus; //+2 sec bonus
+
+        int valueCtrl = distancePtCtrl/100; //Facteur arbitraire
 
         this.route.newPtControle(distancePtCtrl, valueCtrl);
         this.timerPtCtrl = new MyTimer(timer);

@@ -119,11 +119,6 @@ public class Accueil implements KeyListener {
      *<br/><u>Choix 1 :</u> Revenir sur l ecran d acceuil
      */
     private void actionChoice(){
-        if(this.premierEcran == false){
-            System.out.println("Go to endGame screen");
-            //this.goToAccueil();
-
-        }
         if(this.endGame){
             if(this.currentChoice == 1){
                 this.ctrl.newPartie();
@@ -139,7 +134,6 @@ public class Accueil implements KeyListener {
         } else if(this.premierEcran && !this.regles){
             if(this.currentChoice == 1){
                 this.premierEcran = false;
-                //this.ctrl.newPartie();
                 this.ctrl.startPartie();
             } else if(this.currentChoice == 2){
                 this.goToRegles();
@@ -163,26 +157,26 @@ public class Accueil implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        System.out.println("Key typed Accueil");
+        //System.out.println("Key typed Accueil");
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Key pressed Accueil");
+        //System.out.println("Key pressed Accueil");
         if(e.getKeyCode() == KeyEvent.VK_UP){
-            System.out.println("UP");
+            //System.out.println("UP");
             this.nextChoice(false);
         }
         if(e.getKeyCode() == KeyEvent.VK_DOWN){
-            System.out.println("DOWN");
+            //System.out.println("DOWN");
             this.nextChoice(true);
         }
         if(e.getKeyCode() == KeyEvent.VK_ENTER){
-            System.out.println("ENTER");
+            //System.out.println("ENTER");
             this.actionChoice();
         }
-        System.out.println("Current choice = "+this.currentChoice);
-        System.out.println("Max choice = "+this.nbChoix);
+        //System.out.println("Current choice = "+this.currentChoice);
+        //System.out.println("Max choice = "+this.nbChoix);
     }
 
     @Override

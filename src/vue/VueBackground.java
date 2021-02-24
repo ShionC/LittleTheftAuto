@@ -498,16 +498,7 @@ public class VueBackground {
     public void drawData(Graphics2D g2){
         Font oldFont = g2.getFont();
 
-        String str1 = "Vitesse m/s : "+ Math.round((long)this.aff.user.getVitesse());
-        String str2 = "Kilometrage : "+Tools.toStringInt(Data.getCurrentKilometrage());
-        String temps = "Temps restant";
-        String timer;
-        MyTimer timerPtCtrl = this.aff.ctrl.getTimerPtCtrl();
-        if(timerPtCtrl.getLeftoverTime().isNegative()){
-            timer = "00";
-        } else {
-            timer = timerPtCtrl.toString();
-        }
+
         String score = "Score : ";
         String scoreVal = Tools.toStringInt(Data.getCurrentScore());
         Color c1 = Color.BLACK;
@@ -524,35 +515,22 @@ public class VueBackground {
         }
 
 
+        String str1 = "Vitesse m/s : "+ Math.round((long)this.aff.user.getVitesse());
+        String str2 = "Kilometrage : "+Tools.toStringInt(Data.getCurrentKilometrage());
+        String temps = "Temps restant";
+        String timer;
+        MyTimer timerPtCtrl = this.aff.ctrl.getTimerPtCtrl();
+        if(timerPtCtrl.getLeftoverTime().isNegative()){
+            timer = "00";
+        } else {
+            timer = timerPtCtrl.toString();
+        }
+
         Tools.drawDoubleString(temps, Affichage.LARGEUR - 154, Affichage.HAUTEUR-159, g2, font, c1, c2);
         Tools.drawDoubleString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139, g2, font, c1, c2);
         Tools.drawDoubleString(str1, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99, g2, font, c1, c2);
         Tools.drawDoubleString(str2, Affichage.LARGEUR - 189, Affichage.HAUTEUR-59, g2, font, c1, c2);
-/*
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Arial", Font.BOLD, 20));
 
-        g2.drawString(score, Affichage.LARGEUR-90, 40);
-        g2.drawString(scoreVal, Affichage.LARGEUR-90, 80);
-
-        g2.drawString(temps, Affichage.LARGEUR - 154, Affichage.HAUTEUR-159);
-        g2.drawString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139);
-        g2.drawString(str1, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99);
-        g2.drawString(str2, Affichage.LARGEUR - 189, Affichage.HAUTEUR-59);
-
-        //Reecrit tout avec x et y +1, pour un effet de decalage pour mieux voir
-        g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Arial", Font.BOLD, 20));
-
-        g2.drawString(score, Affichage.LARGEUR-91, 41);
-        g2.drawString(scoreVal, Affichage.LARGEUR-91, 81);
-
-        g2.drawString(temps, Affichage.LARGEUR - 155, Affichage.HAUTEUR-160);
-        g2.drawString(timer, Affichage.LARGEUR - 100, Affichage.HAUTEUR-140);
-        g2.drawString(str1, Affichage.LARGEUR - 205, Affichage.HAUTEUR-100);
-        g2.drawString(str2, Affichage.LARGEUR - 190, Affichage.HAUTEUR-60);
-
- */
 
         g2.setFont(oldFont);
     }
