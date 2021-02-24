@@ -155,8 +155,11 @@ public class Deplace extends Thread {
             //onRoad = false;
             obj.isOnRoad = false;
             //System.out.println("Out of Road");
-            if(obj.getVitesse()>0){
-                modVit = -1;
+            double decceleration = 3;
+            if(obj.getVitesse()>=decceleration){
+                modVit = -decceleration;
+            } else {
+                modVit = -(decceleration- obj.getVitesse());
             }
 
         }

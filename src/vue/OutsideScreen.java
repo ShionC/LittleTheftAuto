@@ -240,17 +240,20 @@ public class OutsideScreen  extends JPanel {
         this.reglesDuJeu.add(l3);
         Jregles.add(l3, c);
         i++;
+        //ImageIcon arrows = new ImageIcon(((new ImageIcon("src/Sprites/left_right_keys.png")).getImage()).getScaledInstance(80, 50, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon arrows2 = new ImageIcon(((new ImageIcon("src/Sprites/ArrowLeftRight.png")).getImage()).getScaledInstance(85, 60, java.awt.Image.SCALE_SMOOTH));
         c.gridy = i;
-        JLabel l4 = new JLabel("Allez sur la route pour accélérer !", JLabel.CENTER);
+        JLabel l4 = new JLabel("Pour déplacer votre véhicule sur le côté, utilisez les touches du clavier", JLabel.CENTER);
         l4.setFont(fontText);
+        l4.setIcon(arrows2);
         this.reglesDuJeu.add(l4);
         Jregles.add(l4, c);
         i++;
-        ImageIcon arrows = new ImageIcon(((new ImageIcon("src/Sprites/left_right_keys.png")).getImage()).getScaledInstance(80, 50, java.awt.Image.SCALE_SMOOTH));
         c.gridy = i;
-        JLabel l5 = new JLabel("Pour déplacer votre véhicule sur le côté, utilisez les touches du clavier", JLabel.CENTER);
+        ImageIcon speedControl = new ImageIcon(((new ImageIcon("src/Sprites/speed_control.png")).getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH));
+        JLabel l5 = new JLabel("Restez sur la route pour accélérer !", JLabel.CENTER);
         l5.setFont(fontText);
-        l5.setIcon(arrows);
+        l5.setIcon(speedControl);
         this.reglesDuJeu.add(l5);
         Jregles.add(l5, c);
         i++;
@@ -348,6 +351,7 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel celine = new JLabel("Céline YAN", JLabel.CENTER);
         celine.setFont(fontText);
+        celine.setIcon(imgCredit);
         this.credits.add(celine);
         Jcredits.add(celine, c);
         i++;
@@ -532,9 +536,9 @@ public class OutsideScreen  extends JPanel {
                 ImageIcon skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
                 this.endGame.get(1).setIcon(skull);
                 if(this.acc.typeGameOver == 1){
-                    this.endGame.get(1).setText("Un pneu crevé ? Vous vous êtes arreté");
+                    this.endGame.get(1).setText("Vous vous êtes arreté. Vous avez un pneu crevé ?");
                 } else if(this.acc.typeGameOver == 2){
-                    this.endGame.get(1).setText("Le timer est fini, il faudra être plus rapide la prochaine fois !");
+                    this.endGame.get(1).setText("Votre temps est épuisé, il faudra être plus rapide la prochaine fois !");
                 }
             } else {
                 this.endGame.get(1).setIcon(null);

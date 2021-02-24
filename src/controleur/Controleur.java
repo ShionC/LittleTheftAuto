@@ -1,5 +1,6 @@
 package controleur;
 
+import game.Tools;
 import model.Data;
 import model.Route;
 import model.User;
@@ -7,9 +8,11 @@ import vue.Affichage;
 import vue.VueUser;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 public class Controleur implements KeyListener {
 
@@ -34,7 +37,7 @@ public class Controleur implements KeyListener {
     /**La partie est mise en pause**/
     boolean enPause;
 
-    private int pauseChoice = 0;
+    private int pauseChoice = 1;
 
     /**True si on a commence une partie. False si on est sur un ecran d acceuil**/
     public boolean inPartie;
@@ -100,6 +103,7 @@ public class Controleur implements KeyListener {
             this.timeManager.getTimerPtCtrl().pause();
             this.aff.endPartie();
             this.user.stopRun();
+            this.keyCont.setDir(KeyContinue.Direction.NOTHING);
             //Arreter les concurrents
             Data.push();
             this.accueil.goToAccueil();
@@ -118,7 +122,7 @@ public class Controleur implements KeyListener {
         this.timeManager.startPartie();
         this.user.start();
         this.aff.startPartie();
-        this.pauseChoice = 0;
+        this.pauseChoice = 1;
         Data.newPartie();
     }
 
@@ -156,14 +160,23 @@ public class Controleur implements KeyListener {
         if(! this.partieEnCours && this.enPause){
             this.partieEnCours = true;
             this.enPause = false;
-            this.pauseChoice = 0;
+            this.pauseChoice = 1;
             this.timeManager.getTimerPtCtrl().resume();
             this.aff.restart();
             Data.resumePartie();
         }
     }
 
-
+    /**
+     * Fait renaitre user sur le milieu de la route avec une certaine vitesse.
+     * <br/>Enleve 1 au nombre de vie;
+     */
+    private void rebirth(){
+        //this.vieRestante--;
+        ArrayList<Point> listRoute = this.route.getRoute();
+        int i = Tools.findIdxFirstInfByY(new Point(this.user.getPosX(), this.user.getPosY()), listRoute);
+        this.user.rebirth(Tools.findX(this.user.getPosY(), listRoute.get(i-1), listRoute.get(i)));
+    }
 
     /**
      * Selectionne le choix suivant dans le menu pause

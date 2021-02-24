@@ -304,6 +304,7 @@ public class VueBackground {
      * <br/>Initialise egalement le type de nuage par un nombre de 0 a n (n le nb de dessins) enregistre dans cloudType
      */
     void initClouds(){
+        this.clouds.clear();
         //Nombre de nuages
         int nb_clouds = Tools.rangedRandomInt(5,10);
         //Nombre de types de nuages

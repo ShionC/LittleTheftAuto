@@ -25,7 +25,7 @@ public class Affichage extends JPanel {
     //private static final Dimension dimEcran = Toolkit.getDefaultToolkit().getScreenSize();
     private static Rectangle dimEcran = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
-    public static final int LARGEUR = dimEcran.width;  //800;
+    public static final int LARGEUR = dimEcran.width-100;  //800;
     public static final int HAUTEUR = dimEcran.height;  //650; //Ou 800, mais c est trop grand pour l ecran de Mathilde
 
     public JFrame fenetre;
@@ -71,7 +71,8 @@ public class Affichage extends JPanel {
             File m = new File("src/Sprites/curseur.png");
             this.curseur = ImageIO.read(m);
             this.curseur = Tools.deepCopy(this.curseur);
-            this.curseur = Tools.scaleBI(this.curseur, 0.05, 0.05);
+            //this.curseur = Tools.scaleBI(this.curseur, 0.05, 0.05);
+            this.curseur = Tools.getResizedImage(this.curseur, 20, 20);
             File m2 = new File("src/Sprites/pauseButton.png");
             this.pauseButton = ImageIO.read(m2);
             this.pauseButton = Tools.scaleBI(this.pauseButton, 0.5, 0.5);

@@ -80,6 +80,18 @@ public class User extends Thread {
         return vitesseMax;
     }
 
+
+    /**
+     * Reinitialise User
+     * @param newPosX La position de user sur l axe x lors de sa renaissance. Si possible sur la route
+     */
+    public void rebirth(int newPosX){
+        this.vitesse = 20;
+        this.posX = newPosX;
+        this.inertie = 0;
+        this.etat = 0;
+    }
+
     /**
      * Modifie la vitesse de User en lui ajoutant la nouvelle vitesse
      * La nouvelle vitesse est comprise entre [0, vitesseMax]
