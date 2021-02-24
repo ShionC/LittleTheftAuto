@@ -42,12 +42,15 @@ public class MyTimer {
     /**
      * Reprends le timer apres une pause, au moment ou il est etait avant la pause.
      */
-    public void restart(){
-        this.pause = false;
-        Instant restart = Instant.now();
-        long pause = Duration.between(this.startPause, restart).toSeconds();
-        this.startTimer = this.startTimer.plusSeconds(pause);//Ajoute la longueur de la pause au temps initial
-
+    public void resume(){
+        if(!this.pause){
+            throw new RuntimeException("Timer not paused");
+        } else {
+            this.pause = false;
+            Instant restart = Instant.now();
+            long pause = Duration.between(this.startPause, restart).toSeconds();
+            this.startTimer = this.startTimer.plusSeconds(pause);//Ajoute la longueur de la pause au temps initial
+        }
     }
 
     /**

@@ -1,5 +1,7 @@
 package model;
 
+import controleur.Chrono;
+
 import java.time.Duration;
 import java.time.Instant;
 
@@ -18,18 +20,22 @@ public class Data {
 
     /**Le nombre de points de controles passes**/
     private static int currentNbCtrlPt = 0;
+    /**La distance parcourue sur la partie en cours**/
+    private static int currentKilometrage = 0;
+    /**Le kilometrage max atteint**/
+    private static int highestKilometrage = 0;
+
 
     /**Le debut du jeu**/
-    private static Instant startGame;
+    private static Chrono game;
 
     /**Le debut de la partie**/
-    private static Instant startPartie;
-    /**La duree jouee**/
-    private static Duration durationGame;
+    private static Chrono partie;
     /**Le plus grand temps passe sur une partie**/
     private static Duration highestDurationPartie;
-    /**Le temps de la partie en cours**/
-    private static Duration currentDurationPartie;
+
+    /**Une partie est en cours**/
+    private static boolean inPartie;
 
     public Data(){
 
@@ -39,11 +45,11 @@ public class Data {
      * Compare les data de la partie en cours avec les meilleurs, et met a jour les statistiques
      */
     public static void push(){
-        currentDurationPartie = Duration.between(startPartie, Instant.now());
+        partie.stop();
+        Duration currentDurationPartie = partie.getElapsedTime();
         if(currentDurationPartie.compareTo(highestDurationPartie)>0){
             highestDurationPartie = currentDurationPartie;
         }
-        durationGame = Duration.between(startGame, Instant.now());
 
         if(currentScore>highestScore){
             highestScore = currentScore;
@@ -51,6 +57,11 @@ public class Data {
         if(currentNbCtrlPt>highestNbCtrlPt){
             highestNbCtrlPt = currentNbCtrlPt;
         }
+
+        if(currentKilometrage > highestKilometrage){
+            highestKilometrage = currentKilometrage;
+        }
+        inPartie = false;
     }
 
     /**
@@ -58,20 +69,22 @@ public class Data {
      */
     public static void newPartie(){
         nbParties ++;
-        startPartie = Instant.now();
+        partie = new Chrono();
+        partie.start();
         currentScore = 0;
         currentNbCtrlPt = 0;
+        inPartie = true;
     }
 
     /**
      * Initialise le jeu. N est utilise qu une seule fois lors du lancement du jeu
      */
     public static void initGame(){
-        startGame = Instant.now();
-        startPartie = Instant.now();
+        game = new Chrono();
+        game.start();
         highestDurationPartie = Duration.between(Instant.now(),Instant.now());
-        currentDurationPartie = Duration.between(Instant.now(),Instant.now());
-        nbParties = 1;
+        nbParties = 0;
+        inPartie = false;
     }
 
     /***
@@ -79,6 +92,9 @@ public class Data {
      * @return
      */
     public static int getHighestScore(){
+        if(currentScore>highestScore){
+            highestScore = currentScore;
+        }
         return highestScore;
     }
 
@@ -130,6 +146,45 @@ public class Data {
     }
 
     /**
+     * Defini le kilometrage de la partie actuelle
+     * @param metrage
+     */
+    public static void setCurrentKilometrage(int metrage){
+        currentKilometrage = metrage;
+    }
+
+    /**
+     * Renvoie le kilometrage de la partie actuelle
+     * @return
+     */
+    public static int getCurrentKilometrage() {
+        return currentKilometrage;
+    }
+
+    /**
+     * Renvoie le kilometrage maximal atteint lors d une partie
+     * @return
+     */
+    public static int getHighestKilometrage() {
+        return highestKilometrage;
+    }
+
+    /**
+     * Met en pause le calcul de temps de la partie
+     */
+    public static void pausePartie(){
+        partie.pause();
+    }
+
+    /**
+     * Reprends le calcul de temps de la partie
+     */
+    public static void resumePartie(){
+        partie.resume();
+    }
+
+
+    /**
      * Renvoie plus grand temps qu a dure une partie
      * @return
      */
@@ -142,7 +197,7 @@ public class Data {
      * @return
      */
     public static Duration getCurrentDurationPartie() {
-        return currentDurationPartie;
+        return partie.getElapsedTime();
     }
 
     /**
@@ -150,6 +205,6 @@ public class Data {
      * @return
      */
     public static Duration getDurationGame() {
-        return durationGame;
+        return game.getElapsedTime();
     }
 }

@@ -1,7 +1,6 @@
 package game;
 
 import controleur.Controleur;
-import controleur.Deplace;
 import model.Data;
 import model.Route;
 import model.User;
@@ -13,7 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.time.Instant;
 
 class Main {
 
@@ -61,7 +59,7 @@ class Main {
         Route route = new Route();
         User user = new User();
 
-        Affichage affichage = new Affichage(user, route);
+        Affichage affichage = new Affichage(fenetre, user, route);
         Controleur ctrl = new Controleur(affichage, user, route);
         //ctrl.setAffichage(affichage);
         //ctrl.setCmds();
@@ -69,10 +67,12 @@ class Main {
 
         //deplace.start();//Voir qui le lance, en fonction de si il y a une fenetre de demarage ou pas
         Data.initGame();
-        user.start(); //Redresse constament user (etat = 0)
 
-        fenetre.add(affichage);
+        //fenetre.add(affichage);
+        //fenetre.add(affichage.outScreen);
+        affichage.switchInteface(false);
 
+        //ctrl.startPartie(); //Pas d ecran dacceuil
         /*
 
         Voler fly = new Voler();

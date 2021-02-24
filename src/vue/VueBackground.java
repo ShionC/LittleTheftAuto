@@ -142,9 +142,10 @@ public class VueBackground {
 
     /**
      * Cree la forme de la route et met a jour rangeRoute
-     * <br/>Met aussi a jour this.route
+     * <br/>Met aussi a jour this.route qui donne la forme de la route
+     * <br/>A initialiser lors d un changement de la Route, pour eviter de conserver l ancienne
      */
-    private void setShapeRoute(){
+    void setShapeRoute(){
 
         float rangeInit = 100; //Lorsque y=Affichage.HAUTEUR alors de chaque cote de la route il y a cette valeur
         ArrayList<Point> list = this.aff.route.getRoute();
@@ -302,7 +303,7 @@ public class VueBackground {
      * Initialise la position et le nombre de nuages de facon aleatoire enregiste dans clouds
      * <br/>Initialise egalement le type de nuage par un nombre de 0 a n (n le nb de dessins) enregistre dans cloudType
      */
-    private void initClouds(){
+    void initClouds(){
         //Nombre de nuages
         int nb_clouds = Tools.rangedRandomInt(5,10);
         //Nombre de types de nuages
@@ -317,6 +318,13 @@ public class VueBackground {
             this.clouds.add(random_point);
             this.cloudTypes.add(Tools.rangedRandomInt(0, nb_cloudTypes));
         }
+    }
+
+    /**
+     * Reinitialise la liste des obstacles
+     */
+    void initObstacles(){
+        this.listObstacles.clear();
     }
 
     /**
@@ -491,7 +499,7 @@ public class VueBackground {
         Font oldFont = g2.getFont();
 
         String str1 = "Vitesse m/s : "+ Math.round((long)this.aff.user.getVitesse());
-        String str2 = "Kilometrage : "+Tools.toStringInt(this.aff.route.getKilometrage());
+        String str2 = "Kilometrage : "+Tools.toStringInt(Data.getCurrentKilometrage());
         String temps = "Temps restant";
         String timer;
         MyTimer timerPtCtrl = this.aff.ctrl.getTimerPtCtrl();
@@ -502,7 +510,25 @@ public class VueBackground {
         }
         String score = "Score : ";
         String scoreVal = Tools.toStringInt(Data.getCurrentScore());
+        Color c1 = Color.BLACK;
+        Color c2 = Color.WHITE;
+        Font font = new Font("Arial", Font.BOLD, 20);
 
+        if(Data.getCurrentScore()>=Data.getHighestScore() && Data.getCurrentScore() != 0){
+            Color gold = new Color(255, 215, 0);
+            Tools.drawDoubleString(score, Affichage.LARGEUR-90, 40, g2, font, gold, Color.BLACK);
+            Tools.drawDoubleString(scoreVal, Affichage.LARGEUR-90, 80, g2, font, gold, Color.BLACK);
+        } else {
+            Tools.drawDoubleString(score, Affichage.LARGEUR-90, 40, g2, font, c1, c2);
+            Tools.drawDoubleString(scoreVal, Affichage.LARGEUR-90, 80, g2, font, c1, c2);
+        }
+
+
+        Tools.drawDoubleString(temps, Affichage.LARGEUR - 154, Affichage.HAUTEUR-159, g2, font, c1, c2);
+        Tools.drawDoubleString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139, g2, font, c1, c2);
+        Tools.drawDoubleString(str1, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99, g2, font, c1, c2);
+        Tools.drawDoubleString(str2, Affichage.LARGEUR - 189, Affichage.HAUTEUR-59, g2, font, c1, c2);
+/*
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
 
@@ -525,6 +551,8 @@ public class VueBackground {
         g2.drawString(timer, Affichage.LARGEUR - 100, Affichage.HAUTEUR-140);
         g2.drawString(str1, Affichage.LARGEUR - 205, Affichage.HAUTEUR-100);
         g2.drawString(str2, Affichage.LARGEUR - 190, Affichage.HAUTEUR-60);
+
+ */
 
         g2.setFont(oldFont);
     }

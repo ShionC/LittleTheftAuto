@@ -1,5 +1,6 @@
 package controleur;
 
+import model.Data;
 import model.Obstacle;
 import vue.Affichage;
 
@@ -195,6 +196,7 @@ public class Deplace extends Thread {
                 //Application de la modification de la position
                 //Deplace les diff objets
                 this.route.moveRoute(modPos*modVitesse);
+                Data.setCurrentKilometrage(this.route.getKilometrage());
 
                 //Decors
                 if(this.user.getPosX() > 50 && this.user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR-50){

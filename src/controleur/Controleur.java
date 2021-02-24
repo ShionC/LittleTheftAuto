@@ -19,6 +19,8 @@ public class Controleur implements KeyListener {
     User user;
     Route route;
 
+    public Accueil accueil;
+
     TimeManager timeManager;
     Deplace deplace;
 
@@ -33,6 +35,9 @@ public class Controleur implements KeyListener {
     boolean enPause;
 
     private int pauseChoice = 0;
+
+    /**True si on a commence une partie. False si on est sur un ecran d acceuil**/
+    public boolean inPartie;
 
 
     // ********************************** 2) Constructeur **********************************
@@ -50,8 +55,11 @@ public class Controleur implements KeyListener {
         this.aff.setControleur(this);
         this.aff.addKeyListener(this);
 
-        this.partieEnCours = true;
+        this.partieEnCours = false;
         this.enPause = false;
+
+        this.accueil = new Accueil(this);
+        this.inPartie = false;
 
         this.keyCont = new KeyContinue(this);
         this.keyCont.start();
@@ -85,9 +93,41 @@ public class Controleur implements KeyListener {
             this.enPause = false; //La fin de partie n est pas une pause
             this.timeManager.getTimerPtCtrl().pause();
             this.aff.endPartie();
+            this.user.stopRun();
+            //Arreter les concurrents
             Data.push();
+            this.accueil.goToAccueil();
+            this.aff.switchInteface(false);
 
     }
+
+    /**
+     * Commence la partie, sors de l ecran d accueil.
+     * Commence le thread de user
+     */
+    public void startPartie(){
+        this.aff.switchInteface(true);
+        this.partieEnCours = true;
+        this.enPause = false;
+        this.user.start();
+        this.aff.startPartie();
+        this.pauseChoice = 0;
+        Data.newPartie();
+    }
+
+    /**
+     * Commence une nouvelle partie :
+     * Defini une nouvelle Route, un nouveau User, et reinitialise tous les elements de decors
+     */
+    public void newPartie(){
+        this.user = new User();
+        this.route = new Route();
+        this.aff.newPartie(this.user, this.route);
+        this.deplace.newPartie();
+        this.timeManager.newPartie();
+    }
+
+
 
     /**
      * Met la partie en pause, pause tous les controleurs et indique a l affichage la pause
@@ -98,18 +138,21 @@ public class Controleur implements KeyListener {
             this.enPause = true;
             this.timeManager.getTimerPtCtrl().pause();
             this.aff.pause();
+            Data.pausePartie();
         }
     }
 
     /**
      * Reprends la partie pausee et l indique a l affichage
      */
-    public void restart(){
+    public void resume(){
         if(! this.partieEnCours && this.enPause){
             this.partieEnCours = true;
             this.enPause = false;
-            this.timeManager.getTimerPtCtrl().restart();
+            this.pauseChoice = 0;
+            this.timeManager.getTimerPtCtrl().resume();
             this.aff.restart();
+            Data.resumePartie();
         }
     }
 
@@ -156,11 +199,13 @@ public class Controleur implements KeyListener {
      */
     private void actionPauseChoice(){
         if(this.pauseChoice == 1){
-            this.restart();
+            this.resume();
         } else if(this.pauseChoice == 2){
             this.endPartie();
         }
     }
+
+
 
 
     /**
@@ -225,13 +270,13 @@ public class Controleur implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-            System.out.println("Key typed");
+            System.out.println("Key typed Ctrl");
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
             System.out.println("Mettre en pause");
             if(! this.enPause){
                 this.pause();
             } else {
-                this.restart();
+                this.resume();
             }
         }
 
@@ -260,7 +305,7 @@ public class Controleur implements KeyListener {
         }
 
         if(e.getKeyCode() == KeyEvent.VK_UP){
-            System.out.println("UP");
+            //System.out.println("UP");
         }
 
         //Pause
@@ -269,7 +314,7 @@ public class Controleur implements KeyListener {
             if(! this.enPause){
                 this.pause();
             } else {
-                this.restart();
+                this.resume();
             }
         }
 

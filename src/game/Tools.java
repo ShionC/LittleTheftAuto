@@ -1,5 +1,6 @@
 package game;
 
+import javax.swing.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Random;
@@ -196,6 +197,20 @@ public class Tools {
             str = rest + "M";
         }
         return str;
+    }
+
+    /**
+     * Transforme une ImageIcon en BufferedImage
+     * @param img l ImageIcon
+     * @return
+     */
+    public static BufferedImage imageIconToBuffImage(ImageIcon img){
+        BufferedImage bi = new BufferedImage(img.getIconWidth(), img.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics g = bi.createGraphics();
+        //paint the Icon to the BufferedImage.
+        img.paintIcon(null, g, 0,0);
+        g.dispose();
+        return bi;
     }
 
     /**
