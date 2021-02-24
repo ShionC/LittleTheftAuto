@@ -21,8 +21,12 @@ public class Affichage extends JPanel {
     // ********************************** 1) Attributs **********************************
 
     // Largeur et longueur de la fenêtre
-    public static final int LARGEUR = 800;
-    public static final int HAUTEUR = 650; //Ou 800, mais c est trop grand pour l ecran de Mathilde
+
+    //private static final Dimension dimEcran = Toolkit.getDefaultToolkit().getScreenSize();
+    private static Rectangle dimEcran = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+
+    public static final int LARGEUR = dimEcran.width;  //800;
+    public static final int HAUTEUR = dimEcran.height;  //650; //Ou 800, mais c est trop grand pour l ecran de Mathilde
 
     public JFrame fenetre;
 
@@ -45,6 +49,7 @@ public class Affichage extends JPanel {
     public Affichage(JFrame fenetre, User user, Route route) {
         this.fenetre = fenetre;
         // Dimensions de la fenêtre
+
         this.setPreferredSize(new Dimension(LARGEUR, HAUTEUR));
 
         this.user = user;

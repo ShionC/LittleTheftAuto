@@ -4,6 +4,7 @@ import vue.OutsideScreen;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 
 public class Accueil implements KeyListener {
 
@@ -18,20 +19,19 @@ public class Accueil implements KeyListener {
      * **/
     public int typeGameOver;
 
-    /**
-     * Affiche l ecran de fin de jeu, pas les stats
-     */
-    public boolean endGame = false;
 
-    public boolean firstScreen;
+    public String keyEndGame = "EndGame";
+    public String keyFirstScreen = "FirstScreen";
+    public String keyStats = "Stats";
+    public String keyRegles = "Regles";
+    public String keyCredits = "Credits";
+
+
+    public HashMap<String, Boolean> menus = new HashMap<>();
+
     /**Si l ecran d accueil du debut du jeu est toujours valable**/
     public boolean premierEcan;
 
-    public boolean regles = false;
-
-    public boolean stats = false;
-
-    public boolean credits = false;
 
     /**Le nombre de choix disponibles a l ecran**/
     private int nbChoix;
@@ -42,11 +42,19 @@ public class Accueil implements KeyListener {
         this.ctrl = ctrl;
         this.outScreen = this.ctrl.aff.outScreen;
 
-        this.firstScreen = true;
         this.premierEcan = true;
         this.currentChoice = 1;
+
+        //Init menus
+        this.menus.put(keyRegles, false);
+        this.menus.put(keyStats, false);
+        this.menus.put(keyFirstScreen, true);
+        this.menus.put(keyEndGame, false);
+        this.menus.put(keyCredits, false);
+
         this.outScreen.addKeyListener(this);
         this.outScreen.setAccueil(this);
+
 
         this.goToFirstScreen();
     }
@@ -60,36 +68,37 @@ public class Accueil implements KeyListener {
         return this.currentChoice;
     }
 
+    /**
+     * Met a true le menu correspondant a key dans la HashMap, et false les autres
+     * @param key le string correspondant a la cle de modification du menu
+     */
+    private void selectMenu(String key){
+        for (String i : this.menus.keySet()) {
+            this.menus.put(i, false);
+        }
+        this.menus.put(key, true);
+    }
+
 
     /**
      * Update la vue de l acceuil pour la faire arriver a la fin de la partie.
      */
     public void goToAccueil(){
-        this.endGame = true;
-        this.firstScreen = false;
-        this.stats = false;
-        this.regles = false;
-        this.credits = false;
+        this.selectMenu(keyEndGame);
         this.currentChoice = 1;
-        this.nbChoix = 4;
+        this.nbChoix = 5;
         this.outScreen.update();
     }
 
     public void goToStats(){
-        this.stats = true;
-        this.firstScreen = false;
-        this.endGame = false;
-        this.regles = false;
+        this.selectMenu(keyStats);
         this.currentChoice = 1;
         this.nbChoix = 1;
         this.outScreen.update();
     }
 
     public void goToRegles(){
-        this.regles = true;
-        this.firstScreen = false;
-        this.endGame = false;
-        this.stats = false;
+        this.selectMenu(keyRegles);
         this.currentChoice = 1;
         this.nbChoix = 1;
         this.outScreen.update();
@@ -100,18 +109,18 @@ public class Accueil implements KeyListener {
      */
     public void goToFirstScreen(){
         if(this.premierEcan){
-            this.firstScreen = true;
-            this.endGame = false;
-            this.stats = false;
-            this.regles = false;
+            this.selectMenu(keyFirstScreen);
             this.currentChoice = 1;
-            this.nbChoix = 3;
+            this.nbChoix = 4;
             this.outScreen.update();
         }
     }
 
     public void goToCredits(){
-
+        this.selectMenu(keyCredits);
+        this.currentChoice = 1;
+        this.nbChoix = 1;
+        this.outScreen.update();
     }
 
     /**
@@ -144,7 +153,7 @@ public class Accueil implements KeyListener {
      *<br/><u>Choix 1 :</u> Revenir sur l ecran d acceuil
      */
     private void actionChoice(){
-        if(this.endGame){
+        if(this.menus.get(keyEndGame)){
             if(this.currentChoice == 1){
                 this.ctrl.newPartie();
                 this.ctrl.startPartie();
@@ -153,21 +162,24 @@ public class Accueil implements KeyListener {
             } else if(this.currentChoice == 3){
                 this.goToStats();
             } else if(this.currentChoice == 4){
+                this.goToCredits();
+            } else if(this.currentChoice == 5){
                 this.ctrl.aff.fenetre.dispose();
                 System.exit(0);
             }
-        } else if(this.firstScreen && this.premierEcan){
+        } else if(this.menus.get(keyFirstScreen) && this.premierEcan){
             if(this.currentChoice == 1){
-                this.firstScreen = false;
                 this.premierEcan = false;
                 this.ctrl.startPartie();
             } else if(this.currentChoice == 2){
                 this.goToRegles();
             } else if(this.currentChoice == 3){
+                this.goToCredits();
+            } else if(this.currentChoice == 4){
                 this.ctrl.aff.fenetre.dispose();
                 System.exit(0);
             }
-        } else if(this.stats || this.regles){
+        } else if(this.menus.get(keyStats) || this.menus.get(keyRegles) || this.menus.get(keyCredits)){
             if(this.currentChoice == 1){
                 if(premierEcan){
                     this.goToFirstScreen();

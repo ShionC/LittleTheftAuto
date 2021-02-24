@@ -15,7 +15,7 @@ public class OutsideScreen  extends JPanel {
 
     ImageIcon iconSelect = null;
 
-    JPanel Jstats, Jregles, JfirstScreen, JendGame;
+    JPanel Jstats, Jregles, JfirstScreen, JendGame, Jcredits;
 
     /**La liste des strings contenant les stats**/
     ArrayList<JLabel> stats = new ArrayList<>();
@@ -29,6 +29,9 @@ public class OutsideScreen  extends JPanel {
     /**ArrayList de l ecran de fin**/
     ArrayList<JLabel> endGame = new ArrayList<>();
     private ArrayList<Integer> idxChoiceEndGame = new ArrayList<>();
+    /**ArrayList des credits**/
+    ArrayList<JLabel> credits = new ArrayList<>();
+    private ArrayList<Integer> idxChoiceCredits = new ArrayList<>();
 
     private Insets title = new Insets(10,0,100,0);
     private Insets text = new Insets(5,5,10,5);
@@ -45,21 +48,28 @@ public class OutsideScreen  extends JPanel {
 
         this.iconSelect = new ImageIcon(((new ImageIcon("src/Sprites/curseur.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH));
 
+    }
+
+    /**
+     * Initialise outsideScreen.
+     * A appeler apres la construction de Accueil
+     */
+    private void initOutsideScreen(){
         this.initFirstScreen();
         this.initRegles();
         this.initStats();
         this.initEndGame();
-
-
+        this.initCredits();
     }
 
 
     /**
-     * Lie le controleur correspondant au JPannel
+     * Lie le controleur correspondant au JPannel et initialise l affichage des menus
      * @param acc le controleur
      */
     public void setAccueil(Accueil acc){
         this.acc = acc;
+        initOutsideScreen();
         update();
     }
 
@@ -152,27 +162,20 @@ public class OutsideScreen  extends JPanel {
         Jstats.add(c1, c);
         c1.setVisible(true);
         i++;
-        this.add(Jstats, "Stats");
+        this.add(Jstats, this.acc.keyStats);
 
 
     }
 
     private void drawStats(CardLayout cl){
-        boolean draw = this.acc.stats;
-        if(draw){
-            cl.show(this, "Stats");
+        if(this.acc.menus.get(this.acc.keyStats)){
+            cl.show(this, this.acc.keyStats);
         }
-        /*
-        for(JLabel l : this.stats){
-            l.setVisible(draw);
-        }
-
-         */
 
     }
 
     private void updateStats(){
-        if(this.acc.stats){
+        if(this.acc.menus.get(this.acc.keyStats)){
             for(int i = 0; i<this.idxChoiceStats.size(); i++){
                 if(i == this.acc.getCurrentChoice()-1){
                     this.stats.get(this.idxChoiceStats.get(i)).setIcon(iconSelect);
@@ -288,20 +291,19 @@ public class OutsideScreen  extends JPanel {
         Jregles.add(c1, c);
         c1.setVisible(true);
         i++;
-        this.add(Jregles, "Regles");
+        this.add(Jregles, this.acc.keyRegles);
 
 
     }
 
     private void drawRegles(CardLayout cl){
-        boolean draw = this.acc.regles;
-        if(draw){
-            cl.show(this, "Regles");
+        if(this.acc.menus.get(this.acc.keyRegles)){
+            cl.show(this, this.acc.keyRegles);
         }
     }
 
     private void updateRegles(){
-        if(this.acc.regles){
+        if(this.acc.menus.get(this.acc.keyRegles)){
             for(int i = 0; i<this.idxChoiceRegles.size(); i++){
                 if(i == this.acc.getCurrentChoice()-1){
                     this.reglesDuJeu.get(this.idxChoiceRegles.get(i)).setIcon(iconSelect);
@@ -313,13 +315,63 @@ public class OutsideScreen  extends JPanel {
     }
 
     private void initCredits(){
+        Jcredits = new JPanel(new GridBagLayout());
+        Jcredits.setBackground(this.getBackground());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridwidth = 3; //Il prends 3 cases
+        c.gridx = 1;
+        int i = 0;
+        c.gridy = i;
+        c.insets = title;
+        c.insets.bottom += 50;
+        ImageIcon imgCredit = new ImageIcon(((new ImageIcon("src/Sprites/credits.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        JLabel l1 = new JLabel("<html><body><u>"+"Crédits : "+"</u></body></html>", JLabel.CENTER);
+        l1.setFont(new Font("Arial",Font.BOLD,30));
+        l1.setIcon(imgCredit);
+        this.credits.add(l1);
+        Jcredits.add(l1, c);
+        i++;
+
+        c.insets = text;
+        c.gridwidth = 3;
+        Font fontText = new Font("Arial",Font.PLAIN,20);
+        c.gridx = 1;
+        c.gridy = i;
+        ImageIcon matDoll = new ImageIcon(((new ImageIcon("src/Sprites/Mathilde_doll.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        JLabel mathilde = new JLabel("Mathilde LASSEIGNE", JLabel.CENTER);
+        mathilde.setFont(fontText);
+        mathilde.setIcon(matDoll);
+        this.credits.add(mathilde);
+        Jcredits.add(mathilde, c);
+        i++;
+        c.gridx = 1;
+        c.gridy = i;
+        JLabel celine = new JLabel("Céline YAN", JLabel.CENTER);
+        celine.setFont(fontText);
+        this.credits.add(celine);
+        Jcredits.add(celine, c);
+        i++;
+
+        //Choix
+        c.insets = choices;
+        c.insets.top = 50;
+        c.gridwidth = 1;
+        c.gridx = 2;
+        c.gridy = i;
+        JLabel c1 = new JLabel("Retour", JLabel.CENTER);
+        c1.setFont(new Font("Arial",Font.BOLD,20));
+        c1.setIcon(this.iconSelect); //Pour laffichage de la selection
+        this.credits.add(c1);
+        this.idxChoiceCredits.add(i);
+        Jcredits.add(c1, c);
+        i++;
+        this.add(Jcredits, this.acc.keyCredits);
 
     }
 
     private void drawCredits(CardLayout cl){
-        boolean draw = this.acc.credits;
-        if(draw){
-            cl.show(this, "Credits");
+        if(this.acc.menus.get(this.acc.keyCredits)){
+            cl.show(this, this.acc.keyCredits);
         }
     }
 
@@ -354,19 +406,25 @@ public class OutsideScreen  extends JPanel {
         JfirstScreen.add(c2, c);
         i++;
         c.gridy = i+3;
+        JLabel cCredits = new JLabel("Crédits", JLabel.CENTER);
+        cCredits.setFont(new Font("Arial",Font.BOLD,20));
+        this.firstScreen.add(cCredits);
+        this.idxChoiceFirstScreen.add(i);
+        JfirstScreen.add(cCredits, c);
+        i++;
+        c.gridy = i+3;
         JLabel c3 = new JLabel("Quitter", JLabel.CENTER);
         c3.setFont(new Font("Arial",Font.BOLD,20));
         this.firstScreen.add(c3);
         this.idxChoiceFirstScreen.add(i);
         JfirstScreen.add(c3, c);
         i++;
-        this.add(JfirstScreen, "FirstScreen");
+        this.add(JfirstScreen, this.acc.keyFirstScreen);
     }
 
     private void drawFirstScreen(CardLayout cl){
-        boolean draw = this.acc.firstScreen && this.acc.premierEcan;
-        if(draw){
-            cl.show(this, "FirstScreen");
+        if(this.acc.menus.get(this.acc.keyFirstScreen) && this.acc.premierEcan){
+            cl.show(this, this.acc.keyFirstScreen);
         }
     }
 
@@ -374,7 +432,7 @@ public class OutsideScreen  extends JPanel {
      * Met a jour la selection du choix
      */
     private void updateFirstScreen(){
-        if(this.acc.firstScreen && this.acc.premierEcan){
+        if(this.acc.menus.get(this.acc.keyFirstScreen) && this.acc.premierEcan){
             for(int i = 0; i<this.idxChoiceFirstScreen.size(); i++){
                 if(i == this.acc.getCurrentChoice()-1){
                     this.firstScreen.get(this.idxChoiceFirstScreen.get(i)).setIcon(iconSelect);
@@ -439,24 +497,30 @@ public class OutsideScreen  extends JPanel {
         JendGame.add(c3, c);
         i++;
         c.gridy = i;
+        JLabel cCrédits = new JLabel("Crédits", JLabel.CENTER);
+        cCrédits.setFont(new Font("Arial",Font.BOLD,20));
+        this.endGame.add(cCrédits);
+        this.idxChoiceEndGame.add(i);
+        JendGame.add(cCrédits, c);
+        i++;
+        c.gridy = i;
         JLabel c4 = new JLabel("Quitter", JLabel.CENTER);
         c4.setFont(new Font("Arial",Font.BOLD,20));
         this.endGame.add(c4);
         this.idxChoiceEndGame.add(i);
         JendGame.add(c4, c);
         i++;
-        this.add(JendGame, "EndGame");
+        this.add(JendGame, this.acc.keyEndGame);
     }
 
     private void drawEndGame(CardLayout cl){
-        boolean draw = this.acc.endGame;
-        if(draw){
-            cl.show(this, "EndGame");
+        if(this.acc.menus.get(this.acc.keyEndGame)){
+            cl.show(this, this.acc.keyEndGame);
         }
     }
 
     private void updateEndGame(){
-        if(this.acc.endGame){
+        if(this.acc.menus.get(this.acc.keyEndGame)){
             for(int i = 0; i<this.idxChoiceEndGame.size(); i++){
                 if(i == this.acc.getCurrentChoice()-1){
                     this.endGame.get(this.idxChoiceEndGame.get(i)).setIcon(iconSelect);
@@ -464,19 +528,20 @@ public class OutsideScreen  extends JPanel {
                     this.endGame.get(this.idxChoiceEndGame.get(i)).setIcon(null);
                 }
             }
-        }
-        if(this.acc.typeGameOver != 0){
-            ImageIcon skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
-            this.endGame.get(1).setIcon(skull);
-            if(this.acc.typeGameOver == 1){
-                this.endGame.get(1).setText("Un pneu crevé ? Vous vous êtes arreté");
-            } else if(this.acc.typeGameOver == 2){
-                this.endGame.get(1).setText("Le timer est fini, il faudra être plus rapide la prochaine fois !");
+            if(this.acc.typeGameOver != 0){
+                ImageIcon skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
+                this.endGame.get(1).setIcon(skull);
+                if(this.acc.typeGameOver == 1){
+                    this.endGame.get(1).setText("Un pneu crevé ? Vous vous êtes arreté");
+                } else if(this.acc.typeGameOver == 2){
+                    this.endGame.get(1).setText("Le timer est fini, il faudra être plus rapide la prochaine fois !");
+                }
+            } else {
+                this.endGame.get(1).setIcon(null);
+                this.endGame.get(1).setText(null);
             }
-        } else {
-            this.endGame.get(1).setIcon(null);
-            this.endGame.get(1).setText(null);
         }
+
     }
 
     /**

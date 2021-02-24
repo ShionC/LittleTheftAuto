@@ -115,6 +115,7 @@ public class Controleur implements KeyListener {
         this.aff.switchInteface(true);
         this.partieEnCours = true;
         this.enPause = false;
+        this.timeManager.startPartie();
         this.user.start();
         this.aff.startPartie();
         this.pauseChoice = 0;

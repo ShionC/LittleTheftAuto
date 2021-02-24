@@ -17,8 +17,6 @@ public class TimeManager extends Thread {
 
     private Route route;
 
-    /**Moment de depart du jeu**/
-    private Instant startGame;
 
     /**Timer du point de controle**/
     private MyTimer timerPtCtrl;
@@ -36,7 +34,6 @@ public class TimeManager extends Thread {
      */
     public TimeManager(Controleur ctrl){
         this.ctrl = ctrl;
-        this.startGame = Instant.now();
         newPartie();
     }
 
@@ -63,7 +60,7 @@ public class TimeManager extends Thread {
 
 
     /**
-     * Debute une partie, commence le timer de la course
+     * Debute une partie, commence le timer de la course en creant un nouveau point de controle
      */
     public void startPartie(){
         this.createNewPtCtrl();
