@@ -65,6 +65,7 @@ public class Affichage extends JPanel {
         try{
             File m = new File("src/Sprites/curseur.png");
             this.curseur = ImageIO.read(m);
+            this.curseur = Tools.deepCopy(this.curseur);
             this.curseur = Tools.scaleBI(this.curseur, 0.05, 0.05);
             File m2 = new File("src/Sprites/pauseButton.png");
             this.pauseButton = ImageIO.read(m2);
@@ -96,10 +97,10 @@ public class Affichage extends JPanel {
 
     /**
      * Change l interface a l ecran et le controleur qui le controle
-     * @param toInGame
+     * @param toInGame true si vers le jeu, false si vers le menu
      */
     public void switchInteface(boolean toInGame){
-        System.out.println("Switch");
+        //System.out.println("Switch");
         /*
         this.setVisible(toInGame);
         this.setEnabled(toInGame);

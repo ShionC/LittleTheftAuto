@@ -156,7 +156,7 @@ public class Deplace extends Thread {
             obj.isOnRoad = false;
             //System.out.println("Out of Road");
             if(obj.getVitesse()>0){
-                modVit = -2;
+                modVit = -1;
             }
 
         }
@@ -180,6 +180,10 @@ public class Deplace extends Thread {
                 ////xt = v*t + x0 -> modPos = v*t, t en secondes
                 double modPos = calcul_dPos(this.user.getVitesse(),varTime);
 
+                //Verification de game over
+                if(this.user.getVitesse() == 0){
+                    this.ctrl.endPartie(1);
+                }
 
                 //Application de la modification de la position
                 //Deplace les diff objets
@@ -194,50 +198,6 @@ public class Deplace extends Thread {
                     }
                 }
 
-            /*Algo transfere dans la methode getRange() de VueBackground
-
-            ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
-            ArrayList<Integer> listRange = this.aff.bmg.getRangeRoute();
-            ArrayList<Integer> rangeObstacle = new ArrayList<>();
-
-            ArrayList<Point> listRoute = this.route.getRoute();
-
-            for (Obstacle obs: listObstacles) {
-
-
-                //Touver le bon point sur le segment de route
-                boolean inRoute = true; //Si l obstacle est toujours au niveau de la route
-                Point p1 = listRoute.get(0); //p1>p2
-                Point p2 = listRoute.get(1);
-                int i = 1;
-                while (obs.getPosY()<p2.y && i<listRoute.size()-1){
-                    if(obs.getPosY()>=p1.y){ //Sortit par le bas
-                        inRoute = false;
-                        break;
-                    }
-                    if(i+1 >= listRoute.size()){  //Pour le cas des objets au dessus de l horizon
-                        inRoute = false;
-                        break;
-                    } else if (inRoute) {
-                        p1 = listRoute.get(i);
-                        if(i+1 >= listRoute.size()){  //Juste au cas ou
-                            System.out.println("Sortie de array");
-                        }
-                        p2 = listRoute.get(i+1);
-                    }
-
-                    i++;
-                }
-                i--; //Car on a fait +1 apres avoir change p1 et p2.
-
-                //Mod de rangeObstacles
-                if(inRoute){
-
-                    int range = (listRange.get(i)*obs.getPosY())/(p1.y- VueBackground.horizon +50);//Produit en croix
-                    rangeObstacle.add(range);
-                }
-
-                 */
 
                 ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
                 for(Obstacle obs : listObstacles){

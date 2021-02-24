@@ -84,11 +84,17 @@ public class Controleur implements KeyListener {
 
 
     /**
-     * Met fin a la partie et aux mouvements.
+     *
      */
-    public void endPartie(){
+    /**
+     * Met fin a la partie et aux mouvements, et deplace vers l ecran de fin de jeu
+     * <br/>Transfere toutes les donnees a Data
+     * @param typeGameOver 0 : Partie stopee, 1 : Vitesse == 0, 2 : PtCtrl non atteint
+     */
+    public void endPartie(int typeGameOver){
 
-            System.out.println("End game ctrl");
+            //System.out.println("End game ctrl");
+            this.accueil.typeGameOver = typeGameOver;
             this.partieEnCours = false;
             this.enPause = false; //La fin de partie n est pas une pause
             this.timeManager.getTimerPtCtrl().pause();
@@ -201,7 +207,7 @@ public class Controleur implements KeyListener {
         if(this.pauseChoice == 1){
             this.resume();
         } else if(this.pauseChoice == 2){
-            this.endPartie();
+            this.endPartie(0);
         }
     }
 

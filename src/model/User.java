@@ -59,10 +59,9 @@ public class User extends Thread {
      */
     public User(){
         this.posX = Affichage.LARGEUR/2;
-        //this.posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
         this.saut = 25;
         this.inertie = 0;
-        this.vitesse = 10;
+        this.vitesse = 20;
     }
 
     // ********************************** 3) Méthodes **********************************

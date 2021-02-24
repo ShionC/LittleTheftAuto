@@ -40,23 +40,6 @@ public class Route {
         listePoints.add(new Point(x, y));
         //int range = 50; //Deviation de x autorisee
         while(this.listePoints.get(this.listePoints.size()-1).y >= VueBackground.horizon){ //Stop a l horizon
-            /*
-            y = y - Tools.rangedRandomInt(40, 100);
-
-            //Cherche un y pas trop loin de l ancien, pour la beaute de la courbe
-            int newx = Tools.rangedRandomInt(x-range, x+range);
-            while((newx > Affichage.LARGEUR -50) || (newx < 50)){ //Zone d appartition de la courbe, voir avec affichage
-                newx = Tools.rangedRandomInt(x-range, x+range);
-            }
-            x = newx;
-
-            if(x>Affichage.LARGEUR){
-                System.out.println("y = "+y+" out of range "+Affichage.LARGEUR+" !!");
-            }
-
-            listePoints.add(new Point(x, y));
-
-             */
             this.updateRoute();
         }
 

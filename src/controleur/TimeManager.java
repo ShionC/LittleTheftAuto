@@ -86,7 +86,7 @@ public class TimeManager extends Thread {
         int distancePtCtrl = 0;
         long timer = 0;
         double marge = 40; //La marge que on laisse a user pour qu il n ai pas besoin de toujours aller a vitesse max
-        long bonus = 2; //Bonus de temps
+        long bonus = 0; //Bonus de temps
         //En considerant la vitesse max de user et la modification de la vitesse appliquee selon la formule x = v*t
         /*
         distancePtCtrl = Tools.rangedRandomInt(10000, 15000); //Random
@@ -116,7 +116,7 @@ public class TimeManager extends Thread {
                         //Augmente score de user ?
                     } else {
                         //Termine Fin de la partie
-                        this.ctrl.endPartie();
+                        this.ctrl.endPartie(2);
                         System.out.println("Course terminee, partie perdue !!");
                     }
                 } else {

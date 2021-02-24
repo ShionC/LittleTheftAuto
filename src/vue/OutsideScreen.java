@@ -5,7 +5,6 @@ import game.Tools;
 import model.Data;
 
 import javax.swing.*;
-import javax.tools.Tool;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -30,6 +29,10 @@ public class OutsideScreen  extends JPanel {
     /**ArrayList de l ecran de fin**/
     ArrayList<JLabel> endGame = new ArrayList<>();
     private ArrayList<Integer> idxChoiceEndGame = new ArrayList<>();
+
+    private Insets title = new Insets(10,0,100,0);
+    private Insets text = new Insets(5,5,10,5);
+    private Insets choices = new Insets(20,0,5,0);
 
 
 
@@ -65,17 +68,21 @@ public class OutsideScreen  extends JPanel {
         Jstats = new JPanel(new GridBagLayout());
         Jstats.setBackground(this.getBackground());
         GridBagConstraints c = new GridBagConstraints();
+        c.insets = title;
         c.gridwidth = 3; //Il prends 3 cases
         c.gridx = 1;
         int i = 0;
         c.gridy = i;
         JLabel l1 = new JLabel("<html><body><u>"+"Stats"+"</u></body></html>", JLabel.CENTER);
+        ImageIcon statsReport = new ImageIcon(((new ImageIcon("src/Sprites/statistics-report.png")).getImage()).getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH));
         l1.setFont(new Font("Arial",Font.BOLD,30));
         l1.setLocation((Affichage.LARGEUR/2)-20, 200);
+        l1.setIcon(statsReport);
         this.stats.add(l1);
         Jstats.add(l1, c);
         l1.setVisible(true);
         i++;
+        c.insets = text;
         c.gridwidth= 1;
         Font fontText = new Font("Arial",Font.PLAIN,15);
         c.gridx = 1;
@@ -134,6 +141,8 @@ public class OutsideScreen  extends JPanel {
         this.stats.add(l9);
         Jstats.add(l9, c);
         i++;
+        //Choix
+        c.insets = choices;
         c.gridx = 2;
         c.gridy = i;
         JLabel c1 = new JLabel("Retour", JLabel.CENTER);
@@ -201,15 +210,20 @@ public class OutsideScreen  extends JPanel {
         c.gridx = 1;
         int i = 0;
         c.gridy = i;
-        JLabel l1 = new JLabel("<html><body><u>"+"Regles du jeu"+"</u></body></html>", JLabel.CENTER);
+        c.insets = (Insets) title.clone();
+        c.insets.bottom = 50;
+        JLabel l1 = new JLabel("<html><body><u>"+"Règles du jeu"+"</u></body></html>", JLabel.CENTER);
+        ImageIcon reglesJeu = new ImageIcon(((new ImageIcon("src/Sprites/regles_jeu.png")).getImage()).getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH));
         l1.setFont(new Font("Arial",Font.BOLD,30));
         l1.setLocation((Affichage.LARGEUR/2)-20, 200);
+        l1.setIcon(reglesJeu);
         this.reglesDuJeu.add(l1);
         Jregles.add(l1, c);
         l1.setVisible(true);
         i++;
+        c.insets = text;
         Font fontText = new Font("Arial",Font.PLAIN,15);
-        c.gridwidth = 3;
+        c.gridwidth = 2;
         c.gridx = 1;
         c.gridy = i;
         JLabel l2 = new JLabel("Bienvenue dans le circuit de Little Thief Auto ! ", JLabel.CENTER);
@@ -224,14 +238,14 @@ public class OutsideScreen  extends JPanel {
         Jregles.add(l3, c);
         i++;
         c.gridy = i;
-        JLabel l4 = new JLabel("Votre vitesse dépends de votre position sur la route.", JLabel.CENTER);
+        JLabel l4 = new JLabel("Allez sur la route pour accélérer !", JLabel.CENTER);
         l4.setFont(fontText);
         this.reglesDuJeu.add(l4);
         Jregles.add(l4, c);
         i++;
         ImageIcon arrows = new ImageIcon(((new ImageIcon("src/Sprites/left_right_keys.png")).getImage()).getScaledInstance(80, 50, java.awt.Image.SCALE_SMOOTH));
         c.gridy = i;
-        JLabel l5 = new JLabel("Pour vous déplacer latéralement, utilisez les touches du clavier", JLabel.CENTER);
+        JLabel l5 = new JLabel("Pour déplacer votre véhicule sur le côté, utilisez les touches du clavier", JLabel.CENTER);
         l5.setFont(fontText);
         l5.setIcon(arrows);
         this.reglesDuJeu.add(l5);
@@ -239,13 +253,29 @@ public class OutsideScreen  extends JPanel {
         i++;
         ImageIcon escap = new ImageIcon(((new ImageIcon("src/Sprites/esc_key.png")).getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH));
         c.gridy = i;
-        JLabel l6 = new JLabel("Vous pouvez mettre le jeu en pause en cours de partie", JLabel.CENTER);
+        JLabel l6 = new JLabel("N'oubliez pas, vous pouvez mettre le jeu en pause à tout moment", JLabel.CENTER);
         l6.setFont(fontText);
         l6.setIcon(escap);
         this.reglesDuJeu.add(l6);
         Jregles.add(l6, c);
         i++;
+        ImageIcon skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
+        c.gridy = i;
+        JLabel l7 = new JLabel("Ne pas atteindre un point de contrôle à temps", JLabel.CENTER);
+        l7.setFont(fontText);
+        l7.setIcon(skull);
+        this.reglesDuJeu.add(l7);
+        Jregles.add(l7, c);
+        i++;
+        c.gridy = i;
+        JLabel l8 = new JLabel("S'arrêter (Vous êtes dans une course bon sang !)", JLabel.CENTER);
+        l8.setFont(fontText);
+        l8.setIcon(skull);
+        this.reglesDuJeu.add(l8);
+        Jregles.add(l8, c);
+        i++;
         //Choix
+        c.insets = choices;
         c.gridwidth = 1;
         c.gridx = 2;
         c.gridy = i;
@@ -282,6 +312,17 @@ public class OutsideScreen  extends JPanel {
         }
     }
 
+    private void initCredits(){
+
+    }
+
+    private void drawCredits(CardLayout cl){
+        boolean draw = this.acc.credits;
+        if(draw){
+            cl.show(this, "Credits");
+        }
+    }
+
     private void initFirstScreen(){
         JfirstScreen = new JPanel(new GridBagLayout());
         JfirstScreen.setBackground(this.getBackground());
@@ -290,12 +331,14 @@ public class OutsideScreen  extends JPanel {
         c.gridx = 2;
         int i = 0;
         c.gridy = i;
+        c.insets = title;
         JLabel l1 = new JLabel("<html><body><u>"+"Bienvenue dans Little Theft Auto !"+"</u></body></html>", JLabel.CENTER);
         l1.setFont(new Font("Arial",Font.BOLD,30));
         this.firstScreen.add(l1);
         JfirstScreen.add(l1, c);
         i++;
         //Choix
+        c.insets = choices;
         c.gridy = i+3;
         JLabel c1 = new JLabel("Commencer une partie", JLabel.CENTER);
         c1.setFont(new Font("Arial",Font.BOLD,20));
@@ -304,7 +347,7 @@ public class OutsideScreen  extends JPanel {
         JfirstScreen.add(c1, c);
         i++;
         c.gridy = i+3;
-        JLabel c2 = new JLabel("Regles du jeu", JLabel.CENTER);
+        JLabel c2 = new JLabel("Règles du jeu", JLabel.CENTER);
         c2.setFont(new Font("Arial",Font.BOLD,20));
         this.firstScreen.add(c2);
         this.idxChoiceFirstScreen.add(i);
@@ -321,7 +364,7 @@ public class OutsideScreen  extends JPanel {
     }
 
     private void drawFirstScreen(CardLayout cl){
-        boolean draw = this.acc.premierEcran && !this.acc.regles;
+        boolean draw = this.acc.firstScreen && this.acc.premierEcan;
         if(draw){
             cl.show(this, "FirstScreen");
         }
@@ -331,7 +374,7 @@ public class OutsideScreen  extends JPanel {
      * Met a jour la selection du choix
      */
     private void updateFirstScreen(){
-        if(this.acc.premierEcran && !this.acc.regles){
+        if(this.acc.firstScreen && this.acc.premierEcan){
             for(int i = 0; i<this.idxChoiceFirstScreen.size(); i++){
                 if(i == this.acc.getCurrentChoice()-1){
                     this.firstScreen.get(this.idxChoiceFirstScreen.get(i)).setIcon(iconSelect);
@@ -350,13 +393,30 @@ public class OutsideScreen  extends JPanel {
         c.gridx = 2;
         int i = 0;
         c.gridy = i;
-        JLabel l1 = new JLabel("<html><body><u>"+"Partie terminee !"+"</u></body></html>", JLabel.CENTER);
+        c.insets = title;
+        c.insets.bottom = 70;
+        JLabel l1 = new JLabel("<html><body><u>"+"Partie terminée !"+"</u></body></html>", JLabel.CENTER);
         l1.setFont(new Font("Arial",Font.BOLD,30));
         l1.setLocation((Affichage.LARGEUR/2)-20, 200);
         this.endGame.add(l1);
         JendGame.add(l1, c);
         i++;
+        c.insets = text;
+        c.insets.bottom = 20;
+        Font fontText = new Font("Arial",Font.PLAIN,15);
+        c.gridwidth = 2;
+        c.gridx = 1;
+        c.gridy = i;
+        JLabel l2 = new JLabel();
+        l2.setHorizontalAlignment(JLabel.CENTER);
+        l2.setFont(fontText);
+        this.endGame.add(l2);
+        JendGame.add(l2, c);
+        i++;
         //Choix
+        c.gridx = 2;
+        c.gridwidth = 3;
+        c.insets = choices;
         c.gridy = i;
         JLabel c1 = new JLabel("Nouvelle partie", JLabel.CENTER);
         c1.setFont(new Font("Arial",Font.BOLD,20));
@@ -365,7 +425,7 @@ public class OutsideScreen  extends JPanel {
         JendGame.add(c1, c);
         i++;
         c.gridy = i;
-        JLabel c2 = new JLabel("Regles du jeu", JLabel.CENTER);
+        JLabel c2 = new JLabel("Règles du jeu", JLabel.CENTER);
         c2.setFont(new Font("Arial",Font.BOLD,20));
         this.endGame.add(c2);
         this.idxChoiceEndGame.add(i);
@@ -405,6 +465,18 @@ public class OutsideScreen  extends JPanel {
                 }
             }
         }
+        if(this.acc.typeGameOver != 0){
+            ImageIcon skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
+            this.endGame.get(1).setIcon(skull);
+            if(this.acc.typeGameOver == 1){
+                this.endGame.get(1).setText("Un pneu crevé ? Vous vous êtes arreté");
+            } else if(this.acc.typeGameOver == 2){
+                this.endGame.get(1).setText("Le timer est fini, il faudra être plus rapide la prochaine fois !");
+            }
+        } else {
+            this.endGame.get(1).setIcon(null);
+            this.endGame.get(1).setText(null);
+        }
     }
 
     /**
@@ -416,6 +488,7 @@ public class OutsideScreen  extends JPanel {
         this.drawFirstScreen(cl);
         this.drawRegles(cl);
         this.drawStats(cl);
+        this.drawCredits(cl);
         this.drawEndGame(cl);
     }
 

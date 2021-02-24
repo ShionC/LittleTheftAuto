@@ -12,15 +12,26 @@ public class Accueil implements KeyListener {
     private OutsideScreen outScreen;
 
     /**
+     * O : Partie stopee
+     * <br/>1 : Vitesse == 0
+     * <br/>2 : PtCtrl non atteint
+     * **/
+    public int typeGameOver;
+
+    /**
      * Affiche l ecran de fin de jeu, pas les stats
      */
     public boolean endGame = false;
 
-    public boolean premierEcran;
+    public boolean firstScreen;
+    /**Si l ecran d accueil du debut du jeu est toujours valable**/
+    public boolean premierEcan;
 
     public boolean regles = false;
 
     public boolean stats = false;
+
+    public boolean credits = false;
 
     /**Le nombre de choix disponibles a l ecran**/
     private int nbChoix;
@@ -31,7 +42,8 @@ public class Accueil implements KeyListener {
         this.ctrl = ctrl;
         this.outScreen = this.ctrl.aff.outScreen;
 
-        this.premierEcran = true;
+        this.firstScreen = true;
+        this.premierEcan = true;
         this.currentChoice = 1;
         this.outScreen.addKeyListener(this);
         this.outScreen.setAccueil(this);
@@ -48,14 +60,16 @@ public class Accueil implements KeyListener {
         return this.currentChoice;
     }
 
+
     /**
      * Update la vue de l acceuil pour la faire arriver a la fin de la partie.
      */
     public void goToAccueil(){
         this.endGame = true;
-        //this.premierEcran = false;
+        this.firstScreen = false;
         this.stats = false;
         this.regles = false;
+        this.credits = false;
         this.currentChoice = 1;
         this.nbChoix = 4;
         this.outScreen.update();
@@ -63,6 +77,7 @@ public class Accueil implements KeyListener {
 
     public void goToStats(){
         this.stats = true;
+        this.firstScreen = false;
         this.endGame = false;
         this.regles = false;
         this.currentChoice = 1;
@@ -72,6 +87,7 @@ public class Accueil implements KeyListener {
 
     public void goToRegles(){
         this.regles = true;
+        this.firstScreen = false;
         this.endGame = false;
         this.stats = false;
         this.currentChoice = 1;
@@ -79,14 +95,23 @@ public class Accueil implements KeyListener {
         this.outScreen.update();
     }
 
+    /**
+     * Montre le premier ecran d accueil, uniquement montre lorsque aucune partie n a ete lancee.
+     */
     public void goToFirstScreen(){
-        this.premierEcran = true;
-        this.endGame = false;
-        this.stats = false;
-        this.regles = false;
-        this.currentChoice = 1;
-        this.nbChoix = 3;
-        this.outScreen.update();
+        if(this.premierEcan){
+            this.firstScreen = true;
+            this.endGame = false;
+            this.stats = false;
+            this.regles = false;
+            this.currentChoice = 1;
+            this.nbChoix = 3;
+            this.outScreen.update();
+        }
+    }
+
+    public void goToCredits(){
+
     }
 
     /**
@@ -131,9 +156,10 @@ public class Accueil implements KeyListener {
                 this.ctrl.aff.fenetre.dispose();
                 System.exit(0);
             }
-        } else if(this.premierEcran && !this.regles){
+        } else if(this.firstScreen && this.premierEcan){
             if(this.currentChoice == 1){
-                this.premierEcran = false;
+                this.firstScreen = false;
+                this.premierEcan = false;
                 this.ctrl.startPartie();
             } else if(this.currentChoice == 2){
                 this.goToRegles();
@@ -143,7 +169,7 @@ public class Accueil implements KeyListener {
             }
         } else if(this.stats || this.regles){
             if(this.currentChoice == 1){
-                if(premierEcran){
+                if(premierEcan){
                     this.goToFirstScreen();
                 } else {
                     this.goToAccueil();
