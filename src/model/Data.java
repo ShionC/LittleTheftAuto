@@ -1,6 +1,6 @@
 package model;
 
-import controleur.Chrono;
+import Tools.Chrono;
 
 import java.time.Duration;
 import java.time.Instant;

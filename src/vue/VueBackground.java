@@ -1,7 +1,7 @@
 package vue;
 
-import controleur.MyTimer;
-import game.Tools;
+import Tools.MyTimer;
+import Tools.Tools;
 import model.Data;
 import model.Obstacle;
 
@@ -395,9 +395,7 @@ public class VueBackground {
      * @param g2 le graphism
      */
     private void drawFond(Graphics2D g2){
-        //Pelouse
-        g2.setColor(new Color(58, 137, 35));
-        g2.fillRect(0, horizon, Affichage.LARGEUR, Affichage.HAUTEUR - horizon);
+
         //Ciel
         g2.setColor(new Color(116, 208, 241));
         g2.fillRect(0,0, Affichage.LARGEUR, horizon);
@@ -453,6 +451,10 @@ public class VueBackground {
         g2.fillRect(0, horizon, Affichage.LARGEUR, Affichage.HAUTEUR - horizon);
         drawFond(g2);
 
+        //Pelouse
+        g2.setColor(new Color(58, 137, 35));
+        g2.fillRect(0, horizon, Affichage.LARGEUR, Affichage.HAUTEUR - horizon);
+
         //Dessine la route
 
         setShapeRoute();
@@ -479,6 +481,8 @@ public class VueBackground {
             int idxRouteCtrl = Tools.findIdxFirstInfByY(new Point(0, yPtCtrl), listRoute);
             int xOnRoute = Tools.findX(yPtCtrl, listRoute.get(idxRouteCtrl-1), listRoute.get(idxRouteCtrl));
             int rangePtCtrl = this.getRange(new Point(0, yPtCtrl)) + 30; //depasse de la route sur l axe X
+
+
             g2.drawLine(xOnRoute-rangePtCtrl, yPtCtrl, xOnRoute+rangePtCtrl, yPtCtrl);
         }
 

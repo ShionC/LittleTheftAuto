@@ -1,6 +1,7 @@
-package game;
+package Tools;
 
 import javax.swing.*;
+import java.awt.geom.Line2D;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,6 +19,7 @@ public class Tools {
 
     }
 
+    /*-----------------------------------------RANDOM----------------------------------------------------*/
 
     /**
      * Cree un int random compris dans un certain intervalle [rangeMin, rangeMax]
@@ -41,45 +43,7 @@ public class Tools {
         return randomValue;
     }
 
-    /**
-     * Cree une copie d un BufferedImage modifiable sans interferer avec l image source
-     * @param bi BufferedImage source
-     * @return la copie
-     */
-    public static BufferedImage deepCopy(BufferedImage bi) {
-        ColorModel cm = bi.getColorModel();
-        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = bi.copyData(bi.getRaster().createCompatibleWritableRaster());
-        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-    }
-
-    public static BufferedImage scaleBI(BufferedImage before, double scaleX, double scaleY){
-        int w = before.getWidth();
-        int h = before.getHeight();
-        BufferedImage after = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        AffineTransform at = new AffineTransform();
-        at.scale(scaleX, scaleY);
-        AffineTransformOp scaleOp =
-                new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-        after = scaleOp.filter(before, after);
-        return after;
-    }
-
-    /**
-     * Resizes an image using a Graphics2D object backed by a BufferedImage.
-     * @param srcImg - source image to scale
-     * @param w - desired width
-     * @param h - desired height
-     * @return - the new resized image
-     */
-    public static BufferedImage getResizedImage(Image srcImg, int w, int h){
-        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
-        Graphics2D g2 = resizedImg.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.drawImage(srcImg, 0, 0, w, h, null);
-        g2.dispose();
-        return resizedImg;
-    }
+    /*-----------------------------------------CALCUL----------------------------------------------------*/
 
     /**
      * Trouve le point y correspondant a la coord (x,y) sur le segment [p1,p2]
@@ -128,6 +92,12 @@ public class Tools {
         return Math.sqrt(dx*dx+dy*dy);
     }
 
+
+
+    /*-----------------------------------------LISTS----------------------------------------------------*/
+
+
+
     /**
      * Dans une liste de points, retrouve l index du premier point inferieur a p <i>sur l axe Y</i>
      * @param p le point a comparer
@@ -154,23 +124,9 @@ public class Tools {
     }
 
 
-    /**
-     * Verifie si il y a une collision entre les 2 objets definis par une Area, cad si ils se chevauchent.
-     * <br/>Une Area peut etre construite a partir d une Shape avec Area a = new Area(Shape s)
-     * @param a1 le premier objet a verifier
-     * @param a2 le 2e objet a verifier
-     * @return true si les 2 area se chevauchent, false sinon
-     */
-    public static boolean collision(Area a1, Area a2){
-        if( a1.getBounds().intersects(a2.getBounds()) ){//Verifie dabord les boxes pour eviter trop de calcul
-            Area a = new Area(a1);
-            a.intersect(new Area(a2));
-            if(!a.isEmpty()){
-                return true;
-            }
-        }
-        return false;
-    }
+
+    /*-----------------------------------------TO STRING----------------------------------------------------*/
+
 
     /**
      * Renvoie le temps restant du timer sous forme <i><b>x</b>h <b>x</b>min <b>x</b>sec</i>
@@ -213,6 +169,48 @@ public class Tools {
         return str;
     }
 
+    /*-----------------------------------------IMAGES----------------------------------------------------*/
+
+    /**
+     * Cree une copie d un BufferedImage modifiable sans interferer avec l image source
+     * @param bi BufferedImage source
+     * @return la copie
+     */
+    public static BufferedImage deepCopy(BufferedImage bi) {
+        ColorModel cm = bi.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bi.copyData(bi.getRaster().createCompatibleWritableRaster());
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
+
+    public static BufferedImage scaleBI(BufferedImage before, double scaleX, double scaleY){
+        int w = before.getWidth();
+        int h = before.getHeight();
+        BufferedImage after = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        AffineTransform at = new AffineTransform();
+        at.scale(scaleX, scaleY);
+        AffineTransformOp scaleOp =
+                new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+        after = scaleOp.filter(before, after);
+        return after;
+    }
+
+    /**
+     * Resizes an image using a Graphics2D object backed by a BufferedImage.
+     * @param srcImg - source image to scale
+     * @param w - desired width
+     * @param h - desired height
+     * @return - the new resized image
+     */
+    public static BufferedImage getResizedImage(Image srcImg, int w, int h){
+        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
+        Graphics2D g2 = resizedImg.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(srcImg, 0, 0, w, h, null);
+        g2.dispose();
+        return resizedImg;
+    }
+
     /**
      * Transforme une ImageIcon en BufferedImage
      * @param img l ImageIcon
@@ -226,6 +224,31 @@ public class Tools {
         g.dispose();
         return bi;
     }
+
+
+    /*-----------------------------------------AREA----------------------------------------------------*/
+
+
+    /**
+     * Verifie si il y a une collision entre les 2 objets definis par une Area, cad si ils se chevauchent.
+     * <br/>Une Area peut etre construite a partir d une Shape avec Area a = new Area(Shape s)
+     * @param a1 le premier objet a verifier
+     * @param a2 le 2e objet a verifier
+     * @return true si les 2 area se chevauchent, false sinon
+     */
+    public static boolean collision(Area a1, Area a2){
+        if( a1.getBounds().intersects(a2.getBounds()) ){//Verifie dabord les boxes pour eviter trop de calcul
+            Area a = new Area(a1);
+            a.intersect(new Area(a2));
+            if(!a.isEmpty()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*-----------------------------------------GRAPHIC----------------------------------------------------*/
+
 
     /**
      * Dessine un string sur un graphics de 2 couleurs superposees mais legerement decalees
@@ -249,5 +272,43 @@ public class Tools {
 
         g2.setColor(oldColor);
         g2.setFont(oldFont);
+    }
+
+    /**
+     * Dessine une ligne en alternant entre 2 couleurs
+     * <br/>Pour rappel la ligne se trouve au milieu de la height specifiee dans le Stroke
+     * @param g2 graphical context
+     * @param line La ligne a afficher
+     * @param c1 La couleur la + a droite
+     * @param c2 La 2e couleur
+     * @param stroke A dashed stroke
+     */
+    private void drawDashedLineWith2Colors(Graphics2D g2, Line2D.Double line, Color c1, Color c2, BasicStroke stroke){
+        Font oldFont = g2.getFont();
+        Color oldColor = g2.getColor();
+        Stroke oldStroke = g2.getStroke();
+
+        float[] dashingPattern2 = stroke.getDashArray();
+        //Reverse array
+        float tmp = dashingPattern2[0];
+        for(int i = 1; i<dashingPattern2.length; i++){
+            dashingPattern2[i-1] = dashingPattern2[i];
+        }
+        dashingPattern2[dashingPattern2.length-1] = tmp;
+
+        BasicStroke stroke2 = new BasicStroke(stroke.getLineWidth(),stroke.getEndCap(),stroke.getLineJoin(),
+                stroke.getMiterLimit(),dashingPattern2,dashingPattern2[0]);
+        //Draw
+        g2.setColor(c1);
+        g2.setStroke(stroke);
+        g2.draw(line);
+
+        g2.setColor(c2);
+        g2.setStroke(stroke2);
+        g2.draw(line);
+
+        g2.setColor(oldColor);
+        g2.setFont(oldFont);
+        g2.setStroke(oldStroke);
     }
 }

@@ -1,6 +1,6 @@
 package vue;
 
-import game.Tools;
+import Tools.Tools;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

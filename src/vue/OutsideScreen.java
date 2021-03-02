@@ -1,7 +1,7 @@
 package vue;
 
 import controleur.Accueil;
-import game.Tools;
+import Tools.Tools;
 import model.Data;
 
 import javax.swing.*;
@@ -536,7 +536,7 @@ public class OutsideScreen  extends JPanel {
                 ImageIcon skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
                 this.endGame.get(1).setIcon(skull);
                 if(this.acc.typeGameOver == 1){
-                    this.endGame.get(1).setText("Vous vous êtes arreté. Vous avez un pneu crevé ?");
+                    this.endGame.get(1).setText("Vous vous êtes arrêté. Vous avez un pneu crevé ?");
                 } else if(this.acc.typeGameOver == 2){
                     this.endGame.get(1).setText("Votre temps est épuisé, il faudra être plus rapide la prochaine fois !");
                 }

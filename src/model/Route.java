@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
-import game.Tools;
+import Tools.Tools;
 import vue.Affichage;
 import vue.VueBackground;
 

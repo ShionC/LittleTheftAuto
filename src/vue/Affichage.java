@@ -1,14 +1,12 @@
 package vue;
 
 import controleur.Controleur;
-import game.Tools;
+import Tools.Tools;
 import model.Data;
 import model.Route;
 import model.User;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -244,6 +242,7 @@ public class Affichage extends JPanel {
      */
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             super.paint(g);
             super.revalidate();

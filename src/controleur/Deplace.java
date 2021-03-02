@@ -10,8 +10,7 @@ import java.util.ArrayList;
 
 import model.User;
 import model.Route;
-import game.Tools;
-import vue.VueBackground;
+import Tools.Tools;
 import vue.VueUser;
 
 public class Deplace extends Thread {
