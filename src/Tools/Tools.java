@@ -1,7 +1,10 @@
 package Tools;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.geom.Line2D;
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Random;
@@ -222,6 +225,29 @@ public class Tools {
         //paint the Icon to the BufferedImage.
         img.paintIcon(null, g, 0,0);
         g.dispose();
+        return bi;
+    }
+
+    /**
+     * Create a BufferedImage from a path leading to the image
+     * @param pathName the path
+     * @return the BufferedImage found. Raise an exception if the image couldn't be found
+     */
+    public static BufferedImage getBIfromPath(String pathName) {
+        BufferedImage bi = null;
+        try{
+            File c = new File(pathName);
+            bi = ImageIO.read(c);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Image couldn't be read");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        if(bi.getHeight()==-1 || bi.getWidth()==-1){
+            throw new RuntimeException("Image couldn't be read");
+        }
+
         return bi;
     }
 
