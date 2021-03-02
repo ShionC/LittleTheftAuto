@@ -186,6 +186,13 @@ public class Tools {
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
+    /**
+     * Scale the Buffered image to a desired scale
+     * @param before The original BufferedImage
+     * @param scaleX the factor by which coordinates are scaled along the X axis direction
+     * @param scaleY the factor by which coordinates are scaled along the Y axis direction
+     * @return
+     */
     public static BufferedImage scaleBI(BufferedImage before, double scaleX, double scaleY){
         int w = before.getWidth();
         int h = before.getHeight();
