@@ -4,6 +4,8 @@ import controleur.Controleur;
 import vue.Affichage;
 import vue.VueUser;
 
+import java.awt.*;
+
 
 public class User extends Thread {
 
@@ -237,6 +239,14 @@ public class User extends Thread {
 
     public int getPosY() {
         return posY;
+    }
+
+    /**
+     * Renvoie les coord x et y sous forme de point
+     * @return
+     */
+    public Point getPos(){
+        return new Point(getPosX(),getPosY());
     }
 
     /**

@@ -102,7 +102,7 @@ public class Deplace extends Thread {
                 //Touver le bon point sur le segment de route
                 ArrayList<Point> listRoute = this.route.getRoute();
                 boolean modifier;
-                int i = Tools.findIdxFirstInfByY(new Point(obj.getPosX(), obj.getPosY()), listRoute);
+                int i = Tools.findIdxFirstInfByY(obj.getPos(), listRoute);
                 i--; //Car on veux dernier point superieur
                 modifier = i>=0;
                 if( ! modifier){
@@ -121,7 +121,7 @@ public class Deplace extends Thread {
 
                     double modVitMin = 1; //Lorsque la distance est maximale, la vitesse est minimale
 
-                    float dist = (float) Tools.distance(new Point(obj.getPosX(),obj.getPosY()),
+                    float dist = (float) Tools.distance(obj.getPos(),
                             new Point(xCenter, obj.getPosY())); //La distance de user par rapport qu milieu de la route
                     dist = rangeMax-dist; //La distance de user par rapport aux bordS
                     //Produit en croix
@@ -131,7 +131,7 @@ public class Deplace extends Thread {
 
 
                 if(modVit < 0){
-                    System.out.println("Alerte ! ModVit < 0 on road!!!");
+                    //System.out.println("Alerte ! ModVit < 0 on road!!!");
                 }
 
                 double maxModVit = 40; //La mod maximale de la vitesse
@@ -203,7 +203,7 @@ public class Deplace extends Thread {
 
                 ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
                 for(Obstacle obs : listObstacles){
-                    int range = this.aff.bmg.getRange(new Point(obs.getPosX(),obs.getPosY()));
+                    int range = this.aff.bmg.getRange(obs.getPos());
 
                     //Mod obstacle
                     if(range != -1){
@@ -229,7 +229,7 @@ public class Deplace extends Thread {
                         //Decelere User
                         this.user.modVitesse(decObs);
                         //Rebond de user de l autre cote de l obstacle
-                        this.user.rebond(2, ! obs.isRightPoint(new Point(this.user.getPosX(), this.user.getPosY())));
+                        this.user.rebond(2, ! obs.isRightPoint(this.user.getPos()));
                     }
                 }
 

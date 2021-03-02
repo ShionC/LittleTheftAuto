@@ -40,6 +40,14 @@ public class Obstacle {
         return posY;
     }
 
+    /**
+     * Renvoie les coord x et y sous forme de point
+     * @return
+     */
+    public Point getPos(){
+        return new Point(getPosX(),getPosY());
+    }
+
     public boolean isRightRoute() {
         return rightRoute;
     }

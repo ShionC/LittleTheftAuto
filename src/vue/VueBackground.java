@@ -486,7 +486,6 @@ public class VueBackground {
             int modFromRoute = Math.round((modFromRouteMax*(float) (yPtCtrl-horizon+50))/(float) (Affichage.HAUTEUR-horizon+50));
             int rangePtCtrl = this.getRange(new Point(0, yPtCtrl)) + modFromRoute; //depasse de la route sur l axe X
 
-            //g2.drawLine(xOnRoute-rangePtCtrl, yPtCtrl, xOnRoute+rangePtCtrl, yPtCtrl);
             //Dessine une ligne en pointilles
             int startX = xOnRoute-rangePtCtrl;
             int endX = xOnRoute+rangePtCtrl;
