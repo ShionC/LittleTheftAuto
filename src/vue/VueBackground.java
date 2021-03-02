@@ -99,6 +99,7 @@ public class VueBackground {
         */
 
         //Initialiser les images des nuages et de la montagne :
+        /*
             try{
                 //Nuages
                 File c1 = new File("src/Sprites/cloud1.png");
@@ -130,6 +131,31 @@ public class VueBackground {
             } catch (Exception e){
                 e.printStackTrace();
             }
+
+
+         */
+
+
+
+        //Nuages
+        cloud1 = Tools.getBIfromPath("src/Sprites/cloud1.png");
+        cloud2 = Tools.getBIfromPath("src/Sprites/cloud2.png");
+        cloud3 = Tools.getBIfromPath("src/Sprites/cloud3.png");
+        cloud4 = Tools.getBIfromPath("src/Sprites/cloud4.png");
+        //Scale, changer la taille des images
+        double scaleX = 0.5;
+        double scaleY = 0.5;
+        cloud1 = Tools.scaleBI(cloud1, scaleX, scaleY); //Au cas ou l image soit trop grande.
+        cloud2 = Tools.scaleBI(cloud2, scaleX, scaleY);
+        cloud3 = Tools.scaleBI(cloud3, scaleX, scaleY);
+        cloud4 = Tools.scaleBI(cloud4, scaleX, scaleY);
+
+        //Montagne
+        this.mountain = Tools.getBIfromPath("src/Sprites/mountains.png");
+        this.mountain = Tools.scaleBI(this.mountain, 0.5, 0.5);
+
+
+
 
         //Initialiser nuages
         this.initClouds();
