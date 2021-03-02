@@ -283,7 +283,7 @@ public class Tools {
      * @param c2 La 2e couleur
      * @param stroke A dashed stroke
      */
-    private void drawDashedLineWith2Colors(Graphics2D g2, Line2D.Double line, Color c1, Color c2, BasicStroke stroke){
+    public static void drawDashedLineWith2Colors(Graphics2D g2, Line2D.Double line, Color c1, Color c2, BasicStroke stroke){
         Font oldFont = g2.getFont();
         Color oldColor = g2.getColor();
         Stroke oldStroke = g2.getStroke();
@@ -297,7 +297,7 @@ public class Tools {
         dashingPattern2[dashingPattern2.length-1] = tmp;
 
         BasicStroke stroke2 = new BasicStroke(stroke.getLineWidth(),stroke.getEndCap(),stroke.getLineJoin(),
-                stroke.getMiterLimit(),dashingPattern2,dashingPattern2[0]);
+                stroke.getMiterLimit(),dashingPattern2,stroke.getDashPhase()+dashingPattern2[0]);
         //Draw
         g2.setColor(c1);
         g2.setStroke(stroke);

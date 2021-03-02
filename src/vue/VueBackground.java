@@ -7,6 +7,8 @@ import model.Obstacle;
 
 import java.awt.*;
 import javax.imageio.ImageIO;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -391,7 +393,7 @@ public class VueBackground {
     }
 
     /**
-     * Dessine la pelouse, l'horizon, les nuages et les montagnes de fond
+     * Dessine l'horizon, les nuages et les montagnes de fond
      * @param g2 le graphism
      */
     private void drawFond(Graphics2D g2){
@@ -441,7 +443,7 @@ public class VueBackground {
     }
 
     /**
-     * Dessine l arriere plan
+     * Dessine l arriere plan, contenant la pelouse, la route
      * @param g2 le graphisme
      */
     public void drawBackground(Graphics2D g2){
@@ -477,13 +479,39 @@ public class VueBackground {
 
         //Point de controle
         int yPtCtrl = this.aff.route.getCtrl();
-        if(yPtCtrl>horizon && yPtCtrl<Affichage.HAUTEUR){
+        if(yPtCtrl>horizon && yPtCtrl<Affichage.HAUTEUR+20){
             int idxRouteCtrl = Tools.findIdxFirstInfByY(new Point(0, yPtCtrl), listRoute);
             int xOnRoute = Tools.findX(yPtCtrl, listRoute.get(idxRouteCtrl-1), listRoute.get(idxRouteCtrl));
-            int rangePtCtrl = this.getRange(new Point(0, yPtCtrl)) + 30; //depasse de la route sur l axe X
+            int modFromRouteMax = 50;
+            int modFromRoute = Math.round((modFromRouteMax*(float) (yPtCtrl-horizon+50))/(float) (Affichage.HAUTEUR-horizon+50));
+            int rangePtCtrl = this.getRange(new Point(0, yPtCtrl)) + modFromRoute; //depasse de la route sur l axe X
+
+            //g2.drawLine(xOnRoute-rangePtCtrl, yPtCtrl, xOnRoute+rangePtCtrl, yPtCtrl);
+            //Dessine une ligne en pointilles
+            int startX = xOnRoute-rangePtCtrl;
+            int endX = xOnRoute+rangePtCtrl;
+            Line2D.Double lineCtrl = new Line2D.Double(startX, yPtCtrl, endX, yPtCtrl);
+            //Gestion profondeur
+            float heightMax = 10;
+            float heightCtrl = (heightMax*(float) (yPtCtrl))/(float) (Affichage.HAUTEUR);
+            float dash1Max = 15;
+            float dash1 = (dash1Max*(float) (yPtCtrl))/(float) (Affichage.HAUTEUR);
+            float dash2Max = 10;
+            float dash2 = (dash2Max*(float) (yPtCtrl))/(float) (Affichage.HAUTEUR);
+            float[] dashingPattern = {dash1, dash2};
+            //Dessin
+            BasicStroke strokeCtrl = new BasicStroke(heightCtrl, BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER, 1.0f, dashingPattern, 0f);
+            Color c1 = new Color(243, 214, 23);
+            Color c2 = Color.black;
+            Tools.drawDashedLineWith2Colors(g2, lineCtrl, c1, c2, strokeCtrl);
+            //Contour du pt de ctrl
+            g2.setColor(Color.BLACK);
+            g2.setStroke(new BasicStroke(0.5f));
+            g2.draw(new Rectangle2D.Double(startX,yPtCtrl-(heightCtrl/2),endX-startX, heightCtrl));
 
 
-            g2.drawLine(xOnRoute-rangePtCtrl, yPtCtrl, xOnRoute+rangePtCtrl, yPtCtrl);
+
         }
 
 
