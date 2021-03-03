@@ -150,6 +150,7 @@ public class Controleur implements KeyListener {
             this.enPause = true;
             this.timeManager.getTimerPtCtrl().pause();
             this.aff.pause();
+            this.user.pause();
             Data.pausePartie();
         }
     }
@@ -163,7 +164,8 @@ public class Controleur implements KeyListener {
             this.enPause = false;
             this.pauseChoice = 1;
             this.timeManager.getTimerPtCtrl().resume();
-            this.aff.restart();
+            this.aff.resume();
+            this.user.resumeUser();
             Data.resumePartie();
         }
     }
@@ -331,7 +333,7 @@ public class Controleur implements KeyListener {
 
         //Pause
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-            System.out.println("Mettre en pause");
+            //System.out.println("Mettre en pause");
             if(! this.enPause){
                 this.pause();
             } else {

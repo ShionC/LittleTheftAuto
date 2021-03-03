@@ -13,6 +13,7 @@ public class Accueil implements KeyListener {
     private OutsideScreen outScreen;
 
     /**
+     * La raison pour laquelle la partie a ete arretee
      * O : Partie stopee
      * <br/>1 : Vitesse == 0
      * <br/>2 : PtCtrl non atteint

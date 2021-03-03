@@ -59,7 +59,8 @@ public class VueUser {
     // Affichage du véhicule dans une sous-méthode
     public void drawCar(Graphics2D g2) {
         g2.setColor(new Color(188, 32, 1));
-        g2.fill(getShapeCar());
+        //g2.fill(getShapeCar());
+        g2.draw(getShapeCar()); //Boite de collision
 
         BufferedImage img = Tools.deepCopy(this.aff.user.getEtat().getCurrentImage());
         AffineTransform at = new AffineTransform();

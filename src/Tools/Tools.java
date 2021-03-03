@@ -2,19 +2,17 @@ package Tools;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.geom.Line2D;
+import java.awt.geom.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Random;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-import java.awt.geom.Area;
 
 public class Tools {
 
@@ -278,6 +276,32 @@ public class Tools {
             }
         }
         return false;
+    }
+
+
+    /**
+     * Rotate a shape while keeping the same center
+     * @param s the shape to rotate
+     * @param angle the angle of the rotation
+     * @return the rotated Shape. Has the same center as the original
+     */
+    public static Shape rotate(Shape s, double angle){
+        //Rotate
+        AffineTransform ro = new AffineTransform();
+        ro.rotate(angle);
+        Shape tmp = ro.createTransformedShape(s);
+        //Translate back
+        Rectangle2D aBounds = s.getBounds2D();
+        Rectangle2D tmpBounds = tmp.getBounds2D();
+        //Supperpose les centers
+        Point2D.Double centerA = new Point2D.Double(aBounds.getCenterX(), aBounds.getCenterY());
+        Point2D.Double centerTmp = new Point2D.Double((tmpBounds.getCenterX()), tmpBounds.getCenterY());
+        Point2D.Double distToNewCenter = new Point2D.Double(centerA.x-centerTmp.x, centerA.y-centerTmp.y);
+        AffineTransform tx = new AffineTransform();
+        tx.translate(distToNewCenter.x, distToNewCenter.y);
+        Shape newShape = tx.createTransformedShape(tmp);
+
+        return newShape;
     }
 
     /*-----------------------------------------GRAPHIC----------------------------------------------------*/

@@ -150,17 +150,6 @@ public class Route {
 
 
         }
-        /*
-        synchronized (this.listePoints){
-            for(int i = 0; i<this.listePoints.size(); i++){
-                this.listePoints.get(i).move(this.listePoints.get(i).x, this.listePoints.get(i).y+saut);
-            }
-            this.y_ptCtrl += saut;
-            this.updateRoute();
-        }
-        this.kilometrage += saut;
-
-         */
 
     }
 

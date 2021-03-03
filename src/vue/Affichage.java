@@ -20,7 +20,6 @@ public class Affichage extends JPanel {
 
     // Largeur et longueur de la fenêtre
 
-    //private static final Dimension dimEcran = Toolkit.getDefaultToolkit().getScreenSize();
     private static Rectangle dimEcran = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
     public static final int LARGEUR = dimEcran.width-100;  //800;
@@ -137,9 +136,7 @@ public class Affichage extends JPanel {
     public void newPartie(User newUser, Route newRoute){
         this.user = newUser;
         this.route = newRoute;
-        this.bmg.initClouds();
-        this.bmg.initObstacles();
-        this.bmg.setShapeRoute();
+        this.bmg.init();
     }
 
     /**
@@ -156,7 +153,7 @@ public class Affichage extends JPanel {
     /**
      * Reprends la partie pausee, enleve l ecran de pause
      */
-    public void restart(){
+    public void resume(){
         if(! this.partieEnCours && this.enPause){
             this.partieEnCours = true;
             this.enPause = false;
@@ -202,12 +199,10 @@ public class Affichage extends JPanel {
         int tailleOval = 30;
         g2.setColor(Color.RED);
         if(this.ctrl.getPauseChoice() == 1){
-            //g2.fillOval(xRestart - tailleOval - 10, yRestart-20, tailleOval, tailleOval);
             AffineTransform at = new AffineTransform();
             at.translate(xRestart - tailleOval - 10, yRestart-20);
             g2.drawImage(this.curseur, at, null);
         } else if(this.ctrl.getPauseChoice() == 2){
-            //g2.fillOval(xStop - tailleOval - 10, yStop-20, tailleOval, tailleOval);
             AffineTransform at = new AffineTransform();
             at.translate(xStop - tailleOval - 10, yStop-20);
             g2.drawImage(this.curseur, at, null);
@@ -251,7 +246,6 @@ public class Affichage extends JPanel {
             //Les updates
         }
 
-        //System.out.println("\n     *Update*");
     }
 
 

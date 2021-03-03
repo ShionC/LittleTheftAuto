@@ -115,7 +115,7 @@ public class TimeManager extends Thread {
                     } else {
                         //Termine Fin de la partie
                         this.ctrl.endPartie(2);
-                        System.out.println("Course terminee, partie perdue !!");
+                        //System.out.println("Course terminee, partie perdue !!");
                     }
                 } else {
                     if(this.ctrl.user.getPosY() <= this.route.getCtrl()){ //Si user depasse le point de controle

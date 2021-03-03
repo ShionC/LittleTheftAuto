@@ -99,7 +99,6 @@ public class User extends Thread {
         this.vitesse = 20;
         this.posX = newPosX;
         this.inertie = 0;
-        //this.etat = 0;
         this.etat.setCurrentState(0);
     }
 
@@ -152,8 +151,6 @@ public class User extends Thread {
      * Deplace la position de l utilisateur sur la droite sur l axe X
      */
     public void moveRight(){
-        //this.posX += this.saut;
-        //this.etat = 1;
         this.etat.setCurrentState(1);
         this.currentWaitEtat = 0;
         if(this.inertie<this.saut){
@@ -163,7 +160,6 @@ public class User extends Thread {
                 this.inertie+=this.sautInertie; //Plus rapide lors de changement de direction
             }
         }
-        //this.posX += this.inertie;  //Le faire dans run()
 
     }
 
@@ -171,8 +167,6 @@ public class User extends Thread {
      * Deplace la position de l utilisateur sur la gauche sur l axe X
      */
     public void moveLeft(){
-        //this.posX -= saut;
-        //this.etat = -1;
         this.etat.setCurrentState(-1);
         this.currentWaitEtat = 0;
         if(this.inertie>-this.saut){
@@ -183,7 +177,6 @@ public class User extends Thread {
             }
 
         }
-        //this.posX += this.inertie; //Le faire dans run()
     }
 
     /**
@@ -202,11 +195,9 @@ public class User extends Thread {
      */
     public void rebond(int intensite, boolean right){
         if(right){
-            //this.etat = 1;
             this.etat.setCurrentState(1);
             this.currentWaitEtat = 0;
         } else {
-            //this.etat = -1;
             this.etat.setCurrentState(-1);
             this.currentWaitEtat = 0;
         }
@@ -263,10 +254,11 @@ public class User extends Thread {
     }
 
     /**
-     * Arrete l execution de la thread
+     * Arrete l execution de la thread de user et de etat
      */
     public void stopRun(){
         this.run = false;
+        this.etat.stopRun();
     }
 
     /**
@@ -277,6 +269,19 @@ public class User extends Thread {
         this.etat.start();
     }
 
+    /**
+     * Pause le defilement des etats de user
+     */
+    public void pause(){
+        this.etat.pause();
+    }
+
+    /**
+     * Recommence le defilement des etats de user
+     */
+    public void resumeUser(){
+        this.etat.resumeScrolling();
+    }
 
     @Override
     public void run() {
@@ -322,16 +327,6 @@ public class User extends Thread {
                     this.posX = Affichage.LARGEUR - VueUser.LARG_CAR;
             }
 
-
-                /*
-            //Modif etat
-            if(this.currentWaitEtat < this.waitEtat){
-                this.currentWaitEtat++;
-            } else if (this.currentWaitEtat == this.waitEtat && this.inertie == 0){ //On est pas en train de deraper
-                this.etat = 0;
-            }
-
-                 */
 
             try {
                 //noinspection BusyWait

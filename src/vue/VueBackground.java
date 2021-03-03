@@ -6,12 +6,9 @@ import model.Data;
 import model.Obstacle;
 
 import java.awt.*;
-import javax.imageio.ImageIO;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.awt.geom.Area;
 import java.awt.geom.AffineTransform;
@@ -23,8 +20,7 @@ public class VueBackground {
 
     //public static final int horizon = (int) (((float)Affichage.HAUTEUR) * (1/4))+1;
     public static final int horizon = 200;
-    ///**La forme des montagnes, ne change pas. Initialisee dans le constructeur**/
-    //private Shape montagnes = null;
+
     /**
      * On initialise la forme de la route en un rectangle
      */
@@ -67,37 +63,6 @@ public class VueBackground {
     public VueBackground(Affichage aff){
         this.aff = aff;
 
-
-        //Initialiser montagnes
-        // Les creer apartir de l horizon. Le 1er et dernier point de la liste doit etre le meme
-        /*int nbPoints = 0;
-        int[] tabX = new int[0];
-        int[] tabY = new int[0];*/
-        /*
-        int nbPoints = 10;
-        int[] tabX = new int[nbPoints+1];
-        int[] tabY = new int[nbPoints+1];
-        tabX[0] = 0;
-        tabY[0] = horizon;
-
-        int marge = Affichage.LARGEUR / nbPoints+1; //60
-        for (int i=1; i<nbPoints; i++) { // Redefinition de tab[0]
-            // Tous les 3 points, on revient à la ligne d'horizon.
-            if (i%3 == 0) {
-                tabY[i] = this.horizon;
-            } else {
-                tabY[i] = Tools.rangedRandomInt(this.horizon - 150, this.horizon - 10); //A revoir, on ne touche ni le ciel, ni le sol !
-            }
-            tabX[i] = marge;
-            marge += aff.LARGEUR / nbPoints+1;
-        }
-        tabX[nbPoints] = tabX[0];
-        tabY[nbPoints] = tabY[0];
-
-        this.montagnes = new Polygon(tabX, tabY, nbPoints);
-
-        */
-
         //Initialiser les images des nuages et de la montagne :
 
         //Nuages
@@ -118,8 +83,6 @@ public class VueBackground {
         this.mountain = Tools.scaleBI(this.mountain, 0.5, 0.5);
 
 
-
-
         //Initialiser nuages
         this.initClouds();
         this.setShapeRoute();
@@ -130,6 +93,16 @@ public class VueBackground {
     }
 
     // ********************************** 3) Méthodes **********************************
+
+    /**
+     * Reinitialise VueBackground (clouds, route, obstacles, mod montagne)
+     */
+    public void init(){
+        this.initClouds();
+        this.setShapeRoute();
+        this.initObstacles();
+        this.modMontagnes = 0;
+    }
 
     /**
      * Cree la forme de la route et met a jour rangeRoute
@@ -339,10 +312,8 @@ public class VueBackground {
         for (int i = 0; i < this.clouds.size(); i++) {
             if (right) {
                 this.clouds.get(i).move(this.clouds.get(i).x + sautClouds, this.clouds.get(i).y);
-                //this.modMontagnes += sautMontagnes;
             } else {
                 this.clouds.get(i).move(this.clouds.get(i).x - sautClouds, this.clouds.get(i).y);
-                //this.modMontagnes -= sautMontagnes;
             }
         }
         if(right){
@@ -353,6 +324,10 @@ public class VueBackground {
         //Pour eviter les depassements
         if(this.initXMontagnes+this.modMontagnes>0){
             this.modMontagnes = -this.initXMontagnes; //Le stabilise a 0
+        }
+        double largeurMontagne = this.mountain.getWidth()/(double)2;
+        if(this.initXMontagnes+largeurMontagne+this.modMontagnes<Affichage.LARGEUR){ //On voit le vide dans l ecran
+            this.modMontagnes = (int) (Affichage.LARGEUR-this.initXMontagnes-largeurMontagne); //Stabilise a Affichage.LARGEUR
         }
     }
 
@@ -385,23 +360,13 @@ public class VueBackground {
             g2.drawImage(img, at, null);
 
 
-            //g2.setColor(Color.WHITE);
-            //g2.fillOval(this.clouds.get(i).x, this.clouds.get(i).y, 30,20);
         }
 
         //Montagnes
-        /*
-        g2.setColor(Color.GRAY);
-        g2.setStroke(new BasicStroke(0.5f));
-        g2.fill(this.montagnes);
-        g2.setColor(Color.BLACK);
-        g2.draw(this.montagnes);//Ligne noire autour des montagnes, donne une sensation de dessin
-
-         */
 
         BufferedImage montagnes = Tools.deepCopy(this.mountain);
         AffineTransform at = new AffineTransform();
-        at.translate(this.initXMontagnes+this.modMontagnes, horizon-(this.mountain.getHeight()/(double)2)); //Les coord du nuage
+        at.translate(this.initXMontagnes+this.modMontagnes, horizon-(this.mountain.getHeight()/(double)2)); //Les coord de la montagne
         g2.drawImage(montagnes, at, null);
 
     }
