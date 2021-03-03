@@ -6,6 +6,7 @@ import vue.Affichage;
 
 import java.awt.*;
 import java.awt.geom.Area;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import model.User;
@@ -121,8 +122,9 @@ public class Deplace extends Thread {
 
                     double modVitMin = 1; //Lorsque la distance est maximale, la vitesse est minimale
 
-                    float dist = (float) Tools.distance(obj.getPos(),
-                            new Point(xCenter, obj.getPosY())); //La distance de user par rapport qu milieu de la route
+                    Point2D.Double milieuObj = new Point2D.Double(shapeObj.getBounds2D().getCenterX(),
+                            shapeObj.getBounds2D().getCenterY());
+                    double dist = milieuObj.distance(xCenter, milieuObj.y); //La distance du milieu de obj par rapport qu milieu de la route
                     dist = rangeMax-dist; //La distance de user par rapport aux bordS
                     //Produit en croix
                     modVit = (modVitMin*dist)/(double) rangeMax;
