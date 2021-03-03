@@ -108,8 +108,9 @@ public class TimeManager extends Thread {
 
                 if(this.timerPtCtrl.isOver()){
                     if(this.ctrl.user.getPosY() <= this.route.getCtrl()){ //Si user depasse le point de controle
-                        Data.addScore(this.route.getValueCtrl()+1);
+                        Data.addScore(this.route.getValueCtrl());
                         Data.addCtrlPt();
+                        this.ctrl.aff.vueUser.writeMessage("+"+this.route.getValueCtrl());
                         this.createNewPtCtrl();
                         //Augmente score de user ?
                     } else {
@@ -119,8 +120,9 @@ public class TimeManager extends Thread {
                     }
                 } else {
                     if(this.ctrl.user.getPosY() <= this.route.getCtrl()){ //Si user depasse le point de controle
-                        Data.addScore(this.route.getValueCtrl()+1);
+                        Data.addScore(this.route.getValueCtrl());
                         Data.addCtrlPt();
+                        this.ctrl.aff.vueUser.writeMessage("+"+this.route.getValueCtrl());
                         this.createNewPtCtrl();
                         //Augmente score de user ?
                     }
