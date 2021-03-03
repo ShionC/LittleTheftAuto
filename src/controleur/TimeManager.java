@@ -93,6 +93,8 @@ public class TimeManager extends Thread {
         timer += bonus; //+2 sec bonus
 
         int valueCtrl = distancePtCtrl/100; //Facteur arbitraire
+        int posYUser = this.ctrl.user.getPosY();
+        distancePtCtrl = posYUser - distancePtCtrl;
 
         this.route.newPtControle(distancePtCtrl, valueCtrl);
         this.timerPtCtrl = new MyTimer(timer);
@@ -105,7 +107,7 @@ public class TimeManager extends Thread {
             if(this.ctrl.partieEnCours){
 
                 if(this.timerPtCtrl.isOver()){
-                    if(User.posY <= this.route.getCtrl()){ //Si user depasse le point de controle
+                    if(this.ctrl.user.getPosY() <= this.route.getCtrl()){ //Si user depasse le point de controle
                         Data.addScore(this.route.getValueCtrl()+1);
                         Data.addCtrlPt();
                         this.createNewPtCtrl();
@@ -116,7 +118,7 @@ public class TimeManager extends Thread {
                         System.out.println("Course terminee, partie perdue !!");
                     }
                 } else {
-                    if(User.posY <= this.route.getCtrl()){ //Si user depasse le point de controle
+                    if(this.ctrl.user.getPosY() <= this.route.getCtrl()){ //Si user depasse le point de controle
                         Data.addScore(this.route.getValueCtrl()+1);
                         Data.addCtrlPt();
                         this.createNewPtCtrl();

@@ -65,21 +65,13 @@ public class Affichage extends JPanel {
         this.card.add(this.outScreen, "OutScreen");
         fenetre.add(card);
 
-        try{
-            File m = new File("src/Sprites/curseur.png");
-            this.curseur = ImageIO.read(m);
-            this.curseur = Tools.deepCopy(this.curseur);
-            //this.curseur = Tools.scaleBI(this.curseur, 0.05, 0.05);
-            this.curseur = Tools.getResizedImage(this.curseur, 20, 20);
-            File m2 = new File("src/Sprites/pauseButton.png");
-            this.pauseButton = ImageIO.read(m2);
-            this.pauseButton = Tools.scaleBI(this.pauseButton, 0.5, 0.5);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("l'image n'a pas pu etre lue");
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        this.curseur = Tools.getBIfromPath("src/Sprites/curseur.png");
+        this.curseur = Tools.deepCopy(this.curseur);
+        this.curseur = Tools.getResizedImage(this.curseur, 20, 20);
+
+        this.pauseButton = Tools.getBIfromPath("src/Sprites/pauseButton.png");
+        this.pauseButton = Tools.scaleBI(this.pauseButton, 0.5, 0.5);
+
 
     }
 
@@ -104,23 +96,11 @@ public class Affichage extends JPanel {
      * @param toInGame true si vers le jeu, false si vers le menu
      */
     public void switchInteface(boolean toInGame){
-        //System.out.println("Switch");
-        /*
-        this.setVisible(toInGame);
-        this.setEnabled(toInGame);
-        //this.setFocusable(toInGame);
-        this.outScreen.setVisible(!toInGame);
-        this.outScreen.setEnabled(!toInGame);
-        //this.setFocusable(!toInGame);
-
-         */
         CardLayout cl = (CardLayout) this.card.getLayout();
         if(toInGame){
-            //this.fenetre.setContentPane(this);
             cl.show(this.card, "Game");
             this.requestFocusInWindow();
         } else {
-            //this.fenetre.setContentPane(this.outScreen);
             cl.show(this.card, "OutScreen");
             this.outScreen.requestFocusInWindow();
         }
@@ -131,7 +111,6 @@ public class Affichage extends JPanel {
      */
     public void endPartie(){
         if(this.partieEnCours){
-            System.out.println("End game aff");
             this.partieEnCours = false;
             this.update();
         }
@@ -139,8 +118,10 @@ public class Affichage extends JPanel {
 
     /**
      * Commence la partie, sors de l ecran d accueil
+     * <br/>Du plus, initialise les images dans User
      */
     public void startPartie(){
+        this.vueUser.initUser();
         this.partieEnCours = true;
         this.enPause = false;
     }

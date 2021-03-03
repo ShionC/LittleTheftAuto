@@ -1,10 +1,11 @@
 package model;
 
-import controleur.Controleur;
+import Tools.ScrollingStates;
 import vue.Affichage;
 import vue.VueUser;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 
 public class User extends Thread {
@@ -21,7 +22,7 @@ public class User extends Thread {
      */
     private float posX;
     /**La position sur l axe Y de User**/
-    public static final int posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
+    private int posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
     /**La valeur max d un deplacement lateral**/
     private final int saut;
 
@@ -42,7 +43,8 @@ public class User extends Thread {
     public static final double vitesseMax = 100;
 
     /**L etat actuel de user {-1,0,1}**/
-    private int etat = 0;
+    private ScrollingStates etat;
+    //private int etat = 0;
     /**Le temps qu il faut attendre pour que l etat revienne a 0**/
     private final int waitEtat = 2;
     /**Le temps dattente actuel**/
@@ -64,6 +66,12 @@ public class User extends Thread {
         this.saut = 25;
         this.inertie = 0;
         this.vitesse = 20;
+
+        ArrayList<Integer> listEtat = new ArrayList<>();
+        listEtat.add(-1); listEtat.add(0); listEtat.add(1);
+        this.etat = new ScrollingStates(listEtat);
+        this.etat.setModeTo0();
+        this.etat.setGap(dt*10);
     }
 
     // ********************************** 3) Méthodes **********************************
@@ -91,7 +99,8 @@ public class User extends Thread {
         this.vitesse = 20;
         this.posX = newPosX;
         this.inertie = 0;
-        this.etat = 0;
+        //this.etat = 0;
+        this.etat.setCurrentState(0);
     }
 
     /**
@@ -119,7 +128,7 @@ public class User extends Thread {
      * <br/>1 : vers la droite
      * @return etat
      */
-    public int getEtat() {
+    public ScrollingStates getEtat() {
         return etat;
     }
 
@@ -144,7 +153,8 @@ public class User extends Thread {
      */
     public void moveRight(){
         //this.posX += this.saut;
-        this.etat = 1;
+        //this.etat = 1;
+        this.etat.setCurrentState(1);
         this.currentWaitEtat = 0;
         if(this.inertie<this.saut){
             if(this.inertie>0){
@@ -162,7 +172,8 @@ public class User extends Thread {
      */
     public void moveLeft(){
         //this.posX -= saut;
-        this.etat = -1;
+        //this.etat = -1;
+        this.etat.setCurrentState(-1);
         this.currentWaitEtat = 0;
         if(this.inertie>-this.saut){
             if(this.inertie<0){
@@ -191,10 +202,12 @@ public class User extends Thread {
      */
     public void rebond(int intensite, boolean right){
         if(right){
-            this.etat = 1;
+            //this.etat = 1;
+            this.etat.setCurrentState(1);
             this.currentWaitEtat = 0;
         } else {
-            this.etat = -1;
+            //this.etat = -1;
+            this.etat.setCurrentState(-1);
             this.currentWaitEtat = 0;
         }
         if(intensite == 1){
@@ -256,6 +269,14 @@ public class User extends Thread {
         this.run = false;
     }
 
+    /**
+     * Commence le thread de User et le defile de ses etats
+     */
+    public void startUser(){
+        this.start();
+        this.etat.start();
+    }
+
 
     @Override
     public void run() {
@@ -302,12 +323,15 @@ public class User extends Thread {
             }
 
 
+                /*
             //Modif etat
             if(this.currentWaitEtat < this.waitEtat){
                 this.currentWaitEtat++;
             } else if (this.currentWaitEtat == this.waitEtat && this.inertie == 0){ //On est pas en train de deraper
                 this.etat = 0;
             }
+
+                 */
 
             try {
                 //noinspection BusyWait

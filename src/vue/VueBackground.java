@@ -99,43 +99,6 @@ public class VueBackground {
         */
 
         //Initialiser les images des nuages et de la montagne :
-        /*
-            try{
-                //Nuages
-                File c1 = new File("src/Sprites/cloud1.png");
-                File c2 = new File("src/Sprites/cloud2.png");
-                File c3 = new File("src/Sprites/cloud3.png");
-                File c4 = new File("src/Sprites/cloud4.png");
-                cloud1 = ImageIO.read(c1);
-                cloud2 = ImageIO.read(c2);
-                cloud3 = ImageIO.read(c3);
-                cloud4 = ImageIO.read(c4);
-                //Scale, changer la taille des images
-                double scaleX = 0.5;
-                double scaleY = 0.5;
-                cloud1 = Tools.scaleBI(cloud1, scaleX, scaleY); //Au cas ou l image soit trop grande.
-                cloud2 = Tools.scaleBI(cloud2, scaleX, scaleY);
-                cloud3 = Tools.scaleBI(cloud3, scaleX, scaleY);
-                cloud4 = Tools.scaleBI(cloud4, scaleX, scaleY);
-
-                //Montagne
-                File m = new File("src/Sprites/mountains.png");
-                this.mountain = ImageIO.read(m);
-                this.mountain = Tools.scaleBI(this.mountain, 0.5, 0.5);
-                if(this.mountain == null){
-                    System.out.println("        *Image nulle !!!!*");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("l'image n'a pas pu etre lue");
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-
-
-         */
-
-
 
         //Nuages
         cloud1 = Tools.getBIfromPath("src/Sprites/cloud1.png");
@@ -289,36 +252,11 @@ public class VueBackground {
     public int getRange(Point p){
         ArrayList<Point> listRoute = this.aff.route.getRoute();
         //Touver le bon point sur le segment de route
-        /*
-        boolean inRoute = true; //Si l obstacle est toujours au niveau de la route
-        Point p1 = listRoute.get(0); //p1>p2
-        Point p2 = listRoute.get(1);
-        int i = 1;
-        while (p.y<p2.y && i<listRoute.size()-1){
-            if(p.y>=p1.y){ //Sortit par le bas
-                inRoute = false;
-                break;
-            }
-            if(i+1 >= listRoute.size()){  //Pour le cas des objets au dessus de l horizon
-                inRoute = false;
-                break;
-            } else if (inRoute) {
-                p1 = listRoute.get(i);
-                if(i+1 >= listRoute.size()){  //Juste au cas ou
-                    System.out.println("Sortie de array");
-                }
-                p2 = listRoute.get(i+1);
-            }
-
-            i++;
-        }
-
-         */
         int i = Tools.findIdxFirstInfByY(p, listRoute);
         i--; //Car on veux dernier superieur
 
 
-        if(i>=0){ //Si l obstacle est toujours au niveau de la route
+        if(i>=0){ //Si l objet est toujours au niveau de la route
             Point p1 = listRoute.get(i);
             return (this.getRangeRoute().get(i)*(p.y- VueBackground.horizon +50))/(p1.y- VueBackground.horizon +50);//Produit en croix
         } else {

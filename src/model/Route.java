@@ -203,8 +203,7 @@ public class Route {
      * @param valueCtrl en valeur du point de controle pour le score de user
      */
     public void newPtControle(int posY, int valueCtrl) {
-        int posUser = User.posY;
-        this.y_ptCtrl = posUser - posY;
+        this.y_ptCtrl = posY;
         this.valueCtrl = valueCtrl;
     }
 

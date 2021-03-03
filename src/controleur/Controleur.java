@@ -118,11 +118,11 @@ public class Controleur implements KeyListener {
      */
     public void startPartie(){
         this.aff.switchInteface(true);
+        this.aff.startPartie();
         this.partieEnCours = true;
         this.enPause = false;
         this.timeManager.startPartie();
-        this.user.start();
-        this.aff.startPartie();
+        this.user.startUser();
         this.pauseChoice = 1;
         Data.newPartie();
     }
@@ -291,7 +291,7 @@ public class Controleur implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-            System.out.println("Key typed Ctrl");
+            //System.out.println("Key typed Ctrl");
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
             System.out.println("Mettre en pause");
             if(! this.enPause){

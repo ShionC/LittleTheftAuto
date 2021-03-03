@@ -4,10 +4,12 @@ import Tools.Tools;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class VueUser {
     // ********************************** 1) Attributs **********************************
@@ -20,33 +22,28 @@ public class VueUser {
 
     private final Affichage aff;
 
-    //Images véhicules :
-    BufferedImage userStraight;
-    BufferedImage userLeft;
-    BufferedImage userRight;
+
+    //List Etat et Images pour User
+    private HashMap<Integer, BufferedImage> listStatesUser;
 
     // ********************************** 2) Constructeur **********************************
 
     public VueUser(Affichage aff) {
         this.aff = aff;
-        try {
-            // Dessins du véhicule
-            File us = new File("src/Sprites/user.png");
-            File ul = new File("src/Sprites/userleft.png");
-            File ur = new File("src/Sprites/userright.png");
-            userStraight = ImageIO.read(us);
-            userLeft = ImageIO.read(ul);
-            userRight = ImageIO.read(ur);
-            userStraight = Tools.scaleBI(userStraight, 0.5, 0.5);
-            userLeft = Tools.scaleBI(userStraight, 0.5, 0.5);
-            userRight = Tools.scaleBI(userStraight, 0.5, 0.5);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("l'image n'a pas pu etre lue");
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        // Dessins du véhicule
+        BufferedImage userStraight = Tools.getBIfromPath("src/Sprites/user.png");
+        BufferedImage userLeft = Tools.getBIfromPath("src/Sprites/userleft.png");
+        BufferedImage userRight = Tools.getBIfromPath("src/Sprites/userright.png");
+        userStraight = Tools.scaleBI(userStraight, 0.5, 0.5);
+        userLeft = Tools.scaleBI(userLeft, 0.5, 0.5);
+        userRight = Tools.scaleBI(userRight, 0.5, 0.5);
+
+        this.listStatesUser = new HashMap<>();
+        this.listStatesUser.put(0, userStraight);
+        this.listStatesUser.put(-1, userLeft);
+        this.listStatesUser.put(1, userRight);
+
     }
 
     // ********************************** 3) Méthodes **********************************
@@ -62,9 +59,17 @@ public class VueUser {
     // Affichage du véhicule dans une sous-méthode
     public void drawCar(Graphics2D g2) {
         g2.setColor(new Color(188, 32, 1));
-        //g2.drawRect(aff.LARGEUR/2, HAUTSCREEN_CAR, HAUT_CAR, LARG_CAR);
         g2.fill(getShapeCar());
 
+        BufferedImage img = Tools.deepCopy(this.aff.user.getEtat().getCurrentImage());
+        AffineTransform at = new AffineTransform();
+        at.translate(aff.user.getPosX(), aff.user.getPosY());
+        g2.drawImage(img, at, null);
+
+    }
+
+    public void initUser(){
+        this.aff.user.getEtat().setImages(this.listStatesUser);
     }
 
     /**

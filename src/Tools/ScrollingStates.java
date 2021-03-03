@@ -1,6 +1,6 @@
 package Tools;
 
-import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,7 +17,7 @@ public class ScrollingStates extends Thread {
     private boolean modeLoop = true;
 
     /**List of the images and the corresponding state**/
-    private HashMap<Integer, Image> listImages = null;
+    private HashMap<Integer, BufferedImage> listImages = null;
     /**List of the states**/
     private ArrayList<Integer> listState = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public class ScrollingStates extends Thread {
      * <br/>The thread must be started by start() and can be stopped by stopRun(). It can also be paused and resumed
      * @param listState_Images The list of the states and their associated Images. The states must be consecutive and are considered to be the key in the HashMap
      */
-    public ScrollingStates(HashMap<Integer, Image> listState_Images){
+    public ScrollingStates(HashMap<Integer, BufferedImage> listState_Images){
         setImages(listState_Images);
     }
 
@@ -101,7 +101,7 @@ public class ScrollingStates extends Thread {
      * Add a list of images and states to the instance. The instance must not be started to do this operation. If not respected, an exception will be raised.
      * @param listState_Images The list of the states and their associated Images. The states must be consecutive and are considered to be the key in the HashMap
      */
-    public void setImages(HashMap<Integer, Image> listState_Images){
+    public void setImages(HashMap<Integer, BufferedImage> listState_Images){
         if(! this.isAlive()){
             this.listImages = listState_Images;
             Object[] listState = listState_Images.keySet().toArray();
@@ -216,7 +216,7 @@ public class ScrollingStates extends Thread {
      * Get the BufferedImage corresponding to the current state
      * @return raise an exception if the list of images is null
      */
-    public Image getCurrentImage(){
+    public BufferedImage getCurrentImage(){
         if(this.listImages != null){
             return this.listImages.get(this.currentState);
         } else {
@@ -238,7 +238,7 @@ public class ScrollingStates extends Thread {
      * The list of the Buffered image and their corresponding state
      * @return
      */
-    public HashMap<Integer, Image> getListImages(){
+    public HashMap<Integer, BufferedImage> getListImages(){
         return this.listImages;
     }
 
