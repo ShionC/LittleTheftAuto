@@ -383,9 +383,20 @@ public class OutsideScreen  extends JPanel {
         JfirstScreen = new JPanel(new GridBagLayout());
         JfirstScreen.setBackground(this.getBackground());
         GridBagConstraints c = new GridBagConstraints();
+
         c.gridwidth = 3; //Il prends 3 cases
         c.gridx = 2;
         int i = 0;
+        ImageIcon drapeaux = new ImageIcon(((new ImageIcon("src/Sprites/Drapeaux.png")).getImage()).getScaledInstance(354, 142, java.awt.Image.SCALE_SMOOTH));
+        JLabel drap = new JLabel();
+        drap.setIcon(drapeaux);
+        JfirstScreen.add(drap, c);
+        this.firstScreen.add(drap);
+        i++;
+
+        //c.gridwidth = 3; //Il prends 3 cases
+        //c.gridx = 2;
+        //int i = 0;
         c.gridy = i;
         c.insets = title;
         JLabel l1 = new JLabel("<html><body><u>"+"Bienvenue dans Little Theft Auto !"+"</u></body></html>", JLabel.CENTER);
