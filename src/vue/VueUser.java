@@ -17,7 +17,7 @@ public class VueUser {
     // ********************************** 1) Attributs **********************************
     // Taille du véhicule
     public static final int LARG_CAR = 60;
-    public static int HAUT_CAR = 70;
+    public static int HAUT_CAR = 120;
 
     // Hauteur du véhicule sur la fenêtre
     public static int HAUTSCREEN_CAR = vue.Affichage.LARGEUR - LARG_CAR - 20;
@@ -76,10 +76,11 @@ public class VueUser {
     public Area getShapeCar() {
         Shape collisionBox = new Rectangle2D.Double(aff.user.getPosX(), aff.user.getPosY(), LARG_CAR, HAUT_CAR);
         int currentEtat = this.aff.user.getEtat().getCurrentState();
+        double rotation = 0.1;
         if(currentEtat == -1){
-            collisionBox = Tools.rotate(collisionBox, -0.2);
+            collisionBox = Tools.rotate(collisionBox, -rotation);
         } else if(currentEtat == 1){
-            collisionBox = Tools.rotate(collisionBox, 0.2);
+            collisionBox = Tools.rotate(collisionBox, rotation);
         }
         return new Area(collisionBox);
     }
