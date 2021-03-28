@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class User extends Thread {
 
     /**Le flag d arret de la thread**/
-    private boolean run = true;
+    protected boolean run = true;
 
     public boolean isOnRoad = true;
 
@@ -20,30 +20,30 @@ public class User extends Thread {
     /**
      * La position sur l axe X de User
      */
-    private float posX;
+    protected float posX;
     /**La position sur l axe Y de User**/
-    private int posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
+    protected int posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
     /**La valeur max d un deplacement lateral**/
-    private final int saut;
+    protected int sautMax;
 
     /**La valeur actuelle d un saut. Comprise entre [-saut,saut]
      * Permet un derapage**/
-    private float inertie;
+    protected float inertie;
 
     /**Valeur de la mod d inertie lors d un mouvement**/
-    private float sautInertie = 3;
+    protected float sautInertie = 3;
 
     /**Variation de temps entre 2 calculs**/
-    private int dt = 20;
+    protected int dt = 20;
 
     /**La vitesse de User, et par extention la vitesse de la route**/
-    private double vitesse;
+    protected double vitesse;
 
     /**La vitesse maximale de User**/
     public static final double vitesseMax = 100;
 
     /**L etat actuel de user {-1,0,1}**/
-    private ScrollingStates etat;
+    protected ScrollingStates etat;
     //private int etat = 0;
     /**Le temps qu il faut attendre pour que l etat revienne a 0**/
     private final int waitEtat = 2;
@@ -63,7 +63,7 @@ public class User extends Thread {
      */
     public User(){
         this.posX = Affichage.LARGEUR/2;
-        this.saut = 25;
+        this.sautMax = 25;
         this.inertie = 0;
         this.vitesse = 20;
 
@@ -153,7 +153,7 @@ public class User extends Thread {
     public void moveRight(){
         this.etat.setCurrentState(1);
         this.currentWaitEtat = 0;
-        if(this.inertie<this.saut){
+        if(this.inertie<this.sautMax){
             if(this.inertie>0){
                 this.inertie+=this.sautInertie;
             } else {
@@ -169,7 +169,7 @@ public class User extends Thread {
     public void moveLeft(){
         this.etat.setCurrentState(-1);
         this.currentWaitEtat = 0;
-        if(this.inertie>-this.saut){
+        if(this.inertie>-this.sautMax){
             if(this.inertie<0){
                 this.inertie-=this.sautInertie;
             } else {
@@ -283,10 +283,36 @@ public class User extends Thread {
         this.etat.resumeScrolling();
     }
 
+    /**
+     * Fait la modification de l inertie dans le run.
+     * Si derapage == true, l inertie est raprochee de 0
+     */
+    protected void goBackInertie(){
+        if(derapage){
+            //Revient progressivement a this.inertie == 0
+
+            int change = 2;
+            if(this.inertie<0){
+                if(this.inertie+change>0){ //Si depassement, evite tremblotement de user
+                    this.inertie = 0;
+                } else {
+                    this.inertie+=change;
+                }
+            } else if(this.inertie>0){
+                if(this.inertie-change<0){
+                    this.inertie = 0;
+                } else {
+                    this.inertie-=change;
+                }
+            }
+        }
+    }
+
+
     @Override
     public void run() {
         while(run){
-
+            /*
             if(derapage){
                 //Revient progressivement a this.inertie == 0
 
@@ -306,6 +332,10 @@ public class User extends Thread {
                 }
             }
 
+
+             */
+
+            this.goBackInertie();
 
 
             //Gestion bordure d ecran

@@ -76,11 +76,11 @@ public class VueUser {
     public Area getShapeCar() {
         Shape collisionBox = new Rectangle2D.Double(aff.user.getPosX(), aff.user.getPosY(), LARG_CAR, HAUT_CAR);
         int currentEtat = this.aff.user.getEtat().getCurrentState();
-        double rotation = 0.1;
+        double rotation = 0.4;
         if(currentEtat == -1){
-            collisionBox = Tools.rotate(collisionBox, -rotation);
+            collisionBox = Tools.rotate(collisionBox, -rotation, Tools.Location.Down);
         } else if(currentEtat == 1){
-            collisionBox = Tools.rotate(collisionBox, rotation);
+            collisionBox = Tools.rotate(collisionBox, rotation, Tools.Location.Down);
         }
         return new Area(collisionBox);
     }
