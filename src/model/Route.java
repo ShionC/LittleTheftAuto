@@ -269,6 +269,7 @@ public class Route extends ConcreteObject {
 
     @Override
     public Area getHitBox() {
+        updateRangeRoute();
 
         ArrayList<Point> list = this.getRoute();
         int sizeTab = (list.size()*2)+1; //+1 pour fermer le polygon

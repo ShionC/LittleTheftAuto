@@ -2,6 +2,7 @@ package game;
 
 import controleur.Controleur;
 import model.Data;
+import model.Images;
 import model.Route;
 import model.User;
 import vue.Affichage;
@@ -56,6 +57,9 @@ class Main {
 
         JFrame fenetre = new JFrame("Little Thief Auto");
 
+        Data.initGame();
+        Images.initImages();
+
         Route route = new Route();
         User user = new User();
 
@@ -66,7 +70,7 @@ class Main {
         //Deplace deplace = new Deplace(user, route, affichage);
 
         //deplace.start();//Voir qui le lance, en fonction de si il y a une fenetre de demarage ou pas
-        Data.initGame();
+
 
         //fenetre.add(affichage);
         //fenetre.add(affichage.outScreen);

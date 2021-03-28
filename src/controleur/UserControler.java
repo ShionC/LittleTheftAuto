@@ -77,7 +77,14 @@ public class UserControler implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+        //Deplacement
+        if(e.getKeyCode() == KeyEvent.VK_LEFT){
+            this.ctrl.keyCont.setDir(KeyContinue.Direction.LEFT);
+        }
 
+        if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+            this.ctrl.keyCont.setDir(KeyContinue.Direction.RIGHT);
+        }
     }
 
     @Override

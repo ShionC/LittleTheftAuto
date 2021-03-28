@@ -76,11 +76,9 @@ public class User extends ConcreteObject implements Runnable {
 
         this.userThread = new Thread(this);
 
-        ArrayList<Integer> listEtat = new ArrayList<>();
-        listEtat.add(-1); listEtat.add(0); listEtat.add(1);
-        this.etat = new ScrollingStates(listEtat);
+        this.etat = new ScrollingStates(Images.getListStateUser());
         this.etat.setModeTo0();
-        this.etat.setGap(dt*10);
+        this.etat.setGap(dt*11);
     }
 
     // ********************************** 3) Méthodes **********************************
@@ -359,7 +357,7 @@ public class User extends ConcreteObject implements Runnable {
      */
     public Area getHitBox(){
         Shape collisionBox = new Rectangle2D.Double(this.getPosX(), this.getPosY(), this.getLARGEUR(), this.getHAUTEUR());
-        int currentEtat = this.getEtat().getCurrentState();
+        int currentEtat = this.etat.getCurrentState();
         double rotation = 0.4;
         if(currentEtat == -1){
             collisionBox = Tools.rotate(collisionBox, -rotation, Tools.Location.Down);

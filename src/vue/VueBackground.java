@@ -3,6 +3,7 @@ package vue;
 import Tools.MyTimer;
 import Tools.Tools;
 import model.Data;
+import model.Images;
 import model.Obstacle;
 
 import java.awt.*;
@@ -12,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.awt.geom.Area;
 import java.awt.geom.AffineTransform;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class VueBackground {
 
@@ -38,13 +38,6 @@ public class VueBackground {
      */
     private ArrayList<Obstacle> listObstacles = new ArrayList<>();
 
-    //Images nuages :
-    BufferedImage cloud1;
-    BufferedImage cloud2;
-    BufferedImage cloud3;
-    BufferedImage cloud4;
-    //Images montagnes
-    BufferedImage mountain;
 
     //Coord montagnes
     /**La position x initiale des montagnes**/
@@ -60,24 +53,6 @@ public class VueBackground {
     public VueBackground(Affichage aff){
         this.aff = aff;
 
-        //Initialiser les images des nuages et de la montagne :
-
-        //Nuages
-        cloud1 = Tools.getBIfromPath("src/Sprites/cloud1.png");
-        cloud2 = Tools.getBIfromPath("src/Sprites/cloud2.png");
-        cloud3 = Tools.getBIfromPath("src/Sprites/cloud3.png");
-        cloud4 = Tools.getBIfromPath("src/Sprites/cloud4.png");
-        //Scale, changer la taille des images
-        double scaleX = 0.5;
-        double scaleY = 0.5;
-        cloud1 = Tools.scaleBI(cloud1, scaleX, scaleY); //Au cas ou l image soit trop grande.
-        cloud2 = Tools.scaleBI(cloud2, scaleX, scaleY);
-        cloud3 = Tools.scaleBI(cloud3, scaleX, scaleY);
-        cloud4 = Tools.scaleBI(cloud4, scaleX, scaleY);
-
-        //Montagne
-        this.mountain = Tools.getBIfromPath("src/Sprites/mountains.png");
-        this.mountain = Tools.scaleBI(this.mountain, 0.5, 0.5);
 
 
         //Initialiser nuages
@@ -210,7 +185,7 @@ public class VueBackground {
         if(this.initXMontagnes+this.modMontagnes>0){
             this.modMontagnes = -this.initXMontagnes; //Le stabilise a 0
         }
-        double largeurMontagne = this.mountain.getWidth()/(double)2;
+        double largeurMontagne = Images.getMountain().getWidth()/(double)2;
         if(this.initXMontagnes+largeurMontagne+this.modMontagnes<Affichage.LARGEUR){ //On voit le vide dans l ecran
             this.modMontagnes = (int) (Affichage.LARGEUR-this.initXMontagnes-largeurMontagne); //Stabilise a Affichage.LARGEUR
         }
@@ -239,16 +214,7 @@ public class VueBackground {
 
         //Nuages
         for (int i = 0; i < this.clouds.size(); i++) {
-            BufferedImage modeleImage;
-            if (this.cloudTypes.get(i) == 0) {
-                modeleImage = cloud1;
-            } else if (this.cloudTypes.get(i) == 1) {
-                modeleImage = cloud2;
-            } else if (this.cloudTypes.get(i) == 2) {
-                modeleImage = cloud3;
-            } else {
-                modeleImage = cloud4;
-            }
+            BufferedImage modeleImage = Images.getCloudImg(this.cloudTypes.get(i));
             BufferedImage img = Tools.deepCopy(modeleImage); //quoi que l on fasse sur la copie, l original ne sera pas impacte
 
             AffineTransform at = new AffineTransform();
@@ -260,9 +226,9 @@ public class VueBackground {
 
         //Montagnes
 
-        BufferedImage montagnes = Tools.deepCopy(this.mountain);
+        BufferedImage montagnes = Tools.deepCopy(Images.getMountain());
         AffineTransform at = new AffineTransform();
-        at.translate(this.initXMontagnes+this.modMontagnes, horizon-(this.mountain.getHeight()/(double)2)); //Les coord de la montagne
+        at.translate(this.initXMontagnes+this.modMontagnes, horizon-(montagnes.getHeight()/(double)2)); //Les coord de la montagne
         g2.drawImage(montagnes, at, null);
 
     }

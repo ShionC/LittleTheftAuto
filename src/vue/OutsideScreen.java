@@ -3,6 +3,7 @@ package vue;
 import controleur.Accueil;
 import Tools.Tools;
 import model.Data;
+import model.Images;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,6 @@ public class OutsideScreen  extends JPanel {
     private Affichage aff;
     private Accueil acc;
 
-    ImageIcon iconSelect = null;
 
     JPanel Jstats, Jregles, JfirstScreen, JendGame, Jcredits;
 
@@ -45,8 +45,6 @@ public class OutsideScreen  extends JPanel {
         this.setLayout(new CardLayout());
         setFocusable(true);
         this.setBackground(new Color(131, 166, 151));
-
-        this.iconSelect = new ImageIcon(((new ImageIcon("src/Sprites/curseur.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH));
 
     }
 
@@ -178,7 +176,7 @@ public class OutsideScreen  extends JPanel {
         if(this.acc.menus.get(this.acc.keyStats)){
             for(int i = 0; i<this.idxChoiceStats.size(); i++){
                 if(i == this.acc.getCurrentChoice()-1){
-                    this.stats.get(this.idxChoiceStats.get(i)).setIcon(iconSelect);
+                    this.stats.get(this.idxChoiceStats.get(i)).setIcon(Images.getIconCurseur());
                 } else {
                     this.stats.get(this.idxChoiceStats.get(i)).setIcon(null);
                 }
@@ -309,7 +307,7 @@ public class OutsideScreen  extends JPanel {
         if(this.acc.menus.get(this.acc.keyRegles)){
             for(int i = 0; i<this.idxChoiceRegles.size(); i++){
                 if(i == this.acc.getCurrentChoice()-1){
-                    this.reglesDuJeu.get(this.idxChoiceRegles.get(i)).setIcon(iconSelect);
+                    this.reglesDuJeu.get(this.idxChoiceRegles.get(i)).setIcon(Images.getIconCurseur());
                 } else {
                     this.reglesDuJeu.get(this.idxChoiceRegles.get(i)).setIcon(null);
                 }
@@ -364,7 +362,7 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         JLabel c1 = new JLabel("Retour", JLabel.CENTER);
         c1.setFont(new Font("Arial",Font.BOLD,20));
-        c1.setIcon(this.iconSelect); //Pour laffichage de la selection
+        c1.setIcon(Images.getIconCurseur()); //Pour laffichage de la selection
         this.credits.add(c1);
         this.idxChoiceCredits.add(i);
         Jcredits.add(c1, c);
@@ -450,7 +448,7 @@ public class OutsideScreen  extends JPanel {
         if(this.acc.menus.get(this.acc.keyFirstScreen) && this.acc.premierEcan){
             for(int i = 0; i<this.idxChoiceFirstScreen.size(); i++){
                 if(i == this.acc.getCurrentChoice()-1){
-                    this.firstScreen.get(this.idxChoiceFirstScreen.get(i)).setIcon(iconSelect);
+                    this.firstScreen.get(this.idxChoiceFirstScreen.get(i)).setIcon(Images.getIconCurseur());
                 } else {
                     this.firstScreen.get(this.idxChoiceFirstScreen.get(i)).setIcon(null);
                 }
@@ -538,7 +536,7 @@ public class OutsideScreen  extends JPanel {
         if(this.acc.menus.get(this.acc.keyEndGame)){
             for(int i = 0; i<this.idxChoiceEndGame.size(); i++){
                 if(i == this.acc.getCurrentChoice()-1){
-                    this.endGame.get(this.idxChoiceEndGame.get(i)).setIcon(iconSelect);
+                    this.endGame.get(this.idxChoiceEndGame.get(i)).setIcon(Images.getIconCurseur());
                 } else {
                     this.endGame.get(this.idxChoiceEndGame.get(i)).setIcon(null);
                 }

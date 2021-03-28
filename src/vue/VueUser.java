@@ -22,8 +22,6 @@ public class VueUser {
 
     private double scaleUser = 0.5;
 
-    //List Etat et Images pour User
-    private HashMap<Integer, BufferedImage> listStatesUser;
 
     /**Le timer qui va supprimer le message a la fin de son temps**/
     private Timer messageTimer;
@@ -35,18 +33,6 @@ public class VueUser {
     public VueUser(Affichage aff) {
         this.aff = aff;
 
-        // Dessins du véhicule
-        BufferedImage userStraight = Tools.getBIfromPath("src/Sprites/user.png");
-        BufferedImage userLeft = Tools.getBIfromPath("src/Sprites/userleft.png");
-        BufferedImage userRight = Tools.getBIfromPath("src/Sprites/userright.png");
-        userStraight = Tools.scaleBI(userStraight, scaleUser, scaleUser);
-        userLeft = Tools.scaleBI(userLeft, scaleUser, scaleUser);
-        userRight = Tools.scaleBI(userRight, scaleUser, scaleUser);
-
-        this.listStatesUser = new HashMap<>();
-        this.listStatesUser.put(0, userStraight);
-        this.listStatesUser.put(-1, userLeft);
-        this.listStatesUser.put(1, userRight);
 
         //Init timer
         //Initialise l action de supprimer le message
@@ -117,9 +103,6 @@ public class VueUser {
 
     }
 
-    public void initUser(){
-        this.aff.user.getEtat().setImages(this.listStatesUser);
-    }
 
     /**
      * Mise à jour la forme de user

@@ -3,6 +3,7 @@ package vue;
 import controleur.Controleur;
 import Tools.Tools;
 import model.Data;
+import model.Images;
 import model.Route;
 import model.User;
 
@@ -34,7 +35,6 @@ public class Affichage extends JPanel {
     Controleur ctrl;
     public OutsideScreen outScreen;
 
-    private BufferedImage curseur;
     private BufferedImage pauseButton;
     private JPanel card;
 
@@ -64,9 +64,6 @@ public class Affichage extends JPanel {
         this.card.add(this.outScreen, "OutScreen");
         fenetre.add(card);
 
-        this.curseur = Tools.getBIfromPath("src/Sprites/curseur.png");
-        this.curseur = Tools.deepCopy(this.curseur);
-        this.curseur = Tools.getResizedImage(this.curseur, 20, 20);
 
         this.pauseButton = Tools.getBIfromPath("src/Sprites/pauseButton.png");
         this.pauseButton = Tools.scaleBI(this.pauseButton, 0.5, 0.5);
@@ -120,7 +117,6 @@ public class Affichage extends JPanel {
      * <br/>Du plus, initialise les images dans User
      */
     public void startPartie(){
-        this.vueUser.initUser();
         this.partieEnCours = true;
         this.enPause = false;
     }
@@ -198,11 +194,11 @@ public class Affichage extends JPanel {
         if(this.ctrl.getPauseChoice() == 1){
             AffineTransform at = new AffineTransform();
             at.translate(xRestart - tailleOval - 10, yRestart-20);
-            g2.drawImage(this.curseur, at, null);
+            g2.drawImage(Images.getCurseur(), at, null);
         } else if(this.ctrl.getPauseChoice() == 2){
             AffineTransform at = new AffineTransform();
             at.translate(xStop - tailleOval - 10, yStop-20);
-            g2.drawImage(this.curseur, at, null);
+            g2.drawImage(Images.getCurseur(), at, null);
 
         }
 
