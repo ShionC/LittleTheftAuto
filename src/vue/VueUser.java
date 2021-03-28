@@ -1,6 +1,7 @@
 package vue;
 
 import Tools.Tools;
+import model.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,11 +17,9 @@ import java.util.HashMap;
 public class VueUser {
     // ********************************** 1) Attributs **********************************
     // Taille du véhicule
-    public static final int LARG_CAR = 60;
-    public static int HAUT_CAR = 120;
+    //public static final int LARG_CAR = 60;
+    //public static int HAUT_CAR = 120;
 
-    // Hauteur du véhicule sur la fenêtre
-    public static int HAUTSCREEN_CAR = vue.Affichage.LARGEUR - LARG_CAR - 20;
 
     private final Affichage aff;
 
@@ -73,8 +72,8 @@ public class VueUser {
      * Boite de collision de user, depends de l etat de user
      * @return area
      */
-    public Area getShapeCar() {
-        Shape collisionBox = new Rectangle2D.Double(aff.user.getPosX(), aff.user.getPosY(), LARG_CAR, HAUT_CAR);
+    public Area getHitBoxCar() {
+        Shape collisionBox = new Rectangle2D.Double(aff.user.getPosX(), aff.user.getPosY(), aff.user.getLARGEUR(), aff.user.getHAUTEUR());
         int currentEtat = this.aff.user.getEtat().getCurrentState();
         double rotation = 0.4;
         if(currentEtat == -1){
@@ -107,13 +106,23 @@ public class VueUser {
     }
 
 
+    /**
+     * Dessine la boite de collision
+     * @param g2
+     * @param obj
+     */
+    private void drawHitBox(Graphics2D g2, User obj){
+        g2.setColor(new Color(188, 32, 1));
+        Shape collisionBox = obj.getHitBox();
+        g2.draw(collisionBox);
+    }
+
     // Affichage du véhicule dans une sous-méthode
     public void drawCar(Graphics2D g2) {
         //Boite de collision
-        g2.setColor(new Color(188, 32, 1));
-        Shape collisionBox = getShapeCar();
-        g2.draw(collisionBox);
+        this.drawHitBox(g2, this.aff.user);
 
+        Shape collisionBox = this.aff.user.getHitBox();
         //Image, centre l image sur le centre de la boite de collision
         BufferedImage img = Tools.deepCopy(this.aff.user.getEtat().getCurrentImage());
         //Le centre est le meme que la boite de collision

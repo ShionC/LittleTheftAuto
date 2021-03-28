@@ -90,13 +90,13 @@ public class Deplace extends Thread {
      * <br/>Methode universelle pour toutes les classes heritant de User
      * <br/>Utilisable egalement pour les concurrents
      * @param obj L objet pour lequel la vitesse doit etre modifie
-     * @param shapeObj La forme de l objet sur son affichage
+     * @param hitBoxObj La forme de l objet sur son affichage
      */
-    private void calculVitObj(User obj, Area shapeObj){
+    private void calculVitObj(User obj, Area hitBoxObj){
         //Calcul de la vitesse
         double modVit = 0;
         //boolean onRoad;
-        if (Tools.collision(shapeObj, this.aff.bmg.getShapeRoute())) {
+        if (Tools.collision(hitBoxObj, this.aff.bmg.getShapeRoute())) {
             obj.isOnRoad = true;
             //onRoad = true;
             if(obj.getVitesse()<obj.getVitesseMax()){
@@ -122,8 +122,8 @@ public class Deplace extends Thread {
 
                     double modVitMin = 1; //Lorsque la distance est maximale, la vitesse est minimale
 
-                    Point2D.Double milieuObj = new Point2D.Double(shapeObj.getBounds2D().getCenterX(),
-                            shapeObj.getBounds2D().getCenterY());
+                    Point2D.Double milieuObj = new Point2D.Double(hitBoxObj.getBounds2D().getCenterX(),
+                            hitBoxObj.getBounds2D().getCenterY());
                     double dist = milieuObj.distance(xCenter, milieuObj.y); //La distance du milieu de obj par rapport qu milieu de la route
                     dist = rangeMax-dist; //La distance de user par rapport aux bordS
                     //Produit en croix
@@ -178,7 +178,7 @@ public class Deplace extends Thread {
 
 
                 //Calcul de la vitesse
-                this.calculVitObj(this.user, this.aff.vueUser.getShapeCar());
+                this.calculVitObj(this.user, this.user.getHitBox());
 
                 //Calcul de la position selon les formules physiques
                 ////xt = v*t + x0 -> modPos = v*t, t en secondes
@@ -195,7 +195,7 @@ public class Deplace extends Thread {
                 Data.setCurrentKilometrage(this.route.getKilometrage());
 
                 //Decors
-                if(this.user.getPosX() > 50 && this.user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR-50){
+                if(this.user.getPosX() > 50 && this.user.getPosX() + this.user.getLARGEUR() < Affichage.LARGEUR-50){
                     int inertieUser = this.user.getInertie();
                     if(inertieUser != 0){
                         this.aff.bmg.moveDecors(inertieUser>0);
@@ -227,7 +227,7 @@ public class Deplace extends Thread {
                 //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu
                 for(Obstacle obs : listObstacles){
                     //Si collision entre voiture et obstacle
-                    if(Tools.collision(this.aff.vueUser.getShapeCar(), this.aff.bmg.getShapeObstacle(obs))){
+                    if(Tools.collision(this.user.getHitBox(), this.aff.bmg.getShapeObstacle(obs))){
                         //Decelere User
                         this.user.modVitesse(decObs);
                         //Rebond de user de l autre cote de l obstacle

@@ -6,9 +6,6 @@ import vue.VueUser;
 
 public class Concurrent extends User{
 
-    /**Dimension de la shape**/
-    int LARGEUR = 60;
-    int HAUTEUR = 120;
 
     /**Le type du concurrent (couleur)**/
     private int type;

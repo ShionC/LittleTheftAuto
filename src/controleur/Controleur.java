@@ -203,9 +203,12 @@ public class Controleur implements KeyListener {
 
     /**
      * Renvoie le choix selectionne sur le menu de pause.
-     * <br/>Le choix 0 signifie que rien n'est selectionne
-     * <br/><u>Choix 1 :</u> Reprendre la partie
-     * <br/><u>Choix 2 :</u> Arreter la partie
+     * <ul>
+     *     <li><u>Choix 0 :</u> signifie que rien n'est selectionne</li>
+     *     <li><u>Choix 1 :</u> Reprendre la partie</li>
+     *     <li><u>Choix 2 :</u> Arreter la partie</li>
+     * </ul>
+     *
      * @return
      */
     public int getPauseChoice(){
@@ -214,9 +217,11 @@ public class Controleur implements KeyListener {
 
     /**
      * Effectue l action correspondant au choix actuel
-     * <br/>Le choix 0 signifie que rien n'est selectionne
-     * <br/><u>Choix 1 :</u> Reprendre la partie
-     * <br/><u>Choix 2 :</u> Arreter la partie
+     * <ul>
+     *     <li><u>Choix 0 :</u> signifie que rien n'est selectionne</li>
+     *     <li><u>Choix 1 :</u> Reprendre la partie</li>
+     *     <li><u>Choix 2 :</u> Arreter la partie</li>
+     * </ul>
      */
     private void actionPauseChoice(){
         if(this.pauseChoice == 1){
@@ -243,14 +248,12 @@ public class Controleur implements KeyListener {
     void move(boolean right) {
         if(this.partieEnCours){
             if (right) {
-                if (user.getPosX() + VueUser.LARG_CAR < Affichage.LARGEUR) {
+                if (user.getPosX() + user.getLARGEUR() < Affichage.LARGEUR) {
                     user.moveRight();
-                    //aff.bmg.moveDecors(! right);
                 }
             } else {
                 if (user.getPosX() > 0) {
                     user.moveLeft();
-                    //aff.bmg.moveDecors(! right);
                 }
                 aff.update();
             }

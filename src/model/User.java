@@ -1,10 +1,12 @@
 package model;
 
 import Tools.ScrollingStates;
+import Tools.Tools;
 import vue.Affichage;
-import vue.VueUser;
 
 import java.awt.*;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 
@@ -17,12 +19,19 @@ public class User extends Thread {
 
     private boolean derapage = true;
 
+    /**Largeur de la hitbox**/
+    protected int LARGEUR = 60;
+    /**Hauteur de la hitbox**/
+    protected int HAUTEUR = 120;
+
+
+
     /**
      * La position sur l axe X de User
      */
     protected float posX;
     /**La position sur l axe Y de User**/
-    protected int posY = Affichage.HAUTEUR - VueUser.HAUT_CAR - 20;
+    protected int posY = Affichage.HAUTEUR - this.HAUTEUR - 20;
     /**La valeur max d un deplacement lateral**/
     protected int sautMax;
 
@@ -77,6 +86,55 @@ public class User extends Thread {
     // ********************************** 3) Méthodes **********************************
 
     /**
+     * Renvoie la largeur de la hitbox de User
+     * @return
+     */
+    public int getLARGEUR(){
+        return this.LARGEUR;
+    }
+
+    /**Renvoie la hauteur de la hitBox de User**/
+    public int getHAUTEUR(){
+        return this.HAUTEUR;
+    }
+
+    /**
+     * Renvoie la position sur l axe X de User
+     * @return
+     */
+    public int getPosX() {
+        return Math.round(posX);
+    }
+
+    /**
+     * Renvoie la position sur l axe Y de User
+     * @return
+     */
+    public int getPosY() {
+        return posY;
+    }
+
+    /**
+     * Renvoie les coord x et y sous forme de point
+     * @return
+     */
+    public Point getPos(){
+        return new Point(getPosX(),getPosY());
+    }
+
+    /**
+     * Reinitialise User
+     * @param newPosX La position de user sur l axe x lors de sa renaissance. Si possible sur la route
+     */
+    public void rebirth(int newPosX){
+        this.vitesse = 20;
+        this.posX = newPosX;
+        this.inertie = 0;
+        this.etat.setCurrentState(0);
+    }
+
+
+    /**
      * Renvoie la vitesse de User, cad la vitesse a laquelle se deplace le decors
      * @return la vitesse
      */
@@ -91,16 +149,6 @@ public class User extends Thread {
     }
 
 
-    /**
-     * Reinitialise User
-     * @param newPosX La position de user sur l axe x lors de sa renaissance. Si possible sur la route
-     */
-    public void rebirth(int newPosX){
-        this.vitesse = 20;
-        this.posX = newPosX;
-        this.inertie = 0;
-        this.etat.setCurrentState(0);
-    }
 
     /**
      * Modifie la vitesse de User en lui ajoutant la nouvelle vitesse
@@ -181,6 +229,9 @@ public class User extends Thread {
 
     /**
      * Renvoie la valeur de inertie, cad la force qui pousse user dans une certaine direction
+     * <br/>Elle permet de connaitre le deplacement lateral actuel de User.
+     * <br/>Si inertie == 0, User ne se deplace pas
+     * <br/>Si inertie<0, User se deplace a gauche
      * @return inertie/derapage
      */
     public int getInertie() {
@@ -237,21 +288,6 @@ public class User extends Thread {
 
     }
 
-    public int getPosX() {
-        return Math.round(posX);
-    }
-
-    public int getPosY() {
-        return posY;
-    }
-
-    /**
-     * Renvoie les coord x et y sous forme de point
-     * @return
-     */
-    public Point getPos(){
-        return new Point(getPosX(),getPosY());
-    }
 
     /**
      * Arrete l execution de la thread de user et de etat
@@ -308,38 +344,31 @@ public class User extends Thread {
         }
     }
 
+    /**
+     * Renvoie la hitBox de User
+     * @return
+     */
+    public Area getHitBox(){
+        Shape collisionBox = new Rectangle2D.Double(this.getPosX(), this.getPosY(), this.getLARGEUR(), this.getHAUTEUR());
+        int currentEtat = this.getEtat().getCurrentState();
+        double rotation = 0.4;
+        if(currentEtat == -1){
+            collisionBox = Tools.rotate(collisionBox, -rotation, Tools.Location.Down);
+        } else if(currentEtat == 1){
+            collisionBox = Tools.rotate(collisionBox, rotation, Tools.Location.Down);
+        }
+        return new Area(collisionBox);
+    }
 
     @Override
     public void run() {
         while(run){
-            /*
-            if(derapage){
-                //Revient progressivement a this.inertie == 0
-
-                int change = 2;
-                if(this.inertie<0){
-                    if(this.inertie+change>0){ //Si depassement, evite tremblotement de user
-                        this.inertie = 0;
-                    } else {
-                        this.inertie+=change;
-                    }
-                } else if(this.inertie>0){
-                    if(this.inertie-change<0){
-                        this.inertie = 0;
-                    } else {
-                        this.inertie-=change;
-                    }
-                }
-            }
-
-
-             */
 
             this.goBackInertie();
 
 
             //Gestion bordure d ecran
-            if(this.posX >= 0 && this.posX + VueUser.LARG_CAR <= Affichage.LARGEUR){
+            if(this.posX >= 0 && this.posX + this.LARGEUR <= Affichage.LARGEUR){
                 //this.posX += this.inertie;
                 this.move();
             } else if (this.posX <= 0){
@@ -349,12 +378,12 @@ public class User extends Thread {
                 this.inertie = 0;
                 this.posX = 0;
             } else //noinspection ConstantConditions
-                if(this.posX + VueUser.LARG_CAR >= Affichage.LARGEUR){
+                if(this.posX + this.LARGEUR >= Affichage.LARGEUR){
                 //this.posX -= 30;
                 //this.inertie = -50;
                 //this.rebond(1,false);
                     this.inertie = 0;
-                    this.posX = Affichage.LARGEUR - VueUser.LARG_CAR;
+                    this.posX = Affichage.LARGEUR - this.LARGEUR;
             }
 
 
