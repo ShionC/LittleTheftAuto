@@ -22,10 +22,7 @@ public class TimeManager extends Thread {
 
 
 
-    /**
-     *
-     * @param route
-     */
+
     /**
      * Gere les points de controles et le deroule du temps.
      * <br/> Gere egalement la fin de partie dans le cas ou le timer est fini

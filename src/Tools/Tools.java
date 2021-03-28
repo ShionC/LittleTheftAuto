@@ -20,6 +20,9 @@ public class Tools {
 
     }
 
+    public static enum Location {Center, Up, Down, Right, LowerRight, UpperRight, Left, LowerLeft, UpperLeft};
+
+
     /*-----------------------------------------RANDOM----------------------------------------------------*/
 
     /**
@@ -93,6 +96,16 @@ public class Tools {
         return Math.sqrt(dx*dx+dy*dy);
     }
 
+    /**
+     * Create a point corresponding to the difference between point a & b for each coordinate
+     * <br/>Each point use the formula ax-bx
+     * @param a first point
+     * @param b second point
+     * @return distance between 2 points for the X and Y axis
+     */
+    public static Point2D distance(Point2D a, Point2D b){
+        return new Point2D.Double(a.getX()-b.getX(), a.getY()-b.getY());
+    }
 
 
     /*-----------------------------------------LISTS----------------------------------------------------*/
@@ -302,6 +315,57 @@ public class Tools {
         Shape newShape = tx.createTransformedShape(tmp);
 
         return newShape;
+    }
+
+
+    /**
+     * Rotate a shape on itself while fixing a point on the shape.
+     * <br/>Rotating by a positive angle rotates points on the positive X axis toward the positive Y axis.
+     * @param s the shape to rotate
+     * @param angle the angle of rotation mesured in radians
+     * @param location location to fixe. Use enum Location. Default is center
+     * @return the rotated Shape. Has a certain point fixed to the original
+     */
+    public static Shape rotate(Shape s, double angle, Location location){
+        //Rotate
+        AffineTransform ro = new AffineTransform();
+        ro.rotate(angle);
+        Shape tmp = ro.createTransformedShape(s);
+        //Translate back
+        Rectangle2D aBounds = s.getBounds2D();
+        Point2D.Double fixedA;
+        //Supperpose les points
+        if (location == Location.Up){
+            fixedA = new Point2D.Double(aBounds.getX()+(aBounds.getWidth()/2), aBounds.getY());
+        } else if (location == Location.Down){
+            fixedA = new Point2D.Double(aBounds.getX()+(aBounds.getWidth()/2), aBounds.getY()+aBounds.getHeight());
+        } else if (location == Location.Right){
+            fixedA = new Point2D.Double(aBounds.getX()+aBounds.getWidth(), aBounds.getY()+(aBounds.getHeight()/2));
+        } else if (location == Location.Left){
+            fixedA = new Point2D.Double(aBounds.getX(), aBounds.getY()+(aBounds.getHeight()/2));
+        } else if (location == Location.UpperRight){
+            fixedA = new Point2D.Double(aBounds.getX()+aBounds.getWidth(), aBounds.getY());
+        } else if (location == Location.LowerRight){
+            fixedA = new Point2D.Double(aBounds.getX()+aBounds.getWidth(), aBounds.getY()+aBounds.getHeight());
+        } else if (location == Location.UpperLeft){
+            fixedA = new Point2D.Double(aBounds.getX(), aBounds.getY());
+        } else if(location == Location.LowerLeft){
+            fixedA = new Point2D.Double(aBounds.getX(), aBounds.getY()+aBounds.getHeight());
+        } else { //Center
+            fixedA = new Point2D.Double(aBounds.getCenterX(), aBounds.getCenterY());
+        }
+
+        //Fait le calcul par rapport a un point model qui fait une rotation.
+        //getBounds ne permet pas d avoir les bonnes position a par pour center, car est deforme par rapport a original
+        Point2D.Double fixedOriginTemp = (Point2D.Double) ro.transform(fixedA, null);
+
+        Point2D.Double distToOrigin = (Point2D.Double) distance(fixedA, fixedOriginTemp);
+        AffineTransform tx = new AffineTransform();
+        tx.translate(distToOrigin.x, distToOrigin.y);
+
+        Shape LastNewShape = tx.createTransformedShape(tmp);
+
+        return LastNewShape;
     }
 
     /*-----------------------------------------GRAPHIC----------------------------------------------------*/

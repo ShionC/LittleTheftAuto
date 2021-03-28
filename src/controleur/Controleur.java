@@ -87,9 +87,7 @@ public class Controleur implements KeyListener {
     }
 
 
-    /**
-     *
-     */
+
     /**
      * Met fin a la partie et aux mouvements, et deplace vers l ecran de fin de jeu
      * <br/>Transfere toutes les donnees a Data

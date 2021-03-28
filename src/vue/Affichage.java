@@ -23,7 +23,7 @@ public class Affichage extends JPanel {
     private static Rectangle dimEcran = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
     public static final int LARGEUR = dimEcran.width-100;  //800;
-    public static final int HAUTEUR = dimEcran.height;  //650; //Ou 800, mais c est trop grand pour l ecran de Mathilde
+    public static final int HAUTEUR = dimEcran.height-15;  //650; //Ou 800, mais c est trop grand pour l ecran de Mathilde
 
     public JFrame fenetre;
 
@@ -125,9 +125,6 @@ public class Affichage extends JPanel {
         this.enPause = false;
     }
 
-    /**
-     *
-     */
     /**
      * Commence une nouvelle partie : Defini une nouvelle Route, un nouveau User, et reinitialise tous les elements de decors
      * @param newUser Le nouveau user
