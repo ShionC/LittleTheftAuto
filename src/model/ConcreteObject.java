@@ -59,8 +59,8 @@ abstract public class ConcreteObject {
     /**
      * Verifie si le ConcreteObject entre en collision avec un autre.
      * <br/>2 ConcreteObject sont en collision si ils se chevauchent.
-     * @param obj
-     * @return
+     * @param obj Le deuxieme ConcreteObject
+     * @return true si il y a collision, false sinon
      */
     public boolean collision(ConcreteObject obj){
         return Tools.collision(this.getHitBox(), obj.getHitBox());

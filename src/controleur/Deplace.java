@@ -90,13 +90,14 @@ public class Deplace extends Thread {
      * <br/>Methode universelle pour toutes les classes heritant de User
      * <br/>Utilisable egalement pour les concurrents
      * @param obj L objet pour lequel la vitesse doit etre modifie
-     * @param hitBoxObj La forme de l objet sur son affichage
      */
-    private void calculVitObj(User obj, Area hitBoxObj){
+    private void calculVitObj(User obj){
         //Calcul de la vitesse
         double modVit = 0;
         //boolean onRoad;
-        if (Tools.collision(hitBoxObj, this.aff.bmg.getShapeRoute())) {
+        //if (Tools.collision(obj.getHitBox(), this.route.getHitBox())) {
+        if (obj.collision(this.route)) {
+            Area hitBoxObj = obj.getHitBox();
             obj.isOnRoad = true;
             //onRoad = true;
             if(obj.getVitesse()<obj.getVitesseMax()){
@@ -111,7 +112,7 @@ public class Deplace extends Thread {
                 } else {
                     Point p1 = listRoute.get(i);
                     Point p2 = listRoute.get(i+1);
-                    ArrayList<Integer> listRange = this.aff.bmg.getRangeRoute();
+                    ArrayList<Integer> listRange = this.route.getRangeRoute();
                     if(listRange.size() == 0){
                         System.out.println("ListRange size == 0 !!!");
                     }
@@ -178,7 +179,7 @@ public class Deplace extends Thread {
 
 
                 //Calcul de la vitesse
-                this.calculVitObj(this.user, this.user.getHitBox());
+                this.calculVitObj(this.user);
 
                 //Calcul de la position selon les formules physiques
                 ////xt = v*t + x0 -> modPos = v*t, t en secondes

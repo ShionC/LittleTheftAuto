@@ -1,15 +1,17 @@
 package model;
 
 import java.awt.*;
+import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 import Tools.Tools;
 import vue.Affichage;
-import vue.VueBackground;
 
-public class Route {
-    // ********************************** 1) Attributs **********************************
+import static vue.VueBackground.horizon;
+
+public class Route extends ConcreteObject {
+    //*********************************** 1) Attributs **********************************/
     /** Pour la ligne brisée principale**/
     private ArrayList<Point> listePoints = new ArrayList<>();
     /**Mutex de listePoints**/
@@ -26,6 +28,13 @@ public class Route {
 
     private int kilometrage = 0;
 
+    /*--------Mise en place de la profondeur----*/
+
+    /**La liste de la largeur de la route pour chaque point. <br/>Permet un effet de profondeur**/
+    private ArrayList<Integer> rangeroute = new ArrayList<>();
+    /**Mutex de rangeRoute**/
+    private final ReentrantLock rangeMutex = new ReentrantLock();
+
 
     // ********************************** 2) Constructeur **********************************
 
@@ -38,10 +47,11 @@ public class Route {
         int x = Affichage.LARGEUR/2;
         int y = Affichage.HAUTEUR;
         listePoints.add(new Point(x, y));
-        //int range = 50; //Deviation de x autorisee
-        while(this.listePoints.get(this.listePoints.size()-1).y >= VueBackground.horizon){ //Stop a l horizon
+
+        while(this.listePoints.get(this.listePoints.size()-1).y >= horizon){ //Stop a l horizon
             this.updateRoute();
         }
+        this.updateRangeRoute();
 
         //Initialisation du saut. On peut penser que le saut "charge" jusqu a atteindre une valeur convenable (1)
         this.sautCharge = 0;
@@ -51,7 +61,12 @@ public class Route {
 
     }
 
+
     // ********************************** 3) Méthodes **********************************
+
+
+
+    /*-----------------Route principale---------------------*/
 
     /**
      * Mise à jour de la route, ajoute ou enleve des points de la liste au besoin
@@ -62,7 +77,7 @@ public class Route {
                 this.routeMutex.lock();
 
                 //Ajoute des points au besoin
-                if(this.listePoints.get(this.listePoints.size()-1).y>=VueBackground.horizon){
+                if(this.listePoints.get(this.listePoints.size()-1).y>= horizon){
                     int range = 90; //Deviation de x autorisee
 
                     int y = this.listePoints.get(this.listePoints.size()-1).y - Tools.rangedRandomInt(40, 200);
@@ -74,6 +89,7 @@ public class Route {
                     } else {
                         newx = Tools.rangedRandomInt(x-range, x+range);
                     }
+                    //Empeche la route d approcher les bords
                     while((newx > Affichage.LARGEUR -50) || (newx < 50)){ //Zone d appartition de la courbe, voir avec affichage
                         if(newx < 50){
                             newx = Tools.rangedRandomInt(x, x+range);
@@ -122,13 +138,13 @@ public class Route {
     /**
      * Défilement de la route, modifie liste.
      * <br/>La modification de delacement dy est chargee jusqu a obtenir un int non null avant de deplacer les points
-     * <br/>Met aussi a jour le point de controle
+     * <br/>Met aussi a jour le point de controle ainsi que rangeRoute
      * @param saut le deplacement de tous les points. Est mis a charger et lorsque il atteint une valeur > 1 fait bouger les points
      */
     public void moveRoute(double saut) {
         //Peut etre utiliser un semaphore pour eviter que 2 objets essaient de se co en meme temps, avec getRoute
         this.sautCharge += saut;
-        if(this.sautCharge >=1){
+        if(this.sautCharge >=1){   //La route avance
             int currentSaut = (int) this.sautCharge; //La partie entiere de saut ici au moins 1
             this.sautCharge -= currentSaut; //On va utiliser currentSaut donc on l enleve a ce qui a deja charge
 
@@ -147,6 +163,7 @@ public class Route {
 
             }
             this.kilometrage += currentSaut;
+            this.updateRangeRoute();
 
 
         }
@@ -154,7 +171,7 @@ public class Route {
     }
 
     /**
-     * Renvoie la liste des points qui constituent la route.
+     * Renvoie un clone de la liste des points qui constituent la route.
      * <br/>Le point 0 est celui le plus bas dans le fenetre
      * @return l arrayList de la liste des points
      */
@@ -169,7 +186,7 @@ public class Route {
                 }
                 if(newList.size() == 0){ //Pour eviter les bugs
                     newList.add(new Point(Affichage.LARGEUR/2, Affichage.HAUTEUR));
-                    newList.add(new Point(Affichage.LARGEUR/2, VueBackground.horizon));
+                    newList.add(new Point(Affichage.LARGEUR/2, horizon));
                 }
 
                 return newList;
@@ -181,6 +198,115 @@ public class Route {
         }
     }
 
+
+    /*--------------------Shape et profondeur de la route---------------------*/
+
+    /**
+     * Defini rangeRoute en fonction de la liste de points actuelle.
+     * <br/>Range route defini la distance entre le milieu de la route et son cote gauche pour chaque point.
+     * <br/>Permet un effet de profondeur
+     */
+    private void updateRangeRoute(){
+        float rangeInit = 100; //Lorsque y=Affichage.HAUTEUR alors de chaque cote de la route il y a cette valeur
+        ArrayList<Point> list = this.getRoute();
+        synchronized (this.rangeroute){
+            try{
+                this.rangeMutex.lock();
+                //Initialisation de rangeRoute
+                ArrayList<Integer> newRange = new ArrayList<>();
+                //this.rangeroute.clear();
+                for(int i = 0; i<list.size(); i++){
+                    Point p = list.get(i);
+                    if(p.y < horizon){
+                        if(i==0){
+                            p.move((Tools.findX(horizon, list.get(i+1), p)), horizon);
+                        } else {
+                            p.move(Tools.findX(horizon,p,list.get(i-1)), horizon); //N affiche que les points sous l horizon !
+                        }
+
+                    } else if(p.y>Affichage.HAUTEUR){
+                        if(i == list.size()-1){
+                            p.move(Tools.findX(Affichage.HAUTEUR, p, list.get(i-1)), Affichage.HAUTEUR);
+                        } else {
+                            p.move(Tools.findX(Affichage.HAUTEUR,list.get(i+1),p), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
+                        }
+
+                    }
+                    //int range = Math.round((rangeInit*(float) p.y)/(float) Affichage.HAUTEUR); //Produit en croix
+                    int range = Math.round((rangeInit*(float) (p.y-horizon+50))/(float) (Affichage.HAUTEUR-horizon+50)); //Produit en croix
+                    if(range <1){
+                        range = 1; //Mettre une largeur minimale de 1 pour pouvoir dessiner un beau polygone
+                    }
+                    newRange.add(range);
+                }
+                this.rangeroute = newRange;
+
+
+            } finally {
+                this.rangeMutex.unlock();
+            }
+
+        }
+    }
+
+    /**
+     * Renvoie un clone de la distance entre le bord de la route et le milieu de la route pour chaque point correspondant a la route
+     * <br/>Protege par un mutex
+     * @return range list
+     */
+    public ArrayList<Integer> getRangeRoute(){
+        synchronized (this.rangeroute){
+            try{
+                this.rangeMutex.lock();
+                return (ArrayList<Integer>) this.rangeroute.clone();
+            } finally {
+                this.rangeMutex.unlock();
+            }
+
+        }
+    }
+
+
+    @Override
+    public Area getHitBox() {
+
+        ArrayList<Point> list = this.getRoute();
+        int sizeTab = (list.size()*2)+1; //+1 pour fermer le polygon
+        int[] tabX = new int[sizeTab];
+        int[] tabY = new int[sizeTab];
+        //Initialisation du 1er point
+        Point oldP = list.get(0); //On a toujours olp > p
+        if(oldP.y>Affichage.HAUTEUR){
+            oldP.move(Tools.findX(Affichage.HAUTEUR,list.get(1),oldP), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
+        }
+        tabX[0] = oldP.x-this.rangeroute.get(0);
+        tabX[sizeTab-2] = oldP.x+this.rangeroute.get(0); //Remplir en partant de la fin
+        tabY[0] = oldP.y;
+        tabY[sizeTab-2] = oldP.y;
+
+        for(int i = 1; i<list.size(); i++){
+
+            Point p = list.get(i);
+            if(p.y < horizon){
+                p.move(Tools.findX(horizon,p,oldP), horizon); //N affiche que les points sous l horizon !
+            }
+            //Le point 0 est le point en bas a
+            tabX[i] = p.x-this.rangeroute.get(i);
+            tabX[sizeTab-2-i] = p.x+this.rangeroute.get(i); //Remplir en partant de la fin
+            tabY[i] = p.y;
+            tabY[sizeTab-2-i] = p.y;
+
+            oldP = p;
+        }
+        tabX[sizeTab-1] = tabX[0];//Fermer le polygon
+        tabY[sizeTab-1] = tabY[0];
+
+        return new Area(new Polygon(tabX,tabY, sizeTab));
+
+    }
+
+
+    /*----------------------------Point de controle------------------------*/
 
     /**
      *
@@ -211,4 +337,6 @@ public class Route {
     public int getValueCtrl() {
         return valueCtrl;
     }
+
+
 }
