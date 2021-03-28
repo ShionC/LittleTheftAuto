@@ -72,34 +72,6 @@ class Main {
         //fenetre.add(affichage.outScreen);
         affichage.switchInteface(false);
 
-        //ctrl.startPartie(); //Pas d ecran dacceuil
-        /*
-
-        Voler fly = new Voler();
-        Etat modele = new Etat(fly);
-        Controleur ctrl = new Controleur(modele);
-        Affichage affichage = new Affichage(ctrl, modele);
-        VueBird bird = new VueBird(affichage);
-
-        Instant start = Instant.now();
-        affichage.setTimer(start);
-
-        ctrl.setVue(affichage);
-        Avancer avance = new Avancer(affichage, modele.getParcours());
-
-        ctrl.enableKeyPad();
-        enableReload(fenetre, affichage);
-
-        modele.getParcours().setTime(start);
-        fly.start();
-        avance.start();
-
-
-
-        fenetre.add(affichage);
-*/
-
-
 
 
         fenetre.pack();

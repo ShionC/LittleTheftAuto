@@ -93,7 +93,7 @@ public class VueUser {
      * @param g2
      * @param obj
      */
-    private void drawHitBox(Graphics2D g2, User obj){
+    private void drawHitBox(Graphics2D g2, ConcreteObject obj){
         g2.setColor(new Color(188, 32, 1));
         Shape collisionBox = obj.getHitBox();
         g2.draw(collisionBox);

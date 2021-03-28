@@ -2,7 +2,7 @@ package controleur;
 
 public class KeyContinue extends Thread {
 
-    private Controleur ctrl;
+    private UserControler uCtrl;
 
     public enum Direction {LEFT, NOTHING, RIGHT};
 
@@ -18,8 +18,8 @@ public class KeyContinue extends Thread {
      * <br/> Cette classe est celle effectue les actions sur ordre du ontroleur et par l intermediaire de ses methodes.
      * @param ctrl
      */
-    KeyContinue(Controleur ctrl){
-        this.ctrl = ctrl;
+    KeyContinue(UserControler ctrl){
+        this.uCtrl = ctrl;
     }
 
     /**
@@ -51,11 +51,11 @@ public class KeyContinue extends Thread {
         while( run ) {
             if( dir == Direction.LEFT) {
                 //System.out.println("Left");
-                this.ctrl.move(false);
+                this.uCtrl.move(false);
             }
             else if( dir == Direction.RIGHT) {
                 //System.out.println("Right");
-                this.ctrl.move(true);
+                this.uCtrl.move(true);
             }
 
 

@@ -6,7 +6,6 @@ import model.Data;
 import model.Route;
 import model.User;
 import vue.Affichage;
-import vue.VueUser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,10 +27,11 @@ public class Controleur implements KeyListener {
     TimeManager timeManager;
     Deplace deplace;
 
+    UserControler uCtrl;
     KeyContinue keyCont;
 
     /**
-     * La partie est en cours
+     * La partie est en cours, ni en pause, ni arretee
      */
     boolean partieEnCours;
 
@@ -47,7 +47,9 @@ public class Controleur implements KeyListener {
     // ********************************** 2) Constructeur **********************************
 
     /**
-     * Le controleur principal
+     * Le controleur principal. Gere la pause, le debut et la fin de partie,
+     * ainsi que la creation d une nouvelle partie
+     * <br/> Cree tous les differents controleurs a son instanciation
      * @param aff l affichage principal
      * @param user la voiture controlee par le joueur pour la 1ere partie
      * @param route Le circuit automobile pour la 1ere partie
@@ -65,7 +67,10 @@ public class Controleur implements KeyListener {
         this.accueil = new Accueil(this);
         this.inPartie = false;
 
-        this.keyCont = new KeyContinue(this);
+        this.uCtrl = new UserControler(this);
+        this.aff.addKeyListener(this.uCtrl);
+
+        this.keyCont = new KeyContinue(this.uCtrl);
         this.keyCont.start();
 
         this.deplace = new Deplace(this);
@@ -241,57 +246,6 @@ public class Controleur implements KeyListener {
 
     }
 
-    /**
-     * Deplace user ainsi que les nuages dans VueBackground
-     * @param right
-     */
-    void move(boolean right) {
-        if(this.partieEnCours){
-            if (right) {
-                if (user.getPosX() + user.getLARGEUR() < Affichage.LARGEUR) {
-                    user.moveRight();
-                }
-            } else {
-                if (user.getPosX() > 0) {
-                    user.moveLeft();
-                }
-                aff.update();
-            }
-        }
-    }
-
-        /**
-         * Defini les commandes au clavier pour faire bouger User avec la methode de KeyBinding
-         */
-        public void setCmds () {
-
-            //Action a droite
-            this.aff.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "Right");
-            //KeyEvent.KEY_LOCATION_RIGHT
-            Action action = new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //System.out.print("Jump !! \n");
-                    move(true);
-                    //System.out.println("\n     *Action a droite*");
-                }
-            };
-            this.aff.getActionMap().put("Right", action);
-
-            //Action a gauche
-            this.aff.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "Left");
-            //KeyEvent.KEY_LOCATION_RIGHT
-            Action action2 = new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //System.out.print("Jump !! \n");
-                    move(false);
-                    //System.out.println("\n     *Action a gauche*");
-                }
-            };
-            this.aff.getActionMap().put("Left", action2);
-        }
-
     @Override
     public void keyTyped(KeyEvent e) {
             //System.out.println("Key typed Ctrl");
@@ -319,18 +273,6 @@ public class Controleur implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-            //Deplacement
-        if(e.getKeyCode() == KeyEvent.VK_LEFT){
-            this.keyCont.setDir(KeyContinue.Direction.LEFT);
-        }
-
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-            this.keyCont.setDir(KeyContinue.Direction.RIGHT);
-        }
-
-        if(e.getKeyCode() == KeyEvent.VK_UP){
-            //System.out.println("UP");
-        }
 
         //Pause
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
@@ -357,15 +299,6 @@ public class Controleur implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        //La verification supplementaire permet d eviter que lacher une touche annule une autre qui etait deja enfoncee
-        //Evite donc un nouveau lag
-        if(e.getKeyCode() == KeyEvent.VK_LEFT && this.keyCont.getDir() != KeyContinue.Direction.RIGHT){
-            this.keyCont.setDir(KeyContinue.Direction.NOTHING);
-        }
-
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT && this.keyCont.getDir() != KeyContinue.Direction.LEFT){
-            this.keyCont.setDir(KeyContinue.Direction.NOTHING);
-        }
 
     }
 }
