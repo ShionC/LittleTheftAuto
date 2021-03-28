@@ -103,7 +103,6 @@ public class VueUser {
     public void drawCar(Graphics2D g2) {
         //Boite de collision
         this.drawHitBox(g2, this.aff.user);
-        ConcreteObject obj;
         //Image
         Shape collisionBox = this.aff.user.getHitBox();
         //Image, centre l image sur le centre de la boite de collision

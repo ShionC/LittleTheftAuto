@@ -5,6 +5,10 @@ import Tools.Chrono;
 import java.time.Duration;
 import java.time.Instant;
 
+/**
+ * Liste de toutes les donnees recoltees lors du jeu.
+ * <br/>Classe statique
+ */
 public class Data {
 
     /**Le meilleur score**/
