@@ -1,6 +1,7 @@
 package vue;
 
 import Tools.Tools;
+import model.ConcreteObject;
 import model.User;
 
 import javax.swing.*;
@@ -16,10 +17,6 @@ import java.util.HashMap;
 
 public class VueUser {
     // ********************************** 1) Attributs **********************************
-    // Taille du véhicule
-    //public static final int LARG_CAR = 60;
-    //public static int HAUT_CAR = 120;
-
 
     private final Affichage aff;
 
@@ -68,21 +65,6 @@ public class VueUser {
 
     // ********************************** 3) Méthodes **********************************
 
-    /**
-     * Boite de collision de user, depends de l etat de user
-     * @return area
-     */
-    public Area getHitBoxCar() {
-        Shape collisionBox = new Rectangle2D.Double(aff.user.getPosX(), aff.user.getPosY(), aff.user.getLARGEUR(), aff.user.getHAUTEUR());
-        int currentEtat = this.aff.user.getEtat().getCurrentState();
-        double rotation = 0.4;
-        if(currentEtat == -1){
-            collisionBox = Tools.rotate(collisionBox, -rotation, Tools.Location.Down);
-        } else if(currentEtat == 1){
-            collisionBox = Tools.rotate(collisionBox, rotation, Tools.Location.Down);
-        }
-        return new Area(collisionBox);
-    }
 
     /**
      * Ecrit un message qui s affiche au dessus de User pendant n millisecondes
@@ -121,7 +103,8 @@ public class VueUser {
     public void drawCar(Graphics2D g2) {
         //Boite de collision
         this.drawHitBox(g2, this.aff.user);
-
+        ConcreteObject obj;
+        //Image
         Shape collisionBox = this.aff.user.getHitBox();
         //Image, centre l image sur le centre de la boite de collision
         BufferedImage img = Tools.deepCopy(this.aff.user.getEtat().getCurrentImage());

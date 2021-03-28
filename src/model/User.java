@@ -10,7 +10,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 
-public class User extends Thread {
+public class User extends ConcreteObject implements Runnable {
 
     /**Le flag d arret de la thread**/
     protected boolean run = true;
@@ -26,12 +26,6 @@ public class User extends Thread {
 
 
 
-    /**
-     * La position sur l axe X de User
-     */
-    protected float posX;
-    /**La position sur l axe Y de User**/
-    protected int posY = Affichage.HAUTEUR - this.HAUTEUR - 20;
     /**La valeur max d un deplacement lateral**/
     protected int sautMax;
 
@@ -59,6 +53,8 @@ public class User extends Thread {
     /**Le temps dattente actuel**/
     private int currentWaitEtat = 0;
 
+    /**La thread principale qui lance le run**/
+    private Thread userThread;
 
 
     // ********************************** 2) Constructeur **********************************
@@ -75,6 +71,10 @@ public class User extends Thread {
         this.sautMax = 25;
         this.inertie = 0;
         this.vitesse = 20;
+
+        this.posY = Affichage.HAUTEUR - this.HAUTEUR - 20;
+
+        this.userThread = new Thread(this);
 
         ArrayList<Integer> listEtat = new ArrayList<>();
         listEtat.add(-1); listEtat.add(0); listEtat.add(1);
@@ -96,22 +96,6 @@ public class User extends Thread {
     /**Renvoie la hauteur de la hitBox de User**/
     public int getHAUTEUR(){
         return this.HAUTEUR;
-    }
-
-    /**
-     * Renvoie la position sur l axe X de User
-     * @return
-     */
-    public int getPosX() {
-        return Math.round(posX);
-    }
-
-    /**
-     * Renvoie la position sur l axe Y de User
-     * @return
-     */
-    public int getPosY() {
-        return posY;
     }
 
     /**
@@ -301,7 +285,7 @@ public class User extends Thread {
      * Commence le thread de User et le defile de ses etats
      */
     public void startUser(){
-        this.start();
+        this.userThread.start();
         this.etat.start();
     }
 
@@ -345,7 +329,32 @@ public class User extends Thread {
     }
 
     /**
-     * Renvoie la hitBox de User
+     * Deplace User lateralement en fonction de son inertie.
+     * <br/>Prend en compte sa place dans l'ecran et gere les bordures
+     */
+    protected void gestionMoveLateral(){
+        if(this.posX >= 0 && this.posX + this.LARGEUR <= Affichage.LARGEUR){
+            //this.posX += this.inertie;
+            this.move();
+        } else if (this.posX <= 0){
+            //this.posX += 30; //Effet rebond
+            //this.inertie=50;//Repars le l autre cote
+            //this.rebond(1,true);
+            this.inertie = 0;
+            this.posX = 0;
+        } else //noinspection ConstantConditions
+            if(this.posX + this.LARGEUR >= Affichage.LARGEUR){
+                //this.posX -= 30;
+                //this.inertie = -50;
+                //this.rebond(1,false);
+                this.inertie = 0;
+                this.posX = Affichage.LARGEUR - this.LARGEUR;
+            }
+    }
+
+    /**
+     * Renvoie la hitBox de User.
+     * <br/>Sa rotation depends de l etat de User
      * @return
      */
     public Area getHitBox(){
@@ -366,26 +375,8 @@ public class User extends Thread {
 
             this.goBackInertie();
 
-
             //Gestion bordure d ecran
-            if(this.posX >= 0 && this.posX + this.LARGEUR <= Affichage.LARGEUR){
-                //this.posX += this.inertie;
-                this.move();
-            } else if (this.posX <= 0){
-                //this.posX += 30; //Effet rebond
-                //this.inertie=50;//Repars le l autre cote
-                //this.rebond(1,true);
-                this.inertie = 0;
-                this.posX = 0;
-            } else //noinspection ConstantConditions
-                if(this.posX + this.LARGEUR >= Affichage.LARGEUR){
-                //this.posX -= 30;
-                //this.inertie = -50;
-                //this.rebond(1,false);
-                    this.inertie = 0;
-                    this.posX = Affichage.LARGEUR - this.LARGEUR;
-            }
-
+            this.gestionMoveLateral();
 
             try {
                 //noinspection BusyWait

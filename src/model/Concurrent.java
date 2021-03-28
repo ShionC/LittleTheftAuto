@@ -36,27 +36,5 @@ public class Concurrent extends User{
         return this.type;
     }
 
-    /**
-     * Deplace Concurrent lateralement en fonction de son inertie.
-     * <br/>Prend en compte sa place dans l'ecran et gere les bordures
-     */
-    private void gestionMoveLateral(){
-        if(super.posX >= 0 && this.posX + this.LARGEUR <= Affichage.LARGEUR){
-            //this.posX += this.inertie;
-            this.move();
-        } else if (this.posX <= 0){
-            //this.posX += 30; //Effet rebond
-            //this.inertie=50;//Repars le l autre cote
-            //this.rebond(1,true);
-            this.inertie = 0;
-            this.posX = 0;
-        } else //noinspection ConstantConditions
-            if(this.posX + this.LARGEUR >= Affichage.LARGEUR){
-                //this.posX -= 30;
-                //this.inertie = -50;
-                //this.rebond(1,false);
-                this.inertie = 0;
-                this.posX = Affichage.LARGEUR - this.LARGEUR;
-            }
-    }
+
 }
