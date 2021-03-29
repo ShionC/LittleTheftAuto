@@ -61,10 +61,10 @@ public class Images {
      */
     private static void initClouds_Montain(){
         //Nuages
-        cloud1 = Tools.getBIfromPath("src/Sprites/cloud1.png");
-        cloud2 = Tools.getBIfromPath("src/Sprites/cloud2.png");
-        cloud3 = Tools.getBIfromPath("src/Sprites/cloud3.png");
-        cloud4 = Tools.getBIfromPath("src/Sprites/cloud4.png");
+        cloud1 = Tools.getBIfromPath("src/Sprites/Decors/Nuages/cloud1.png");
+        cloud2 = Tools.getBIfromPath("src/Sprites/Decors/Nuages/cloud2.png");
+        cloud3 = Tools.getBIfromPath("src/Sprites/Decors/Nuages/cloud3.png");
+        cloud4 = Tools.getBIfromPath("src/Sprites/Decors/Nuages/cloud4.png");
         //Scale, changer la taille des images
         double scaleX = 0.5;
         double scaleY = 0.5;
@@ -74,18 +74,18 @@ public class Images {
         cloud4 = Tools.scaleBI(cloud4, scaleX, scaleY);
 
         //Montagne
-        mountain = Tools.getBIfromPath("src/Sprites/mountains.png");
+        mountain = Tools.getBIfromPath("src/Sprites/Decors/mountains.png");
         mountain = Tools.scaleBI(mountain, 0.5, 0.5);
 
         //Herbe
-        grass = Tools.getBIfromPath("src/Sprites/grass.png");
+        grass = Tools.getBIfromPath("src/Sprites/Decors/grass.png");
     }
 
     private static void initUsers(){
         // Dessins du user
-        BufferedImage userStraight = Tools.getBIfromPath("src/Sprites/user.png");
-        BufferedImage userLeft = Tools.getBIfromPath("src/Sprites/userleft.png");
-        BufferedImage userRight = Tools.getBIfromPath("src/Sprites/userright.png");
+        BufferedImage userStraight = Tools.getBIfromPath("src/Sprites/User/user.png");
+        BufferedImage userLeft = Tools.getBIfromPath("src/Sprites/User/userleft.png");
+        BufferedImage userRight = Tools.getBIfromPath("src/Sprites/User/userright.png");
         userStraight = Tools.scaleBI(userStraight, scaleUser, scaleUser);
         userLeft = Tools.scaleBI(userLeft, scaleUser, scaleUser);
         userRight = Tools.scaleBI(userRight, scaleUser, scaleUser);
@@ -96,9 +96,9 @@ public class Images {
         listStatesUser.put(1, userRight);
 
         //Concurrent1
-        BufferedImage c1Straight = Tools.getBIfromPath("src/Sprites/c1.png");
-        BufferedImage c1Left = Tools.getBIfromPath("src/Sprites/c1left.png");
-        BufferedImage c1Right = Tools.getBIfromPath("src/Sprites/c1right.png");
+        BufferedImage c1Straight = Tools.getBIfromPath("src/Sprites/Concurrents/c1.png");
+        BufferedImage c1Left = Tools.getBIfromPath("src/Sprites/Concurrents/c1left.png");
+        BufferedImage c1Right = Tools.getBIfromPath("src/Sprites/Concurrents/c1right.png");
         c1Straight = Tools.scaleBI(c1Straight, scaleUser, scaleUser);
         c1Left = Tools.scaleBI(c1Left, scaleUser, scaleUser);
         c1Right = Tools.scaleBI(c1Right, scaleUser, scaleUser);
@@ -110,9 +110,9 @@ public class Images {
 
 
         //Concurrent2
-        BufferedImage c2Straight = Tools.getBIfromPath("src/Sprites/c2.png");
-        BufferedImage c2Left = Tools.getBIfromPath("src/Sprites/c2left.png");
-        BufferedImage c2Right = Tools.getBIfromPath("src/Sprites/c2right.png");
+        BufferedImage c2Straight = Tools.getBIfromPath("src/Sprites/Concurrents/c2.png");
+        BufferedImage c2Left = Tools.getBIfromPath("src/Sprites/Concurrents/c2left.png");
+        BufferedImage c2Right = Tools.getBIfromPath("src/Sprites/Concurrents/c2right.png");
         c2Straight = Tools.scaleBI(c2Straight, scaleUser, scaleUser);
         c2Left = Tools.scaleBI(c2Left, scaleUser, scaleUser);
         c2Right = Tools.scaleBI(c2Right, scaleUser, scaleUser);
@@ -123,9 +123,9 @@ public class Images {
         concurrent2.put(1, c2Right);
 
         //Concurrent3
-        BufferedImage c3Straight = Tools.getBIfromPath("src/Sprites/c3.png");
-        BufferedImage c3Left = Tools.getBIfromPath("src/Sprites/c3left.png");
-        BufferedImage c3Right = Tools.getBIfromPath("src/Sprites/c3right.png");
+        BufferedImage c3Straight = Tools.getBIfromPath("src/Sprites/Concurrents/c3.png");
+        BufferedImage c3Left = Tools.getBIfromPath("src/Sprites/Concurrents/c3left.png");
+        BufferedImage c3Right = Tools.getBIfromPath("src/Sprites/Concurrents/c3right.png");
         c3Straight = Tools.scaleBI(c3Straight, scaleUser, scaleUser);
         c3Left = Tools.scaleBI(c3Left, scaleUser, scaleUser);
         c3Right = Tools.scaleBI(c3Right, scaleUser, scaleUser);
@@ -139,11 +139,11 @@ public class Images {
     }
 
     private static void initCurseur(){
-        curseur = Tools.getBIfromPath("src/Sprites/curseur.png");
+        curseur = Tools.getBIfromPath("src/Sprites/Bienvenue/curseur.png");
         curseur = Tools.deepCopy(curseur);
         curseur = Tools.getResizedImage(curseur, 20, 20);
 
-        iconCurseur = new ImageIcon(((new ImageIcon("src/Sprites/curseur.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH));
+        iconCurseur = new ImageIcon(((new ImageIcon("src/Sprites/Bienvenue/curseur.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH));
     }
 
     /*--------------------------------------Getters--------------------------------------------------*/
