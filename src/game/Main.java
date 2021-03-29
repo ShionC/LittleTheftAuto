@@ -23,6 +23,7 @@ class Main {
 
     /**
      * Methode implementant un fonctionnalite permetant de recommencer la partie.
+     * <br/>Cree une nouvelle fenetre
      * </br><b>Utilisation : </b>A tout moment pendant la partie, appuyer sur [ENTRER] au clavier pour la recommencer
      * @param affichage La fenetre principale
      */
@@ -67,15 +68,8 @@ class Main {
 
         Affichage affichage = new Affichage(fenetre, user, route);
         Controleur ctrl = new Controleur(affichage, user, route);
-        //ctrl.setAffichage(affichage);
-        //ctrl.setCmds();
-        //Deplace deplace = new Deplace(user, route, affichage);
-
-        //deplace.start();//Voir qui le lance, en fonction de si il y a une fenetre de demarage ou pas
 
 
-        //fenetre.add(affichage);
-        //fenetre.add(affichage.outScreen);
         affichage.switchInteface(false);
 
 
@@ -86,13 +80,7 @@ class Main {
     }
 
     public static void main(String[] args) {
-        //MainTest test = new MainTest();
-        //test.createParty();
-        //nb++;
-        //Afficher les instructions ici pour ne pas avoir a les relire quand on relance la partie
-        //Ou ne pas les afficher sous forme de message mais sous forme de label
-        //qui s efface au bout d un certain temps dans le controleur
-        //createParty();
+
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
