@@ -4,6 +4,16 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Create an object which scroll states in a way depending on the mode. There is 2 modes. Objects can be associated to a state
+ * <br/>Mode loop : (default) scrolling will go to one state to another from the minimal state to the maximal, before looping
+ * <br/> Mode to 0 : scrolling will constantly get the current state back to 0 by decreasing or increasing the current state until it reach 0.
+ * To use with <i>setCurrentState(int state)</i>
+ * <br/><br/>If the mode is modeTo0, at least one of the state must be 0. For better use, make full use of positive and negative numbers.
+ * <br/>The interval at which the state change is at 40 milliseconds by default but can be changed with setGap()
+ * <br/>The thread must be started by start() and can be stopped by stopRun(). It can also be paused and resumed
+ * @author Mathilde LASSEIGNE
+ */
 public class ScrollingStates extends Thread {
 
     /**Stop the thread**/

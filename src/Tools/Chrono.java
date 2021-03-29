@@ -3,6 +3,11 @@ package Tools;
 import java.time.Duration;
 import java.time.Instant;
 
+/**
+ * Un chronometre qui calcule le temps ecoule. Il commence avec start
+ * <br/> Le chronometre peut se mettre en pause.
+ * @author Mathilde LASSEIGNE
+ */
 public class Chrono {
 
     private Instant startChrono;

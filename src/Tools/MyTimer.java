@@ -3,6 +3,11 @@ package Tools;
 import java.time.Duration;
 import java.time.Instant;
 
+/**
+ * Cree un timer qui se declanche des son initialisation.
+ * Le timer permet de gerer un decompte de temps
+ * @author Mathilde LASSEIGNE
+ */
 public class MyTimer {
 
     /**Le debut du timer**/
