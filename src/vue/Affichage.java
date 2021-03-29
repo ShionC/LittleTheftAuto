@@ -10,9 +10,6 @@ import model.User;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 
@@ -130,6 +127,7 @@ public class Affichage extends JPanel {
         this.user = newUser;
         this.route = newRoute;
         this.bmg.init();
+        this.vueUser.newPartie();
     }
 
     /**
@@ -237,7 +235,7 @@ public class Affichage extends JPanel {
     public void update() {
         repaint();
         if(this.partieEnCours){
-            //Les updates
+            this.vueUser.update();
         }
 
     }

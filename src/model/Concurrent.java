@@ -37,11 +37,21 @@ public class Concurrent extends User{
     }
 
     /**
+     * Deplace le concurrent vers le haut
+     * @param dy
+     */
+    public void moveUp(float dy){
+        if(this.posY >0){
+            this.posY -= dy;
+        }
+    }
+
+    /**
      * Deplacement sur l axe Y dans le sens inverse de l avancement
      * @param dy
      */
     public void slowDown(float dy){
-
+        this.posY += dy;
     }
 
 }

@@ -8,9 +8,7 @@ import model.Route;
 import model.User;
 import vue.Affichage;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -126,7 +124,7 @@ public class Controleur implements KeyListener {
         this.partieEnCours = true;
         this.enPause = false;
         this.timeManager.startPartie();
-        this.user.startUser();
+        this.user.startCar();
         this.pauseChoice = 1;
         Data.newPartie();
     }
@@ -169,7 +167,7 @@ public class Controleur implements KeyListener {
             this.pauseChoice = 1;
             this.timeManager.getTimerPtCtrl().resume();
             this.aff.resume();
-            this.user.resumeUser();
+            this.user.resumeCar();
             Data.resumePartie();
         }
     }

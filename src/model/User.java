@@ -47,11 +47,6 @@ public class User extends ConcreteObject implements Runnable {
 
     /**L etat actuel de user {-1,0,1}**/
     protected ScrollingStates etat;
-    //private int etat = 0;
-    /**Le temps qu il faut attendre pour que l etat revienne a 0**/
-    private final int waitEtat = 2;
-    /**Le temps dattente actuel**/
-    private int currentWaitEtat = 0;
 
     /**La thread principale qui lance le run**/
     private Thread userThread;
@@ -182,7 +177,6 @@ public class User extends ConcreteObject implements Runnable {
      */
     public void moveRight(){
         this.etat.setCurrentState(1);
-        this.currentWaitEtat = 0;
         if(this.inertie<this.sautMax){
             if(this.inertie>0){
                 this.inertie+=this.sautInertie;
@@ -198,7 +192,6 @@ public class User extends ConcreteObject implements Runnable {
      */
     public void moveLeft(){
         this.etat.setCurrentState(-1);
-        this.currentWaitEtat = 0;
         if(this.inertie>-this.sautMax){
             if(this.inertie<0){
                 this.inertie-=this.sautInertie;
@@ -229,10 +222,8 @@ public class User extends ConcreteObject implements Runnable {
     public void rebond(int intensite, boolean right){
         if(right){
             this.etat.setCurrentState(1);
-            this.currentWaitEtat = 0;
         } else {
             this.etat.setCurrentState(-1);
-            this.currentWaitEtat = 0;
         }
         if(intensite == 1){
             if(right){
@@ -282,7 +273,7 @@ public class User extends ConcreteObject implements Runnable {
     /**
      * Commence le thread de User et le defile de ses etats
      */
-    public void startUser(){
+    public void startCar(){
         this.userThread.start();
         this.etat.start();
     }
@@ -297,7 +288,7 @@ public class User extends ConcreteObject implements Runnable {
     /**
      * Recommence le defilement des etats de user
      */
-    public void resumeUser(){
+    public void resumeCar(){
         this.etat.resumeScrolling();
     }
 
