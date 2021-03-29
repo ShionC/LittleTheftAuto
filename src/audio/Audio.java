@@ -8,9 +8,9 @@ public class Audio {
 
     /*--------------Jingles------------*/
 
-    public static SoundPlayer scoreJingle;
+    public static SoundPlayer jingleScore;
 
-    public static SoundPlayer selectionJingle;
+    public static SoundPlayer jingleSelection;
 
 
     /*--------------Musique---------------*/
@@ -33,8 +33,8 @@ public class Audio {
      * Initialise les jingle (no loop)
      */
     private static void initJingles(){
-        scoreJingle = new SoundPlayer(path+"control_point.mp3");
-        selectionJingle = new SoundPlayer(path+"menu_selection.mp3");
+        jingleScore = new SoundPlayer(path+"control_point.mp3");
+        jingleSelection = new SoundPlayer(path+"menu_selection.mp3");
     }
 
     /**

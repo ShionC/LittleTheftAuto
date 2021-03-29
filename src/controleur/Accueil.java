@@ -1,5 +1,6 @@
 package controleur;
 
+import audio.Audio;
 import vue.OutsideScreen;
 
 import java.awt.event.KeyEvent;
@@ -143,6 +144,7 @@ public class Accueil implements KeyListener {
             }
         }
         this.outScreen.update();
+        Audio.jingleSelection.play();
     }
 
     /**

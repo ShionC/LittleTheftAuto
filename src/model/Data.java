@@ -1,6 +1,7 @@
 package model;
 
 import Tools.Chrono;
+import audio.Audio;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -112,10 +113,12 @@ public class Data {
 
     /**
      * Ajoute au score actuel
+     * Declanche le jingle de score
      * @param score la valeur a ajouter au score
      */
     public static void addScore(int score){
         currentScore += score;
+        Audio.jingleScore.play();
     }
 
     /**
