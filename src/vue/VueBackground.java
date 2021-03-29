@@ -248,12 +248,14 @@ public class VueBackground {
         //drawFond(g2);
 
         //Pelouse
+        /*
         BufferedImage pelouse = Tools.deepCopy(Images.getGrass());
         AffineTransform atGrass = new AffineTransform();
         atGrass.translate(0, horizon);
         g2.drawImage(pelouse, atGrass, null);
+         */
         g2.setColor(new Color(58, 137, 35));
-        //g2.fillRect(0, horizon, Affichage.LARGEUR, Affichage.HAUTEUR - horizon);
+        g2.fillRect(0, horizon, Affichage.LARGEUR, Affichage.HAUTEUR - horizon);
 
         //Dessine la route
         g2.setColor(Color.gray);
@@ -261,6 +263,9 @@ public class VueBackground {
 
         //Ligne au milieu
         g2.setColor(new Color(250, 240, 230)); //Blanc
+        float[] dashingPatternLine = {100, 10};
+        g2.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER, 1.0f, dashingPatternLine, 0f));
 
         ArrayList<Point> listRoute = this.aff.route.getRoute();
         for(int i = 1; i<listRoute.size(); i++){
@@ -272,6 +277,7 @@ public class VueBackground {
             }
             g2.drawLine(p1.x,p1.y,p2.x,p2.y);
         }
+        g2.setStroke(oldStroke);
 
         //Point de controle
         int yPtCtrl = this.aff.route.getCtrl();
@@ -329,8 +335,9 @@ public class VueBackground {
 
         String score = "Score : ";
         String scoreVal = Tools.toStringInt(Data.getCurrentScore());
-        Color c1 = Color.BLACK;
-        Color c2 = Color.WHITE;
+        Color black = Color.BLACK;
+        Color white = Color.WHITE;
+        Color red = new Color(150, 0, 24);
         Font font = new Font("Arial", Font.BOLD, 20);
 
         if(Data.getCurrentScore()>=Data.getHighestScore() && Data.getCurrentScore() != 0){
@@ -338,13 +345,13 @@ public class VueBackground {
             Tools.drawDoubleString(score, Affichage.LARGEUR-90, 40, g2, font, gold, Color.BLACK);
             Tools.drawDoubleString(scoreVal, Affichage.LARGEUR-90, 80, g2, font, gold, Color.BLACK);
         } else {
-            Tools.drawDoubleString(score, Affichage.LARGEUR-90, 40, g2, font, c1, c2);
-            Tools.drawDoubleString(scoreVal, Affichage.LARGEUR-90, 80, g2, font, c1, c2);
+            Tools.drawDoubleString(score, Affichage.LARGEUR-90, 40, g2, font, black, white);
+            Tools.drawDoubleString(scoreVal, Affichage.LARGEUR-90, 80, g2, font, black, white);
         }
 
-
-        String str1 = "Vitesse m/s : "+ Math.round((long)this.aff.user.getVitesse());
-        String str2 = "Kilometrage : "+Tools.toStringInt(Data.getCurrentKilometrage());
+        int vitesseUser = Math.round((long)this.aff.user.getVitesse());
+        String vitesse = "Vitesse m/s : "+ vitesseUser;
+        String kilometrage = "Kilometrage : "+Tools.toStringInt(Data.getCurrentKilometrage());
         String temps = "Temps restant";
         String timer;
         MyTimer timerPtCtrl = this.aff.ctrl.getTimerPtCtrl();
@@ -354,10 +361,22 @@ public class VueBackground {
             timer = timerPtCtrl.toString();
         }
 
-        Tools.drawDoubleString(temps, Affichage.LARGEUR - 154, Affichage.HAUTEUR-159, g2, font, c1, c2);
-        Tools.drawDoubleString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139, g2, font, c1, c2);
-        Tools.drawDoubleString(str1, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99, g2, font, c1, c2);
-        Tools.drawDoubleString(str2, Affichage.LARGEUR - 189, Affichage.HAUTEUR-59, g2, font, c1, c2);
+        boolean warningVitesse = vitesseUser <= 10;
+        boolean warningTimer = timerPtCtrl.getLeftoverTime().getSeconds()<=10;
+
+        Tools.drawDoubleString(temps, Affichage.LARGEUR - 154, Affichage.HAUTEUR-159, g2, font, black, white);
+        if(warningTimer){
+            Tools.drawDoubleString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139, g2, font, red, white);
+        } else {
+            Tools.drawDoubleString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139, g2, font, black, white);
+        }
+        if(warningVitesse){
+            Tools.drawDoubleString(vitesse, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99, g2, font, red, white);
+        } else {
+            Tools.drawDoubleString(vitesse, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99, g2, font, black, white);
+        }
+
+        Tools.drawDoubleString(kilometrage, Affichage.LARGEUR - 189, Affichage.HAUTEUR-59, g2, font, black, white);
 
 
         g2.setFont(oldFont);
