@@ -19,7 +19,9 @@ public class Concurrent extends User{
      */
     public Concurrent(){
         super();
+        this.chooseType();
         this.posY = VueBackground.horizon;
+        this.posX = (float) Tools.rangedRandomDouble(50, Affichage.LARGEUR-50);
     }
 
     /**
