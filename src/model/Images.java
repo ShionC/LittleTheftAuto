@@ -13,13 +13,13 @@ public class Images {
 
 /*--------------------------------------Images------------------------------------------*/
 
+    //Decors
+
     //Images nuages :
     private static BufferedImage cloud1;
     private static BufferedImage cloud2;
     private static BufferedImage cloud3;
     private static BufferedImage cloud4;
-
-    // TODO : Ajouter images obstacles
 
     //Images montagnes
     private static BufferedImage mountain;
@@ -27,9 +27,22 @@ public class Images {
     //Image herbe
     private static BufferedImage grass;
 
+    // Obstacles
+    private static BufferedImage rock1;
+    private static BufferedImage rock2;
+    private static BufferedImage rock3;
+    private static BufferedImage rock4;
+    private static BufferedImage tree1;
+    private static BufferedImage tree2;
+    private static BufferedImage tree3;
+    private static BufferedImage rockground1;
+    private static BufferedImage rockground2;
+
+
     //User
     private static HashMap<Integer, BufferedImage> listStatesUser;
 
+    //Concurrents
     private static HashMap<Integer, BufferedImage> concurrent1;
     private static HashMap<Integer, BufferedImage> concurrent2;
     private static HashMap<Integer, BufferedImage> concurrent3;
@@ -53,6 +66,7 @@ public class Images {
         initClouds_Montain();
         initUsers();
         initCurseur();
+        initObstacles();
     }
 
 
@@ -146,6 +160,33 @@ public class Images {
         iconCurseur = new ImageIcon(((new ImageIcon("src/Sprites/Bienvenue/curseur.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH));
     }
 
+    public static void initObstacles(){
+        rock1 = Tools.getBIfromPath("src/Sprites/Obstacles/rock1.png");
+        rock2 = Tools.getBIfromPath("src/Sprites/Obstacles/rock2.png");
+        rock3 = Tools.getBIfromPath("src/Sprites/Obstacles/rock3.png");
+        rock4 = Tools.getBIfromPath("src/Sprites/Obstacles/rock4.png");
+        tree1 = Tools.getBIfromPath("src/Sprites/Obstacles/tree1.png");
+        tree2 = Tools.getBIfromPath("src/Sprites/Obstacles/tree2.png");
+        tree3 = Tools.getBIfromPath("src/Sprites/Obstacles/tree3.png");
+        rockground1 = Tools.getBIfromPath("src/Sprites/Obstacles/rockground1.png");
+        rockground2 = Tools.getBIfromPath("src/Sprites/Obstacles/rockground2.png");
+        double scaleXrock = 0.5;
+        double scaleYrock = 0.5;
+        rock1 = Tools.scaleBI(rock1, scaleXrock, scaleYrock);
+        rock2 = Tools.scaleBI(rock2, scaleXrock, scaleYrock);
+        rock3 = Tools.scaleBI(rock3, scaleXrock, scaleYrock);
+        rock4 = Tools.scaleBI(rock4, scaleXrock, scaleYrock);
+        double scaleXtree = 0.5;
+        double scaleYtree = 0.5;
+        tree1 = Tools.scaleBI(tree1, scaleXtree, scaleYtree);
+        tree2 = Tools.scaleBI(tree2, scaleXtree, scaleYtree);
+        tree3 = Tools.scaleBI(tree3, scaleXtree, scaleYtree);
+
+        rockground1 = Tools.scaleBI(rockground1, scaleXrock, scaleYrock);
+        rockground2 = Tools.scaleBI(rockground2, scaleXrock, scaleYrock);
+
+    }
+
     /*--------------------------------------Getters--------------------------------------------------*/
 
 
@@ -207,6 +248,35 @@ public class Images {
             res = concurrent3;
         }
         return (HashMap<Integer, BufferedImage>) res.clone();
+    }
+
+    /**
+     * Recupere les images d'obstacles
+     * @param obstacleType
+     * @return
+     */
+    public static BufferedImage getObstacleimg(int obstacleType){
+        BufferedImage modeleImg = null;
+        if (obstacleType == 0) {
+            modeleImg = rock1;
+        } else if (obstacleType == 1) {
+            modeleImg = rock2;
+        } else if (obstacleType == 2) {
+            modeleImg = rock3;
+        } else if (obstacleType == 3) {
+            modeleImg = rock4;
+        } else if (obstacleType == 4) {
+            modeleImg = tree1;
+        } else if (obstacleType == 5) {
+            modeleImg = tree2;
+        } else if (obstacleType == 6) {
+            modeleImg = tree3;
+        } else if (obstacleType == 7) {
+            modeleImg = rockground1;
+        } else {
+            modeleImg = rockground2;
+        }
+            return Tools.deepCopy(modeleImg);
     }
 
     /**
