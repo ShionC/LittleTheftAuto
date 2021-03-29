@@ -217,10 +217,19 @@ public class Deplace extends Thread {
                 }
 
                 //Concurrents
+
                 ArrayList<Concurrent> listConcurrents = this.aff.vueUser.getConcurrents();
                 for(Concurrent c : listConcurrents){
+                    //Ralentissement par User
                     c.slowDown((float) (modPos*modVitesse));
+
+                    //Vitesse concurrent
+                    this.calculVitObj(c);
+                    double modPosC = this.calcul_dPos(c.getVitesse(), this.varTime);
+                    c.moveUp((float) (modPosC*modVitesse));
+
                 }
+
 
                 /*----------------Collision--------------*/
 

@@ -136,6 +136,7 @@ public class User extends ConcreteObject implements Runnable {
         this.vitesse += vitesse;
         if(this.isOnRoad && this.vitesse == 0){
             System.out.println("Vitesse nulle malgre la route !!");
+            this.vitesse = 5;
         }
         //Limitation maximale et minimale de la vitesse
         if(this.vitesse<0){
@@ -159,7 +160,7 @@ public class User extends ConcreteObject implements Runnable {
     /**
      * Deplace user selon son inertie laterale
      */
-    public void move(){
+    private void move(){
         if(derapage){
             this.posX += this.inertie;
         } else {
