@@ -2,6 +2,7 @@ package controleur;
 
 import Tools.Tools;
 import Tools.MyTimer;
+import audio.Audio;
 import model.Data;
 import model.Route;
 import model.User;
@@ -203,6 +204,7 @@ public class Controleur implements KeyListener {
                 this.pauseChoice--;
             }
         }
+        Audio.jingleSelection.play();
 
     }
 

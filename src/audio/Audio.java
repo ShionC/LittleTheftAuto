@@ -12,6 +12,8 @@ public class Audio {
 
     public static SoundPlayer jingleSelection;
 
+    public static SoundPlayer jingleCollision;
+
 
     /*--------------Musique---------------*/
 
@@ -35,6 +37,7 @@ public class Audio {
     private static void initJingles(){
         jingleScore = new SoundPlayer(path+"control_point.mp3");
         jingleSelection = new SoundPlayer(path+"menu_selection.mp3");
+        jingleCollision = new SoundPlayer(path+"collision.mp3");
     }
 
     /**
