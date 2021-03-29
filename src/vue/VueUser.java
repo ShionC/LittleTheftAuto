@@ -33,7 +33,7 @@ public class VueUser {
     private ArrayList<Concurrent> concurrents = new ArrayList<>();
     /**Le nombre max de concurrents a la fois**/
     private final int maxConcurrents = 1;//2;
-    private final double percChanceApparition = 5;//0.2;
+    private final double percChanceApparition = 2;//0.2;
 
     private final ReentrantLock concurrentMutex = new ReentrantLock();
 
@@ -52,7 +52,7 @@ public class VueUser {
             }
         };
         //Le timer supprime le message apres un delais de 4000 milliseconds
-        this.messageTimer = new Timer(4*1000,cancelMessage);
+        this.messageTimer = new Timer(3*1000,cancelMessage);
         this.messageTimer.setRepeats(false);
         this.messageTimer.start();
 

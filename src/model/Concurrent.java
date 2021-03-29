@@ -16,6 +16,9 @@ public class Concurrent extends User{
     /**La direction du mouvement en cours. True si vers la droite**/
     private boolean dirCurrentMove = true;
 
+    /**Si le vehicule a ete depasse ou pas**/
+    private boolean HS = false;
+
     /**
      * Cree un concurrent.
      * <br/>Un concurrent est un User spécifique :
@@ -28,6 +31,7 @@ public class Concurrent extends User{
         this.posY = VueBackground.horizon;
         this.posX = (float) Tools.rangedRandomDouble(50, Affichage.LARGEUR-50);
         this.etat.setImages(Images.getConcurrentImg(this.type));
+        this.vitesse = 40;
     }
 
     /**
@@ -36,6 +40,21 @@ public class Concurrent extends User{
     private void chooseType(){
         int maxType = 3;
         this.type = Tools.rangedRandomInt(1, maxType);
+    }
+
+    /**
+     * Rends le concurrent HS
+     */
+    public void goHS(){
+        this.HS = true;
+    }
+
+    /**
+     * Verifie si le concurrent est HS
+     * @return
+     */
+    public boolean isHS() {
+        return HS;
     }
 
     /**
@@ -52,7 +71,7 @@ public class Concurrent extends User{
      */
     public void moveUp(float dy){
         if(this.posY >0){
-            this.posY -= dy;
+            this.posY -= dy+2;
         }
     }
 
@@ -84,9 +103,10 @@ public class Concurrent extends User{
             } else {
                 this.waitMove = Tools.rangedRandomInt(2, 15);
                 int rand = Tools.rangedRandomInt(0,100);
-                if(rand <=50){
+                //20% chance de rester droit
+                if(rand <=40){
                     this.dirCurrentMove = true;
-                } else {
+                } else if(rand >= 60){
                     this.dirCurrentMove = false;
                 }
             }

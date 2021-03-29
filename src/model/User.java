@@ -65,7 +65,7 @@ public class User extends ConcreteObject implements Runnable {
         this.posX = Affichage.LARGEUR/2;
         this.sautMax = 25;
         this.inertie = 0;
-        this.vitesse = 20;
+        this.vitesse = 30;
 
         this.posY = Affichage.HAUTEUR - this.HAUTEUR - 20;
 
