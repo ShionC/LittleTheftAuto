@@ -248,8 +248,12 @@ public class VueBackground {
         //drawFond(g2);
 
         //Pelouse
+        BufferedImage pelouse = Tools.deepCopy(Images.getGrass());
+        AffineTransform atGrass = new AffineTransform();
+        atGrass.translate(0, horizon);
+        g2.drawImage(pelouse, atGrass, null);
         g2.setColor(new Color(58, 137, 35));
-        g2.fillRect(0, horizon, Affichage.LARGEUR, Affichage.HAUTEUR - horizon);
+        //g2.fillRect(0, horizon, Affichage.LARGEUR, Affichage.HAUTEUR - horizon);
 
         //Dessine la route
         g2.setColor(Color.gray);

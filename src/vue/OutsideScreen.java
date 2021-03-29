@@ -347,9 +347,10 @@ public class OutsideScreen  extends JPanel {
         i++;
         c.gridx = 1;
         c.gridy = i;
+        ImageIcon Celine_avatar = new ImageIcon(((new ImageIcon("src/Sprites/Celine_avatar.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
         JLabel celine = new JLabel("Céline YAN", JLabel.CENTER);
         celine.setFont(fontText);
-        celine.setIcon(imgCredit);
+        celine.setIcon(Celine_avatar);
         this.credits.add(celine);
         Jcredits.add(celine, c);
         i++;
