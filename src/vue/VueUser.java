@@ -32,8 +32,8 @@ public class VueUser {
 
     private ArrayList<Concurrent> concurrents = new ArrayList<>();
     /**Le nombre max de concurrents a la fois**/
-    private final int maxConcurrents = 2;
-    private final double percChanceApparition = 0.2;
+    private final int maxConcurrents = 1;//2;
+    private final double percChanceApparition = 5;//0.2;
 
     private final ReentrantLock concurrentMutex = new ReentrantLock();
 

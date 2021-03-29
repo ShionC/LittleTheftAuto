@@ -34,8 +34,8 @@ public class UserControler implements KeyListener {
                 if (this.ctrl.user.getPosX() > 0) {
                     this.ctrl.user.moveLeft();
                 }
-                this.ctrl.aff.update();
             }
+            this.ctrl.aff.update();
         }
     }
 

@@ -288,7 +288,7 @@ public class User extends ConcreteObject implements Runnable {
     /**
      * Recommence le defilement des etats de user
      */
-    public void resumeCar(){
+    public void resume(){
         this.etat.resumeScrolling();
     }
 

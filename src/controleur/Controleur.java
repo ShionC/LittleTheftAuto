@@ -3,6 +3,7 @@ package controleur;
 import Tools.Tools;
 import Tools.MyTimer;
 import audio.Audio;
+import model.Concurrent;
 import model.Data;
 import model.Route;
 import model.User;
@@ -153,6 +154,11 @@ public class Controleur implements KeyListener {
             this.timeManager.getTimerPtCtrl().pause();
             this.aff.pause();
             this.user.pause();
+
+            for(Concurrent c : this.aff.vueUser.getConcurrents()){
+                c.pause();
+            }
+
             Data.pausePartie();
             Audio.musicInGame.pause();
             Audio.musicPause.play();
@@ -169,7 +175,12 @@ public class Controleur implements KeyListener {
             this.pauseChoice = 1;
             this.timeManager.getTimerPtCtrl().resume();
             this.aff.resume();
-            this.user.resumeCar();
+            this.user.resume();
+
+            for(Concurrent c : this.aff.vueUser.getConcurrents()){
+                c.resume();
+            }
+
             Data.resumePartie();
             Audio.musicInGame.resume();
             Audio.musicPause.stop();

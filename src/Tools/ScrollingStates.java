@@ -108,6 +108,14 @@ public class ScrollingStates extends Thread {
     }
 
     /**
+     * Check if the scrolling is paused
+     * @return
+     */
+    public boolean isPaused() {
+        return pause;
+    }
+
+    /**
      * Add a list of images and states to the instance. The instance must not be started to do this operation. If not respected, an exception will be raised.
      * @param listState_Images The list of the states and their associated Images. The states must be consecutive and are considered to be the key in the HashMap
      */
