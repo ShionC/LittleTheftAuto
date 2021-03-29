@@ -215,7 +215,9 @@ public class Affichage extends JPanel {
             super.revalidate();
             super.repaint();
             this.bmg.drawFond(g2);
+
             this.bmg.drawBackground(g2);
+            this.vueUser.drawConcurrent(g2);
             this.vueUser.drawCar(g2);
             this.vueUser.drawMessage(g2);
             this.bmg.drawData(g2);

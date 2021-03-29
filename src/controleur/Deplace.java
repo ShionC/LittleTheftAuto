@@ -1,7 +1,6 @@
 package controleur;
 
-import model.Data;
-import model.Obstacle;
+import model.*;
 import vue.Affichage;
 
 import java.awt.*;
@@ -9,8 +8,6 @@ import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import model.User;
-import model.Route;
 import Tools.Tools;
 import vue.VueUser;
 
@@ -77,7 +74,7 @@ public class Deplace extends Thread {
      * <br/>xt = v*t + x0
      * @param vitesse v
      * @param dt dt la periode de temps sur laquelle la modification s effectue. En <b>milisecondes</b>
-     * @return dx, la modification de la position pour t <b>secondes</b>
+     * @return dx = = v*t, la modification de la position pour t <b>secondes</b>
      */
     private double calcul_dPos(double vitesse, double dt){
         double t = dt/1000; //Conversion en secondes
@@ -178,6 +175,8 @@ public class Deplace extends Thread {
             if(this.ctrl.partieEnCours){
 
 
+                /*---------------Deplacement----------*/
+
                 //Calcul de la vitesse
                 this.calculVitObj(this.user);
 
@@ -203,7 +202,7 @@ public class Deplace extends Thread {
                     }
                 }
 
-
+                //Obstacles
                 ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
                 for(Obstacle obs : listObstacles){
                     int range = this.aff.bmg.getRange(obs.getPos());
@@ -217,7 +216,13 @@ public class Deplace extends Thread {
 
                 }
 
+                //Concurrents
+                ArrayList<Concurrent> listConcurrents = this.aff.vueUser.getConcurrents();
+                for(Concurrent c : listConcurrents){
+                    c.slowDown((float) (modPos*modVitesse));
+                }
 
+                /*----------------Collision--------------*/
 
                 //TODO obstacles & concurrents
                 //Deceleration selon obstacle :

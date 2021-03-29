@@ -269,40 +269,52 @@ public class Route extends ConcreteObject {
 
     @Override
     public Area getHitBox() {
-        updateRangeRoute();
+        synchronized (this.rangeroute){
+            try{
+                this.rangeMutex.lock();
 
-        ArrayList<Point> list = this.getRoute();
-        int sizeTab = (list.size()*2)+1; //+1 pour fermer le polygon
-        int[] tabX = new int[sizeTab];
-        int[] tabY = new int[sizeTab];
-        //Initialisation du 1er point
-        Point oldP = list.get(0); //On a toujours olp > p
-        if(oldP.y>Affichage.HAUTEUR){
-            oldP.move(Tools.findX(Affichage.HAUTEUR,list.get(1),oldP), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
-        }
-        tabX[0] = oldP.x-this.rangeroute.get(0);
-        tabX[sizeTab-2] = oldP.x+this.rangeroute.get(0); //Remplir en partant de la fin
-        tabY[0] = oldP.y;
-        tabY[sizeTab-2] = oldP.y;
+                updateRangeRoute();
+                ArrayList<Integer> rangeRoute = this.getRangeRoute();
 
-        for(int i = 1; i<list.size(); i++){
+                ArrayList<Point> list = this.getRoute();
+                int sizeTab = (list.size()*2)+1; //+1 pour fermer le polygon
+                int[] tabX = new int[sizeTab];
+                int[] tabY = new int[sizeTab];
+                //Initialisation du 1er point
+                Point oldP = list.get(0); //On a toujours olp > p
+                if(oldP.y>Affichage.HAUTEUR){
+                    oldP.move(Tools.findX(Affichage.HAUTEUR,list.get(1),oldP), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
+                }
+                tabX[0] = oldP.x-rangeRoute.get(0);
+                tabX[sizeTab-2] = oldP.x+rangeRoute.get(0); //Remplir en partant de la fin
+                tabY[0] = oldP.y;
+                tabY[sizeTab-2] = oldP.y;
 
-            Point p = list.get(i);
-            if(p.y < horizon){
-                p.move(Tools.findX(horizon,p,oldP), horizon); //N affiche que les points sous l horizon !
+                for(int i = 1; i<list.size(); i++){
+
+                    Point p = list.get(i);
+                    if(p.y < horizon){
+                        p.move(Tools.findX(horizon,p,oldP), horizon); //N affiche que les points sous l horizon !
+                    }
+                    //Le point 0 est le point en bas a
+                    tabX[i] = p.x-rangeRoute.get(i);
+                    tabX[sizeTab-2-i] = p.x+rangeRoute.get(i); //Remplir en partant de la fin
+                    tabY[i] = p.y;
+                    tabY[sizeTab-2-i] = p.y;
+
+                    oldP = p;
+                }
+                tabX[sizeTab-1] = tabX[0];//Fermer le polygon
+                tabY[sizeTab-1] = tabY[0];
+
+                return new Area(new Polygon(tabX,tabY, sizeTab));
+
+            } finally {
+                this.rangeMutex.unlock();
             }
-            //Le point 0 est le point en bas a
-            tabX[i] = p.x-this.rangeroute.get(i);
-            tabX[sizeTab-2-i] = p.x+this.rangeroute.get(i); //Remplir en partant de la fin
-            tabY[i] = p.y;
-            tabY[sizeTab-2-i] = p.y;
 
-            oldP = p;
         }
-        tabX[sizeTab-1] = tabX[0];//Fermer le polygon
-        tabY[sizeTab-1] = tabY[0];
 
-        return new Area(new Polygon(tabX,tabY, sizeTab));
 
     }
 

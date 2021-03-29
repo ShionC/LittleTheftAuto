@@ -47,6 +47,28 @@ public class Tools {
         return randomValue;
     }
 
+    /**
+     * Cree un double random compris dans un certain intervalle [rangeMin, rangeMax]
+     * @param rangeMin La borne minimale du random
+     * @param rangeMax La borne maximale du random (doit etre positive !!)
+     * @return la valeur du double
+     */
+    public static double rangedRandomDouble(double rangeMin, double rangeMax) {
+        double randomValue;
+        if(rangeMin<0 ||rangeMax<=0||(rangeMax-rangeMin<=0)){
+            System.out.println("Argument de random doit etre positif !!");
+            if(rangeMin<0){
+                System.out.println(rangeMin+" est negatif");
+            }
+            return rangeMin;
+        } else {
+            Random r = new Random();
+            randomValue = rangeMin + (r.nextDouble()*(rangeMax-rangeMin));
+
+        }
+        return randomValue;
+    }
+
     /*-----------------------------------------CALCUL----------------------------------------------------*/
 
     /**

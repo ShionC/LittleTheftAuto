@@ -14,6 +14,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class VueUser {
     // ********************************** 1) Attributs **********************************
@@ -32,7 +33,9 @@ public class VueUser {
     private ArrayList<Concurrent> concurrents = new ArrayList<>();
     /**Le nombre max de concurrents a la fois**/
     private final int maxConcurrents = 2;
-    private final int percChanceApparition = 10;
+    private final double percChanceApparition = 0.2;
+
+    private final ReentrantLock concurrentMutex = new ReentrantLock();
 
     // ********************************** 2) Constructeur **********************************
 
@@ -77,36 +80,67 @@ public class VueUser {
      * @return
      */
     public ArrayList<Concurrent> getConcurrents(){
-        return this.concurrents;
+        synchronized(this.concurrents){
+            try {
+                this.concurrentMutex.lock();
+                return this.concurrents;
+            } finally {
+                this.concurrentMutex.unlock();
+            }
+        }
     }
 
     /**
      * Ajoute un concurrent a la liste avec une certaine probabilité
      */
     private void addConcurents(){
-        if(this.concurrents.size() < this.maxConcurrents){
-            int rand = Tools.rangedRandomInt(0,100);
-            if(rand <= this.percChanceApparition){
-                Concurrent newC = new Concurrent();
-                newC.startCar();
-                this.concurrents.add(newC);
+        synchronized(this.concurrents){
+            try {
+                this.concurrentMutex.lock();
 
+                if(this.concurrents.size() < this.maxConcurrents){
+                    double rand = Tools.rangedRandomDouble(0,100);
+                    if(rand <= this.percChanceApparition){
+                        Concurrent newC = new Concurrent();
+                        newC.startCar();
+                        this.concurrents.add(newC);
+
+                    }
+                }
+
+            } finally {
+                this.concurrentMutex.unlock();
             }
         }
+
+
     }
 
     /**
      * Enleve les concurrents de la liste lorsqu ils sortent de l ecran
      */
     private void deleteConcurrents(){
-        if(this.concurrents.size()>0){
-            for(Concurrent c : this.concurrents){
-                if(c.getPosY()>Affichage.HAUTEUR){
-                    c.stopRun();
-                    this.concurrents.remove(c);
+        synchronized(this.concurrents){
+            try {
+                this.concurrentMutex.lock();
+
+                if(this.concurrents.size()>0){
+                    //System.out.println("probleme, size = "+this.concurrents.size());
+                    for(int i = 0; i<this.concurrents.size(); i++){
+                        Concurrent c = this.concurrents.get(i);
+                        if(c.getPosY()>Affichage.HAUTEUR){
+                            c.stopRun();
+                            this.concurrents.remove(c);
+                        }
+                    }
+
                 }
+
+            } finally {
+                this.concurrentMutex.unlock();
             }
         }
+
     }
 
 
@@ -119,9 +153,17 @@ public class VueUser {
      * @param g2
      */
     public void drawConcurrent(Graphics2D g2){
-        for(Concurrent c : this.concurrents){
-            this.drawUser(g2, c);
+        synchronized (this.concurrents){
+            try {
+                this.concurrentMutex.lock();
+                for(Concurrent c : this.concurrents){
+                    this.drawUser(g2, c);
+                }
+            } finally {
+                this.concurrentMutex.unlock();
+            }
         }
+
     }
 
     /**

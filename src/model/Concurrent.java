@@ -2,6 +2,7 @@ package model;
 
 import Tools.Tools;
 import vue.Affichage;
+import vue.VueBackground;
 import vue.VueUser;
 
 public class Concurrent extends User{
@@ -18,6 +19,7 @@ public class Concurrent extends User{
      */
     public Concurrent(){
         super();
+        this.posY = VueBackground.horizon;
     }
 
     /**
