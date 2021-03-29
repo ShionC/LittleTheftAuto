@@ -1,5 +1,6 @@
 package game;
 
+import audio.Audio;
 import controleur.Controleur;
 import model.Data;
 import model.Images;
@@ -59,6 +60,7 @@ class Main {
 
         Data.initGame();
         Images.initImages();
+        Audio.initAudio();
 
         Route route = new Route();
         User user = new User();
