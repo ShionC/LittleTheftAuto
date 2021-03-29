@@ -222,6 +222,7 @@ public class Deplace extends Thread {
                 //TODO obstacles & concurrents
                 //Deceleration selon obstacle :
 
+
                 double decObs = -30; //Pour les obstacles
                 double decConc = 0; //Pour les concurrents
 
