@@ -243,6 +243,7 @@ public class Deplace extends Thread {
             }
 
 
+
             try {
                 Thread.sleep(this.varTime);
             } catch(Exception e) {

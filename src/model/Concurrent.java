@@ -36,5 +36,12 @@ public class Concurrent extends User{
         return this.type;
     }
 
+    /**
+     * Deplacement sur l axe Y dans le sens inverse de l avancement
+     * @param dy
+     */
+    public void slowDown(float dy){
+
+    }
 
 }
