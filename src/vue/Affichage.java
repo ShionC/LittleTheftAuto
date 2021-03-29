@@ -1,5 +1,6 @@
 package vue;
 
+import audio.Audio;
 import controleur.Controleur;
 import Tools.Tools;
 import model.Data;
@@ -93,9 +94,14 @@ public class Affichage extends JPanel {
         if(toInGame){
             cl.show(this.card, "Game");
             this.requestFocusInWindow();
+            Audio.musicMenu.stop();
+            Audio.musicInGame.play();
         } else {
             cl.show(this.card, "OutScreen");
             this.outScreen.requestFocusInWindow();
+            Audio.musicPause.stop();
+            Audio.musicInGame.stop();
+            Audio.musicMenu.play();
         }
     }
 

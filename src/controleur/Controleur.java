@@ -154,6 +154,8 @@ public class Controleur implements KeyListener {
             this.aff.pause();
             this.user.pause();
             Data.pausePartie();
+            Audio.musicInGame.pause();
+            Audio.musicPause.play();
         }
     }
 
@@ -169,6 +171,8 @@ public class Controleur implements KeyListener {
             this.aff.resume();
             this.user.resumeCar();
             Data.resumePartie();
+            Audio.musicInGame.resume();
+            Audio.musicPause.stop();
         }
     }
 
@@ -202,7 +206,7 @@ public class Controleur implements KeyListener {
                 this.pauseChoice--;
             }
         }
-        Audio.jingleSelection.play();
+        Audio.jingleScrolling.play();
 
     }
 

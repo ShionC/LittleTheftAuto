@@ -144,7 +144,7 @@ public class Accueil implements KeyListener {
             }
         }
         this.outScreen.update();
-        Audio.jingleSelection.play();
+        Audio.jingleScrolling.play();
     }
 
     /**
@@ -192,6 +192,7 @@ public class Accueil implements KeyListener {
 
             }
         }
+        Audio.jingleSelection.play();
 
     }
 
