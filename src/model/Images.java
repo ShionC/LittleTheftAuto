@@ -19,9 +19,13 @@ public class Images {
     private static BufferedImage cloud3;
     private static BufferedImage cloud4;
 
+    // TODO : Ajouter images obstacles
 
     //Images montagnes
     private static BufferedImage mountain;
+
+    //Image herbe
+    private static BufferedImage grass;
 
     //User
     private static HashMap<Integer, BufferedImage> listStatesUser;
@@ -72,6 +76,9 @@ public class Images {
         //Montagne
         mountain = Tools.getBIfromPath("src/Sprites/mountains.png");
         mountain = Tools.scaleBI(mountain, 0.5, 0.5);
+
+        //Herbe
+        grass = Tools.getBIfromPath("src/Sprites/grass.png");
     }
 
     private static void initUsers(){
@@ -167,6 +174,14 @@ public class Images {
      */
     public static BufferedImage getMountain(){
         return Tools.deepCopy(mountain);
+    }
+
+    /**
+     * Renvoie l image de l'herbe
+     * @return
+     */
+    public static BufferedImage getGrass(){
+        return Tools.deepCopy(grass);
     }
 
     /**
