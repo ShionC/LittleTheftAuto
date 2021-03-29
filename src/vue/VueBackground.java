@@ -206,7 +206,9 @@ public class VueBackground {
      * Dessine l'horizon, les nuages et les montagnes de fond
      * @param g2 le graphism
      */
-    private void drawFond(Graphics2D g2){
+    void drawFond(Graphics2D g2){
+        Color oldColor = g2.getColor();
+        Stroke oldStroke = g2.getStroke();
 
         //Ciel
         g2.setColor(new Color(116, 208, 241));
@@ -231,18 +233,19 @@ public class VueBackground {
         at.translate(this.initXMontagnes+this.modMontagnes, horizon-(montagnes.getHeight()/(double)2)); //Les coord de la montagne
         g2.drawImage(montagnes, at, null);
 
+        g2.setColor(oldColor);
+        g2.setStroke(oldStroke);
     }
 
     /**
      * Dessine l arriere plan, contenant la pelouse, la route
      * @param g2 le graphisme
      */
-    public void drawBackground(Graphics2D g2){
+    void drawBackground(Graphics2D g2){
         Color oldColor = g2.getColor();
         Stroke oldStroke = g2.getStroke();
-        g2.setColor(Color.GREEN);
-        g2.fillRect(0, horizon, Affichage.LARGEUR, Affichage.HAUTEUR - horizon);
-        drawFond(g2);
+
+        //drawFond(g2);
 
         //Pelouse
         g2.setColor(new Color(58, 137, 35));
