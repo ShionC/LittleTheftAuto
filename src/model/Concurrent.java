@@ -22,6 +22,7 @@ public class Concurrent extends User{
         this.chooseType();
         this.posY = VueBackground.horizon;
         this.posX = (float) Tools.rangedRandomDouble(50, Affichage.LARGEUR-50);
+        this.etat.setImages(Images.getConcurrentImg(this.type));
     }
 
     /**
