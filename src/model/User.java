@@ -135,8 +135,7 @@ public class User extends ConcreteObject implements Runnable {
     public void modVitesse(double vitesse){
         this.vitesse += vitesse;
         if(this.isOnRoad && this.vitesse == 0){
-            System.out.println("Vitesse nulle malgre la route !!");
-            this.vitesse = 5;
+            this.vitesse = 10;
         }
         //Limitation maximale et minimale de la vitesse
         if(this.vitesse<0){

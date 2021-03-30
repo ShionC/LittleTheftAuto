@@ -147,11 +147,6 @@ public class Deplace extends Thread {
                 }
 
 
-                if(this.user.getVitesse()+modVit == 0){
-                    System.out.println("Vitesse nulle sur la route !!");
-                }
-                //System.out.println("On Road");
-
             }
 
 
