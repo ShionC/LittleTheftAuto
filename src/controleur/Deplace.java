@@ -224,22 +224,32 @@ public class Deplace extends Thread {
                 //Concurrents
 
                 ArrayList<Concurrent> listConcurrents = this.aff.vueUser.getConcurrents();
-                for(Concurrent c : listConcurrents){
-                    //Ralentissement par User
-                    c.slowDown((float) (modPos*modVitesse));
 
-                    //Vitesse concurrent
-                    if(c.getPosY() > VueBackground.horizon && c.getPosY() < Affichage.HAUTEUR){
-                        this.calculVitObj(c);
-                    } else { //Si User est au dessus de l horizon, sa vitesse max est 10
-                        if(c.getVitesse()>10){
-                            c.modVitesse(-1);
+                try {
+                    this.aff.vueUser.concurrentMutex.lock();
+
+                    for(Concurrent c : listConcurrents){
+                        //Ralentissement par User
+                        c.slowDown((float) (modPos*modVitesse));
+
+                        //Vitesse concurrent
+                        if(c.getPosY() > VueBackground.horizon && c.getPosY() < Affichage.HAUTEUR){
+                            this.calculVitObj(c);
+                        } else { //Si User est au dessus de l horizon, sa vitesse max est 10
+                            if(c.getVitesse()>10){
+                                c.modVitesse(-1);
+                            }
                         }
-                    }
-                    double modPosC = this.calcul_dPos(c.getVitesse(), this.varTime);
-                    c.moveUp((float) (modPosC*modVitesse));
+                        double modPosC = this.calcul_dPos(c.getVitesse(), this.varTime);
+                        c.moveUp((float) (modPosC*modVitesse));
 
+                    }
+
+                } finally {
+                    this.aff.vueUser.concurrentMutex.unlock();
                 }
+
+
 
 
                 /*----------------Collision--------------*/
@@ -262,29 +272,38 @@ public class Deplace extends Thread {
                     }
                 }
 
-                for(Concurrent c : listConcurrents){
-                    if(this.user.collision(c)){
-                        this.user.modVitesse(decConc);
-                        boolean isRight = this.user.getPosX()>c.getPosX();
-                        this.user.rebond(2, isRight);
-                        c.rebond(3, ! isRight);
-                        Audio.jingleCollision.play();
+                try {
+                    this.aff.vueUser.concurrentMutex.lock();
 
-                    }
-                    if(! c.isHS()){
-                        if(c.getPosY()>this.user.getPosY()){
-                            c.goHS();
-                            Data.addScore(scoreConcurrent);
-                            this.ctrl.aff.vueUser.writeMessage("+"+scoreConcurrent);
-
-                            //Ne s entends que si assez proche
-                            if(Tools.distance(this.user.getPos(), c.getPos())<300){
-                                Audio.jingleOvertakeCar.play();
-                            }
+                    for(Concurrent c : listConcurrents){
+                        if(this.user.collision(c)){
+                            this.user.modVitesse(decConc);
+                            boolean isRight = this.user.getPosX()>c.getPosX();
+                            this.user.rebond(2, isRight);
+                            c.rebond(3, ! isRight);
+                            Audio.jingleCollision.play();
 
                         }
+                        if(! c.isHS()){
+                            if(c.getPosY()>this.user.getPosY()){
+                                c.goHS();
+                                Data.addScore(scoreConcurrent);
+                                this.ctrl.aff.vueUser.writeMessage("+"+scoreConcurrent);
+
+                                //Ne s entends que si assez proche
+                                if(Tools.distance(this.user.getPos(), c.getPos())<300){
+                                    Audio.jingleOvertakeCar.play();
+                                }
+
+                            }
+                        }
                     }
+
+                } finally {
+                    this.aff.vueUser.concurrentMutex.unlock();
                 }
+
+
 
                 this.aff.bmg.updateObstacles();
                 this.aff.update();
