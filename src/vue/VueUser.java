@@ -35,7 +35,7 @@ public class VueUser {
     private final int maxConcurrents = 1;//2;
     private final double percChanceApparition = 2;//0.2;
 
-    private final ReentrantLock concurrentMutex = new ReentrantLock();
+    public final ReentrantLock concurrentMutex = new ReentrantLock();
 
     // ********************************** 2) Constructeur **********************************
 

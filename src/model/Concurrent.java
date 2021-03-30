@@ -114,6 +114,11 @@ public class Concurrent extends User{
 
     }
 
+    @Override
+    public void rebond(int intensite, boolean right){
+        super.rebond(intensite, right);
+        this.waitMove = 0; //Recommence a trouver une direction apres un rebond
+    }
 
     @Override
     public void run(){
