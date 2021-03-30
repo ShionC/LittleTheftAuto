@@ -33,6 +33,8 @@ public class Affichage extends JPanel {
     Controleur ctrl;
     public OutsideScreen outScreen;
 
+    private PaintManager paintManager;
+
     private BufferedImage pauseButton;
     private JPanel card;
 
@@ -54,6 +56,8 @@ public class Affichage extends JPanel {
         this.vueUser = new VueUser(this);
         this.bmg = new VueBackground(this);
         this.outScreen = new OutsideScreen(this);
+        this.paintManager = new PaintManager(this);
+        this.paintManager.start();
         setFocusable(true);
 
         this.card = new JPanel(new CardLayout());
@@ -242,7 +246,7 @@ public class Affichage extends JPanel {
      * Met a jour l affichage
      */
     public void update() {
-        repaint();
+        this.paintManager.repaint();
         if(this.partieEnCours){
             this.vueUser.update();
         }
