@@ -52,13 +52,30 @@ public class Images {
     private static BufferedImage curseur;
     private static ImageIcon iconCurseur;
 
+    private static BufferedImage pauseButton;
+
+    //Outside Screen
+
+    private static ImageIcon statsReport;
+    private static ImageIcon reglesJeu;
+    private static ImageIcon arrows;
+    private static ImageIcon speedControl;
+    private static ImageIcon escap;
+    private static ImageIcon skull;
+    private static ImageIcon imgCredit;
+    private static ImageIcon drapeaux;
+
+    private static ImageIcon Mathilde_avatar;
+    private static ImageIcon Celine_avatar;
+
+
 
     /*--------------------Scale----------------------------------------*/
 
     public static final double scaleUser = 0.5;
 
-    /*--------------------------------Init-------------------------------------------------*/
 
+    /*--------------------------------Init-------------------------------------------------*/
     /**
      * Initialise toutes les images utilisees par le jeu
      */
@@ -66,9 +83,10 @@ public class Images {
         initClouds_Montain();
         initUsers();
         initCurseur();
+        initPause();
         initObstacles();
+        initOutsideScreen();
     }
-
 
     /**
      * Initialise l image des nuages et de la montagne
@@ -160,6 +178,11 @@ public class Images {
         iconCurseur = new ImageIcon(((new ImageIcon("src/Sprites/Bienvenue/curseur.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH));
     }
 
+    private static void initPause(){
+        pauseButton = Tools.getBIfromPath("src/Sprites/pauseButton.png");
+        pauseButton = Tools.scaleBI(pauseButton, 0.5, 0.5);
+    }
+
     public static void initObstacles(){
         rock1 = Tools.getBIfromPath("src/Sprites/Obstacles/rock1.png");
         rock2 = Tools.getBIfromPath("src/Sprites/Obstacles/rock2.png");
@@ -187,13 +210,30 @@ public class Images {
 
     }
 
+    private static void initOutsideScreen(){
+        statsReport = new ImageIcon(((new ImageIcon("src/Sprites/statistics-report.png")).getImage()).getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH));
+        reglesJeu = new ImageIcon(((new ImageIcon("src/Sprites/regles_jeu.png")).getImage()).getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH));
+        arrows = new ImageIcon(((new ImageIcon("src/Sprites/ArrowLeftRight.png")).getImage()).getScaledInstance(85, 60, java.awt.Image.SCALE_SMOOTH));
+        speedControl = new ImageIcon(((new ImageIcon("src/Sprites/speed_control.png")).getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH));
+        escap = new ImageIcon(((new ImageIcon("src/Sprites/esc_key.png")).getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH));
+        skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
+        imgCredit = new ImageIcon(((new ImageIcon("src/Sprites/credits.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        drapeaux = new ImageIcon(((new ImageIcon("src/Sprites/Drapeaux.png")).getImage()).getScaledInstance(354, 142, java.awt.Image.SCALE_SMOOTH));
+
+        Mathilde_avatar = new ImageIcon(((new ImageIcon("src/Sprites/Mathilde_doll.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        Celine_avatar = new ImageIcon(((new ImageIcon("src/Sprites/Celine_avatar.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+    }
+
+
     /*--------------------------------------Getters--------------------------------------------------*/
 
 
+
+    /*--------Decors----------------*/
     /**
      * Recupere l image associee au type de cloud
-     * @param cloudType
-     * @return
+     * @param cloudType le type du nuage
+     * @return l image demandee
      */
     public static BufferedImage getCloudImg(int cloudType){
         BufferedImage modeleImage;
@@ -211,7 +251,7 @@ public class Images {
 
     /**
      * Renvoie l image des montagnes
-     * @return
+     * @return l image demandee
      */
     public static BufferedImage getMountain(){
         return Tools.deepCopy(mountain);
@@ -219,15 +259,17 @@ public class Images {
 
     /**
      * Renvoie l image de l'herbe
-     * @return
+     * @return l image demandee
      */
     public static BufferedImage getGrass(){
         return Tools.deepCopy(grass);
     }
 
+
+    /*----------Users------------*/
     /**
      * Renvoie la liste des etats et des images pour User
-     * @return
+     * @return la liste d image/etat demandee
      */
     public static HashMap<Integer, BufferedImage> getListStateUser(){
         return (HashMap<Integer, BufferedImage>) listStatesUser.clone();
@@ -235,8 +277,8 @@ public class Images {
 
     /**
      * Renvoie la liste des stats et des images d un concurrent en fonction de son type
-     * @param type
-     * @return
+     * @param type le type du concurrent
+     * @return la liste d image/etat demandee
      */
     public static HashMap<Integer, BufferedImage> getConcurrentImg(int type){
         HashMap<Integer, BufferedImage> res;
@@ -250,13 +292,16 @@ public class Images {
         return (HashMap<Integer, BufferedImage>) res.clone();
     }
 
+
+
+    /*--------Obstacles-------------*/
     /**
      * Recupere les images d'obstacles
-     * @param obstacleType
-     * @return
+     * @param obstacleType le type de l obstacle
+     * @return l image demandee
      */
     public static BufferedImage getObstacleimg(int obstacleType){
-        BufferedImage modeleImg = null;
+        BufferedImage modeleImg;
         if (obstacleType == 0) {
             modeleImg = rock1;
         } else if (obstacleType == 1) {
@@ -279,9 +324,12 @@ public class Images {
             return Tools.deepCopy(modeleImg);
     }
 
+
+
+    /*-----------Menu--------------*/
     /**
      * Renvoie le bufferedImage du curseur
-     * @return
+     * @return l image demandee
      */
     public static BufferedImage getCurseur(){
         return Tools.deepCopy(curseur);
@@ -289,9 +337,64 @@ public class Images {
 
     /**
      * Renvoie la version ImageIcon du curseur
-     * @return
+     * @return l image demandee
      */
     public static ImageIcon getIconCurseur() {
         return iconCurseur;
+    }
+
+    /**
+     * Renvoie l image du bouton pause pour l ecran de pause
+     * @return l image demandee
+     */
+    public static BufferedImage getPauseButton() {
+        return Tools.deepCopy(pauseButton);
+    }
+
+    /*------------Outside Screen------*/
+
+
+    /**
+     * Renvoie l imageIcon correspondant a l id demande
+     * <br/><u>Choix d id :</u>
+     * <ol>
+     *     <li>statsReport</li>
+     *     <li>reglesJeu</li>
+     *     <li>arrows keys</li>
+     *     <li>speedControl</li>
+     *     <li>escap key</li>
+     *     <li>skull</li>
+     *     <li>imgCredit</li>
+     *     <li>Mathilde avatar</li>
+     *     <li>Celine avatar</li>
+     *     <li>drapeaux</li>
+     * </ol>
+     * @param id l id correpondant a l image
+     * @return l image demandee
+     */
+    public static ImageIcon getImageOutsideScreen(int id){
+        ImageIcon img = null;
+        if(id == 1){
+            img = statsReport;
+        } else if(id == 2){
+            img = reglesJeu;
+        } else if(id == 3){
+            img = arrows;
+        } else if(id == 4){
+            img = speedControl;
+        } else if(id == 5){
+            img = escap;
+        } else if(id == 6){
+            img = skull;
+        } else if(id == 7){
+            img = imgCredit;
+        } else if(id == 8){
+            img = Mathilde_avatar;
+        } else if(id == 9){
+            img = Celine_avatar;
+        } else if(id == 10){
+            img = drapeaux;
+        }
+        return img;
     }
 }

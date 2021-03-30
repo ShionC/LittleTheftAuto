@@ -35,7 +35,6 @@ public class Affichage extends JPanel {
 
     private PaintManager paintManager;
 
-    private BufferedImage pauseButton;
     private JPanel card;
 
     /**La partie est toujours en cours**/
@@ -67,8 +66,6 @@ public class Affichage extends JPanel {
         fenetre.add(card);
 
 
-        this.pauseButton = Tools.getBIfromPath("src/Sprites/pauseButton.png");
-        this.pauseButton = Tools.scaleBI(this.pauseButton, 0.5, 0.5);
 
 
     }
@@ -174,7 +171,7 @@ public class Affichage extends JPanel {
 
         AffineTransform atPause = new AffineTransform();
         atPause.translate((Affichage.LARGEUR/2)-110, (Affichage.HAUTEUR/2)-300);
-        g2.drawImage(this.pauseButton, atPause, null);
+        g2.drawImage(Images.getPauseButton(), atPause, null);
 
         Font fontScore = new Font("Arial", Font.PLAIN, 18);
         int yScore = (Affichage.HAUTEUR/2);

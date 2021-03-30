@@ -82,7 +82,7 @@ public class OutsideScreen  extends JPanel {
         int i = 0;
         c.gridy = i;
         JLabel l1 = new JLabel("<html><body><u>"+"Stats"+"</u></body></html>", JLabel.CENTER);
-        ImageIcon statsReport = new ImageIcon(((new ImageIcon("src/Sprites/statistics-report.png")).getImage()).getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon statsReport = Images.getImageOutsideScreen(1);
         l1.setFont(new Font("Arial",Font.BOLD,30));
         l1.setLocation((Affichage.LARGEUR/2)-20, 200);
         l1.setIcon(statsReport);
@@ -214,7 +214,7 @@ public class OutsideScreen  extends JPanel {
         c.insets = (Insets) title.clone();
         c.insets.bottom = 50;
         JLabel l1 = new JLabel("<html><body><u>"+"Règles du jeu"+"</u></body></html>", JLabel.CENTER);
-        ImageIcon reglesJeu = new ImageIcon(((new ImageIcon("src/Sprites/regles_jeu.png")).getImage()).getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon reglesJeu = Images.getImageOutsideScreen(2);
         l1.setFont(new Font("Arial",Font.BOLD,30));
         l1.setLocation((Affichage.LARGEUR/2)-20, 200);
         l1.setIcon(reglesJeu);
@@ -239,23 +239,23 @@ public class OutsideScreen  extends JPanel {
         Jregles.add(l3, c);
         i++;
         //ImageIcon arrows = new ImageIcon(((new ImageIcon("src/Sprites/left_right_keys.png")).getImage()).getScaledInstance(80, 50, java.awt.Image.SCALE_SMOOTH));
-        ImageIcon arrows2 = new ImageIcon(((new ImageIcon("src/Sprites/ArrowLeftRight.png")).getImage()).getScaledInstance(85, 60, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon arrows = Images.getImageOutsideScreen(3);
         c.gridy = i;
         JLabel l4 = new JLabel("Pour déplacer votre véhicule sur le côté, utilisez les touches du clavier", JLabel.CENTER);
         l4.setFont(fontText);
-        l4.setIcon(arrows2);
+        l4.setIcon(arrows);
         this.reglesDuJeu.add(l4);
         Jregles.add(l4, c);
         i++;
         c.gridy = i;
-        ImageIcon speedControl = new ImageIcon(((new ImageIcon("src/Sprites/speed_control.png")).getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon speedControl = Images.getImageOutsideScreen(4);
         JLabel l5 = new JLabel("Restez sur la route pour accélérer !", JLabel.CENTER);
         l5.setFont(fontText);
         l5.setIcon(speedControl);
         this.reglesDuJeu.add(l5);
         Jregles.add(l5, c);
         i++;
-        ImageIcon escap = new ImageIcon(((new ImageIcon("src/Sprites/esc_key.png")).getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon escap = Images.getImageOutsideScreen(5);
         c.gridy = i;
         JLabel l6 = new JLabel("N'oubliez pas, vous pouvez mettre le jeu en pause à tout moment", JLabel.CENTER);
         l6.setFont(fontText);
@@ -263,7 +263,7 @@ public class OutsideScreen  extends JPanel {
         this.reglesDuJeu.add(l6);
         Jregles.add(l6, c);
         i++;
-        ImageIcon skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon skull = Images.getImageOutsideScreen(6);
         c.gridy = i;
         JLabel l7 = new JLabel("Ne pas atteindre un point de contrôle à temps", JLabel.CENTER);
         l7.setFont(fontText);
@@ -325,7 +325,7 @@ public class OutsideScreen  extends JPanel {
         c.gridy = i;
         c.insets = title;
         c.insets.bottom += 50;
-        ImageIcon imgCredit = new ImageIcon(((new ImageIcon("src/Sprites/credits.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon imgCredit = Images.getImageOutsideScreen(7);
         JLabel l1 = new JLabel("<html><body><u>"+"Crédits : "+"</u></body></html>", JLabel.CENTER);
         l1.setFont(new Font("Arial",Font.BOLD,30));
         l1.setIcon(imgCredit);
@@ -338,16 +338,16 @@ public class OutsideScreen  extends JPanel {
         Font fontText = new Font("Arial",Font.PLAIN,20);
         c.gridx = 1;
         c.gridy = i;
-        ImageIcon matDoll = new ImageIcon(((new ImageIcon("src/Sprites/Mathilde_doll.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon Mathilde_avatar = Images.getImageOutsideScreen(8);
         JLabel mathilde = new JLabel("Mathilde LASSEIGNE", JLabel.CENTER);
         mathilde.setFont(fontText);
-        mathilde.setIcon(matDoll);
+        mathilde.setIcon(Mathilde_avatar);
         this.credits.add(mathilde);
         Jcredits.add(mathilde, c);
         i++;
         c.gridx = 1;
         c.gridy = i;
-        ImageIcon Celine_avatar = new ImageIcon(((new ImageIcon("src/Sprites/Celine_avatar.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon Celine_avatar = Images.getImageOutsideScreen(9);
         JLabel celine = new JLabel("Céline YAN", JLabel.CENTER);
         celine.setFont(fontText);
         celine.setIcon(Celine_avatar);
@@ -386,7 +386,7 @@ public class OutsideScreen  extends JPanel {
         c.gridwidth = 3; //Il prends 3 cases
         c.gridx = 2;
         int i = 0;
-        ImageIcon drapeaux = new ImageIcon(((new ImageIcon("src/Sprites/Drapeaux.png")).getImage()).getScaledInstance(354, 142, java.awt.Image.SCALE_SMOOTH));
+        ImageIcon drapeaux = Images.getImageOutsideScreen(10);
         JLabel drap = new JLabel();
         drap.setIcon(drapeaux);
         JfirstScreen.add(drap, c);
@@ -543,7 +543,7 @@ public class OutsideScreen  extends JPanel {
                 }
             }
             if(this.acc.typeGameOver != 0){
-                ImageIcon skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
+                ImageIcon skull = Images.getImageOutsideScreen(6);
                 this.endGame.get(1).setIcon(skull);
                 if(this.acc.typeGameOver == 1){
                     this.endGame.get(1).setText("Vous vous êtes arrêté. Vous avez un pneu crevé ?");
