@@ -5,4 +5,6 @@ L’originalité de ce jeu est de permettre au joueur de piloter une sorte de mo
 Les auteurs sont Céline YAN et Mathilde LASSEIGNE
 
 The goal of this project is to make a 80s style car racing video game in first person view.
+
+### Authors :
 Collaborative project by Céline YAN and Mathilde LASSEIGNE
