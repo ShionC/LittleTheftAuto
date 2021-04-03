@@ -40,6 +40,12 @@ public class Deplace extends Thread {
     /**Le score obtenu lorsqu'un concurrent est depasse**/
     int scoreConcurrent = 50;
 
+    /**La deceleration lorsque User sors de la route**/
+    private int freinHorsRoute = 2;
+
+    /**La distance min entre User et un concurrent pour entendre le son lorsque ils se croisent**/
+    public int distConcForVroom = 400;
+
 
     /**
      * Ce thread calcule la vitesse de la route,
@@ -154,7 +160,7 @@ public class Deplace extends Thread {
             //onRoad = false;
             obj.isOnRoad = false;
             //System.out.println("Out of Road");
-            double decceleration = 3;
+            double decceleration = this.freinHorsRoute;
             if(obj.getVitesse()>=decceleration){
                 modVit = -decceleration;
             } else {
@@ -286,7 +292,7 @@ public class Deplace extends Thread {
                                 this.ctrl.aff.vueUser.writeMessage("+"+scoreConcurrent);
 
                                 //Ne s entends que si assez proche
-                                if(Tools.distance(this.user.getPos(), c.getPos())<300){
+                                if(Tools.distance(this.user.getPos(), c.getPos())<distConcForVroom){
                                     Audio.jingleOvertakeCar.play();
                                 }
 

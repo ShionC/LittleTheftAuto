@@ -82,13 +82,13 @@ public class User extends ConcreteObject implements Runnable {
      * Renvoie la largeur de la hitbox de User
      * @return
      */
-    public int getLARGEUR(){
-        return this.LARGEUR;
+    public double getLARGEUR(){
+        return this.LARGEUR * this.getScale();
     }
 
     /**Renvoie la hauteur de la hitBox de User**/
-    public int getHAUTEUR(){
-        return this.HAUTEUR;
+    public double getHAUTEUR(){
+        return this.HAUTEUR * this.getScale();
     }
 
     /**
@@ -98,6 +98,13 @@ public class User extends ConcreteObject implements Runnable {
     public Point getPos(){
         return new Point(getPosX(),getPosY());
     }
+
+    /**
+     * Renvoie la valeur du scale de l image par rapport a sa position sur la route
+     * <br/>Methode de gestion de perspective
+     * @return
+     */
+    public double getScale(){return 1;}
 
     /**
      * Reinitialise User
@@ -166,8 +173,8 @@ public class User extends ConcreteObject implements Runnable {
             float dt = ((float)this.dt)/1000f; //Conversion en secondes
             float dx = this.inertie*dt;
             this.posX += dx*4;
-            System.out.println("Inertie : "+this.inertie);
-            System.out.println("dx : "+dx);
+            //System.out.println("Inertie : "+this.inertie);
+            //System.out.println("dx : "+dx);
         }
 
     }

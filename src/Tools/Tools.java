@@ -221,6 +221,8 @@ public class Tools {
 
     /**
      * Scale the Buffered image to a desired scale
+     * <br/>The coordinates of the rectangle returned by getBounds2D(BufferedImage) are not
+     * necessarily the same as the coordinates of the BufferedImage returned by this method.
      * @param before The original BufferedImage
      * @param scaleX the factor by which coordinates are scaled along the X axis direction
      * @param scaleY the factor by which coordinates are scaled along the Y axis direction

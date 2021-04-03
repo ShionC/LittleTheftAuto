@@ -33,7 +33,8 @@ public class VueUser {
     private ArrayList<Concurrent> concurrents = new ArrayList<>();
     /**Le nombre max de concurrents a la fois**/
     private final int maxConcurrents = 1;//2;
-    private final double percChanceApparition = 2;//0.2;
+    /**Pourcentage d apparition d un concurrent en %**/
+    private final double percChanceApparition = 0.2;//0.2;
 
     public final ReentrantLock concurrentMutex = new ReentrantLock();
 
@@ -157,6 +158,7 @@ public class VueUser {
             try {
                 this.concurrentMutex.lock();
                 for(Concurrent c : this.concurrents){
+                    //this.drawHitBox(g2, c);
                     this.drawUser(g2, c);
                 }
             } finally {
@@ -192,40 +194,33 @@ public class VueUser {
 
     /**
      * Dessine user a partir de son image
+     * <br/> Ne le dessine que lorsque son point en bas a droite est sous l horizon
      * @param g2 le contexte graphique
      * @param obj User
      */
     private void drawUser(Graphics2D g2, User obj){
-        //Image
-        Shape collisionBox = obj.getHitBox();
-        //Image, centre l image sur le centre de la boite de collision
-        BufferedImage img = Tools.deepCopy(obj.getEtat().getCurrentImage());
-        //Le centre est le meme que la boite de collision
-        Point2D.Double centerUser = new Point2D.Double(collisionBox.getBounds2D().getCenterX(), collisionBox.getBounds2D().getCenterY());
-        double x = centerUser.x-((img.getWidth()* Images.scaleUser)/2); //Cherche le point en haut a droite par rapport au centre
-        double y = centerUser.y-((img.getHeight()*Images.scaleUser)/2);
-        AffineTransform at = new AffineTransform();
-        at.translate(x, y);
-        g2.drawImage(img, at, null);
+        //Ne dessine que lorsque User/Concurrent est sous l horizon
+        if(obj.getPosY()+obj.getHAUTEUR()>VueBackground.horizon){
+            //Image
+            Shape collisionBox = obj.getHitBox();
+            //Image, centre l image sur le centre de la boite de collision
+            BufferedImage img = Tools.deepCopy(obj.getEtat().getCurrentImage());
+            img = Tools.scaleBI(img, obj.getScale(), obj.getScale());
+            //Le centre est le meme que la boite de collision
+            Point2D.Double centerUser = new Point2D.Double(collisionBox.getBounds2D().getCenterX(), collisionBox.getBounds2D().getCenterY());
+            double x = centerUser.x-((img.getWidth() * obj.getScale()* Images.scaleUser)/2); //Cherche le point en haut a droite par rapport au centre
+            double y = centerUser.y-((img.getHeight() * obj.getScale()*Images.scaleUser)/2);
+            AffineTransform at = new AffineTransform();
+            at.translate(x, y);
+            g2.drawImage(img, at, null);
+        }
+
     }
 
     // Affichage du véhicule dans une sous-méthode
     public void drawCar(Graphics2D g2) {
         //Boite de collision
         this.drawHitBox(g2, this.aff.user);
-        /*//Image
-        Shape collisionBox = this.aff.user.getHitBox();
-        //Image, centre l image sur le centre de la boite de collision
-        BufferedImage img = Tools.deepCopy(this.aff.user.getEtat().getCurrentImage());
-        //Le centre est le meme que la boite de collision
-        Point2D.Double centerUser = new Point2D.Double(collisionBox.getBounds2D().getCenterX(), collisionBox.getBounds2D().getCenterY());
-        double x = centerUser.x-((img.getWidth()* Images.scaleUser)/2); //Cherche le point en haut a droite par rapport au centre
-        double y = centerUser.y-((img.getHeight()*Images.scaleUser)/2);
-        AffineTransform at = new AffineTransform();
-        at.translate(x, y);
-        g2.drawImage(img, at, null);
-
-         */
         this.drawUser(g2, this.aff.user);
     }
 

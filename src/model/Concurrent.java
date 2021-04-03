@@ -57,6 +57,16 @@ public class Concurrent extends User{
         return HS;
     }
 
+
+    @Override
+    public double getScale() {
+        double initScale = 1;
+        double initPos = Affichage.HAUTEUR - this.HAUTEUR - 20;
+        double scale = (initScale * this.posY)/initPos;
+
+        return scale;
+    }
+
     /**
      * Renvoie le type du concurrent. Affecte principalement sa couleur
      * @return
