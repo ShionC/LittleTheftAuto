@@ -258,7 +258,16 @@ public class Route extends ConcreteObject {
         synchronized (this.rangeroute){
             try{
                 this.rangeMutex.lock();
-                return (ArrayList<Integer>) this.rangeroute.clone();
+                //return (ArrayList<Integer>) this.rangeroute.clone();
+                ArrayList<Integer> newList = new ArrayList<>();
+                for(int i = 0; i< this.rangeroute.size(); i++){
+                    newList.add((Integer) this.rangeroute.get(i).intValue());
+                }
+                if(newList.size() == 0){ //Pour eviter les bugs
+                    newList.add(50);
+                }
+
+                return newList;
             } finally {
                 this.rangeMutex.unlock();
             }
