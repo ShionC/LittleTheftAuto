@@ -1,6 +1,5 @@
 package controleur;
 
-import audio.Audio;
 import model.*;
 import vue.Affichage;
 
@@ -10,7 +9,6 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import Tools.Tools;
-import vue.VueBackground;
 import vue.VueUser;
 
 public class Deplace extends Thread {
@@ -36,15 +34,6 @@ public class Deplace extends Thread {
     /**La modification que on applie au deplacement, pour gerer la vitesse selon les besoins.
      * <br/> /!\ min = 1 !!**/
     double modVitesse = 1;
-
-    /**Le score obtenu lorsqu'un concurrent est depasse**/
-    int scoreConcurrent = 50;
-
-    /**La deceleration lorsque User sors de la route**/
-    private int freinHorsRoute = 2;
-
-    /**La distance min entre User et un concurrent pour entendre le son lorsque ils se croisent**/
-    public int distConcForVroom = 400;
 
 
     /**
@@ -153,6 +142,11 @@ public class Deplace extends Thread {
                 }
 
 
+                if(this.user.getVitesse()+modVit == 0){
+                    System.out.println("Vitesse nulle sur la route !!");
+                }
+                //System.out.println("On Road");
+
             }
 
 
@@ -160,7 +154,7 @@ public class Deplace extends Thread {
             //onRoad = false;
             obj.isOnRoad = false;
             //System.out.println("Out of Road");
-            double decceleration = this.freinHorsRoute;
+            double decceleration = 3;
             if(obj.getVitesse()>=decceleration){
                 modVit = -decceleration;
             } else {
@@ -219,93 +213,39 @@ public class Deplace extends Thread {
                     } else {
                         obs.move(obs.getDistToRoute(), modPos*modVitesse);
                     }
-
                 }
 
                 //Concurrents
 
                 ArrayList<Concurrent> listConcurrents = this.aff.vueUser.getConcurrents();
+                for(Concurrent c : listConcurrents){
+                    //Ralentissement par User
+                    c.slowDown((float) (modPos*modVitesse));
 
-                try {
-                    this.aff.vueUser.concurrentMutex.lock();
+                    //Vitesse concurrent
+                    this.calculVitObj(c);
+                    double modPosC = this.calcul_dPos(c.getVitesse(), this.varTime);
+                    c.moveUp((float) (modPosC*modVitesse));
 
-                    for(Concurrent c : listConcurrents){
-                        //Ralentissement par User
-                        c.slowDown((float) (modPos*modVitesse));
-
-                        //Vitesse concurrent
-                        if(c.getPosY() > VueBackground.horizon && c.getPosY() < Affichage.HAUTEUR){
-                            this.calculVitObj(c);
-                        } else { //Si User est au dessus de l horizon, sa vitesse max est 10
-                            if(c.getVitesse()>10){
-                                c.modVitesse(-1);
-                            }
-                        }
-                        double modPosC = this.calcul_dPos(c.getVitesse(), this.varTime);
-                        c.moveUp((float) (modPosC*modVitesse));
-
-                    }
-
-                } finally {
-                    this.aff.vueUser.concurrentMutex.unlock();
                 }
-
-
 
 
                 /*----------------Collision--------------*/
 
-                //TODO obstacles & concurrents
                 //Deceleration selon obstacle :
-
-
                 double decObs = -30; //Pour les obstacles
-                double decConc = -20; //Pour les concurrents
+                double decConc = 0; //Pour les concurrents
 
                 //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu
                 for(Obstacle obs : listObstacles){
                     //Si collision entre voiture et obstacle
-                    if(Tools.collision(this.user.getHitBox(), this.aff.bmg.getShapeObstacle(obs))){
+                    if(Tools.collision(this.user.getHitBox(), obs.getHitBox())){
                         //Decelere User
                         this.user.modVitesse(decObs);
                         //Rebond de user de l autre cote de l obstacle
                         this.user.rebond(2, ! obs.isRightPoint(this.user.getPos()));
                     }
                 }
-
-                try {
-                    this.aff.vueUser.concurrentMutex.lock();
-
-                    for(Concurrent c : listConcurrents){
-                        if(this.user.collision(c)){
-                            this.user.modVitesse(decConc);
-                            boolean isRight = this.user.getPosX()>c.getPosX();
-                            this.user.rebond(2, isRight);
-                            c.rebond(3, ! isRight);
-                            Audio.jingleCollision.play();
-
-                        }
-                        if(! c.isHS()){
-                            if(c.getPosY()>this.user.getPosY()){
-                                c.goHS();
-                                Data.addScore(scoreConcurrent);
-                                this.ctrl.aff.vueUser.writeMessage("+"+scoreConcurrent);
-
-                                //Ne s entends que si assez proche
-                                if(Tools.distance(this.user.getPos(), c.getPos())<distConcForVroom){
-                                    Audio.jingleOvertakeCar.play();
-                                }
-
-                            }
-                        }
-                    }
-
-                } finally {
-                    this.aff.vueUser.concurrentMutex.unlock();
-                }
-
-
-
                 this.aff.bmg.updateObstacles();
                 this.aff.update();
 
