@@ -2,17 +2,13 @@ package vue;
 
 import Tools.MyTimer;
 import Tools.Tools;
-import model.Data;
-import model.Images;
-import model.Obstacle;
+import model.*;
 
 import java.awt.*;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
-import java.awt.geom.Area;
-import java.awt.geom.AffineTransform;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class VueBackground {
 
@@ -33,11 +29,14 @@ public class VueBackground {
     private ArrayList<Integer> cloudTypes = new ArrayList<>();
 
 
-    /**
-     * La liste des obstacles
-     */
-    private ArrayList<Obstacle> listObstacles = new ArrayList<>();
+    /*---------Obstacles----------*/
 
+    private ArrayList<Obstacle> listObstacles = new ArrayList<>();
+    /**Le nombre max de concurrents a la fois**/
+    private final int maxObstacles = 2;
+    private final double percChanceApparition = 5;
+
+    private final ReentrantLock obstacleMutex = new ReentrantLock();
 
     //Coord montagnes
     /**La position x initiale des montagnes**/
@@ -52,16 +51,10 @@ public class VueBackground {
 
     public VueBackground(Affichage aff){
         this.aff = aff;
-
-
-
         //Initialiser nuages
         this.initClouds();
         //this.setShapeRoute();
-
-
-        //Initialiser les obstacles
-        //TODO les images
+        this.initObstacles();
     }
 
     // ********************************** 3) Méthodes **********************************
@@ -80,7 +73,7 @@ public class VueBackground {
     /**
      * Renvoie range au point p sur la route
      * @param p Le point p sur la route (p.x n est pas oblige d etre sur la route)
-     * @return -1 si p.y est sortit de la route
+     * @return -1 si p.y est sorti de la route
      */
     public int getRange(Point p){
         ArrayList<Point> listRoute = this.aff.route.getRoute();
@@ -95,7 +88,6 @@ public class VueBackground {
         } else {
             return -1;
         }
-
     }
 
     /**
@@ -120,6 +112,82 @@ public class VueBackground {
         }
     }
 
+    /** Obstacles **/
+
+    /**
+     * Renvoie la liste des obstacles actuellement sur le jeu
+     * @return
+     */
+    public ArrayList<Obstacle> getObstacles(){
+        synchronized(this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+                return this.listObstacles;
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
+    }
+
+    /**
+     * Ajoute un obstacle a la liste avec une certaine probabilité
+     */
+    private void addObstacle(){
+        synchronized(this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+
+                if(this.listObstacles.size() < this.maxObstacles){
+                    double rand = Tools.rangedRandomDouble(0,100);
+                    if(rand <= this.percChanceApparition){
+                        Obstacle newObs = new Obstacle();
+                        this.listObstacles.add(newObs);
+                    }
+                }
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
+    }
+
+    /**
+     * Enleve les concurrents de la liste lorsqu ils sortent de l ecran
+     */
+    private void deleteObstacle(){
+        synchronized(this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+
+                if(this.listObstacles.size()>0){
+                    for(int i = 0; i<this.listObstacles.size(); i++){
+                        Obstacle obs = this.listObstacles.get(i);
+                        // Si l'obstacle est à droite de la route
+                        if (obs.isRightRoute()) {
+                            // On l'enlève s'il est sorti de la fenetre
+                            if (obs.getPosX() > Affichage.LARGEUR) {
+                                this.listObstacles.remove(obs);
+                                Obstacle nouv_obs = new Obstacle();
+                                this.listObstacles.add(nouv_obs);
+                            }
+                        } else {
+                            // Si l'obstacle est à gauche de la route
+                            if (obs.getPosX() < Affichage.LARGEUR) {
+                                this.listObstacles.remove(obs);
+                                Obstacle nouv_obs = new Obstacle();
+                                this.listObstacles.add(nouv_obs);
+                            }
+                        }
+                    }
+
+                }
+
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
+
+    }
+
     /**
      * Reinitialise la liste des obstacles
      */
@@ -128,21 +196,11 @@ public class VueBackground {
     }
 
     /**
-     * Renvoie la forme de l obstacle
-     * <br/>Utilise pour les formules de collision
-     * @param obs
-     * @return
-     */
-    public Area getShapeObstacle(Obstacle obs){
-        //TODO
-        return null;
-    }
-
-    /**
      * Met a jour la liste des obstacles : En ajoute si il reste de la place, en enleve si ils sont sortis de la fenetre
      */
     public void updateObstacles(){
-        //TODO update listObstacles
+        this.deleteObstacle();
+        this.addObstacle();
     }
 
     /**
@@ -150,7 +208,36 @@ public class VueBackground {
      * @param g2
      */
     private void drawObstacles(Graphics2D g2){
-        //TODO ne pas oublier de scale l obstacle lui meme !
+        synchronized (this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+                for(Obstacle obs : this.listObstacles){
+                    this.drawObstacle(g2, obs);
+                }
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
+    }
+
+    /**
+     * Dessine un obstacle
+     * @param g2
+     * @param obs
+     */
+    private void drawObstacle(Graphics2D g2, Obstacle obs) {
+        //Image
+        Shape collisionBox = obs.getHitBox();
+        this.drawHitBox(g2, obs);
+        //Image, centre l image sur le centre de la boite de collision
+        BufferedImage img = Tools.deepCopy(obs.getImg());
+        //Le centre est le meme que la boite de collision
+        Point2D.Double centerObs = new Point2D.Double(collisionBox.getBounds2D().getCenterX(), collisionBox.getBounds2D().getCenterY());
+        double x = centerObs.x-(img.getWidth()/2); //Cherche le point en haut a droite par rapport au centre
+        double y = centerObs.y-(img.getHeight()/2);
+        AffineTransform at = new AffineTransform();
+        at.translate(x, y);
+        g2.drawImage(img, at, null);
     }
 
     /**
@@ -191,15 +278,7 @@ public class VueBackground {
         }
     }
 
-
-
-
-
-
     /*------------------------------------Dessin---------------------------------------------------*/
-
-
-
 
 
     /**
@@ -238,6 +317,17 @@ public class VueBackground {
     }
 
     /**
+     * Dessine la boite de collision
+     * @param g2 le contexte graphique
+     * @param obj l objet possedant une hitbox
+     */
+    private void drawHitBox(Graphics2D g2, ConcreteObject obj){
+        g2.setColor(new Color(188, 32, 1));
+        Shape collisionBox = obj.getHitBox();
+        g2.draw(collisionBox);
+    }
+
+    /**
      * Dessine l arriere plan, contenant la pelouse, la route
      * @param g2 le graphisme
      */
@@ -248,12 +338,10 @@ public class VueBackground {
         //drawFond(g2);
 
         //Pelouse
-        /*
-        BufferedImage pelouse = Tools.deepCopy(Images.getGrass());
+        /** BufferedImage pelouse = Tools.deepCopy(Images.getGrass());
         AffineTransform atGrass = new AffineTransform();
         atGrass.translate(0, horizon);
-        g2.drawImage(pelouse, atGrass, null);
-         */
+        g2.drawImage(pelouse, atGrass, null); **/
         g2.setColor(new Color(58, 137, 35));
         g2.fillRect(0, horizon, Affichage.LARGEUR, Affichage.HAUTEUR - horizon);
 
@@ -263,9 +351,6 @@ public class VueBackground {
 
         //Ligne au milieu
         g2.setColor(new Color(250, 240, 230)); //Blanc
-        float[] dashingPatternLine = {100, 10};
-        g2.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT,
-                BasicStroke.JOIN_MITER, 1.0f, dashingPatternLine, 0f));
 
         ArrayList<Point> listRoute = this.aff.route.getRoute();
         for(int i = 1; i<listRoute.size(); i++){
@@ -277,7 +362,6 @@ public class VueBackground {
             }
             g2.drawLine(p1.x,p1.y,p2.x,p2.y);
         }
-        g2.setStroke(oldStroke);
 
         //Point de controle
         int yPtCtrl = this.aff.route.getCtrl();
@@ -315,15 +399,15 @@ public class VueBackground {
 
         }
 
-
-
-
         //Obstacles
         this.drawObstacles(g2);
+
 
         g2.setColor(oldColor);
         g2.setStroke(oldStroke);
     }
+
+
 
     /**
      * Ecrit a l ecran les differentes donnees comme la vitesse et le kilometrage
@@ -335,9 +419,8 @@ public class VueBackground {
 
         String score = "Score : ";
         String scoreVal = Tools.toStringInt(Data.getCurrentScore());
-        Color black = Color.BLACK;
-        Color white = Color.WHITE;
-        Color red = new Color(150, 0, 24);
+        Color c1 = Color.BLACK;
+        Color c2 = Color.WHITE;
         Font font = new Font("Arial", Font.BOLD, 20);
 
         if(Data.getCurrentScore()>=Data.getHighestScore() && Data.getCurrentScore() != 0){
@@ -345,13 +428,13 @@ public class VueBackground {
             Tools.drawDoubleString(score, Affichage.LARGEUR-90, 40, g2, font, gold, Color.BLACK);
             Tools.drawDoubleString(scoreVal, Affichage.LARGEUR-90, 80, g2, font, gold, Color.BLACK);
         } else {
-            Tools.drawDoubleString(score, Affichage.LARGEUR-90, 40, g2, font, black, white);
-            Tools.drawDoubleString(scoreVal, Affichage.LARGEUR-90, 80, g2, font, black, white);
+            Tools.drawDoubleString(score, Affichage.LARGEUR-90, 40, g2, font, c1, c2);
+            Tools.drawDoubleString(scoreVal, Affichage.LARGEUR-90, 80, g2, font, c1, c2);
         }
 
-        int vitesseUser = Math.round((long)this.aff.user.getVitesse());
-        String vitesse = "Vitesse m/s : "+ vitesseUser;
-        String kilometrage = "Kilometrage : "+Tools.toStringInt(Data.getCurrentKilometrage());
+
+        String str1 = "Vitesse m/s : "+ Math.round((long)this.aff.user.getVitesse());
+        String str2 = "Kilometrage : "+Tools.toStringInt(Data.getCurrentKilometrage());
         String temps = "Temps restant";
         String timer;
         MyTimer timerPtCtrl = this.aff.ctrl.getTimerPtCtrl();
@@ -361,22 +444,10 @@ public class VueBackground {
             timer = timerPtCtrl.toString();
         }
 
-        boolean warningVitesse = vitesseUser <= 10;
-        boolean warningTimer = timerPtCtrl.getLeftoverTime().getSeconds()<=10;
-
-        Tools.drawDoubleString(temps, Affichage.LARGEUR - 154, Affichage.HAUTEUR-159, g2, font, black, white);
-        if(warningTimer){
-            Tools.drawDoubleString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139, g2, font, red, white);
-        } else {
-            Tools.drawDoubleString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139, g2, font, black, white);
-        }
-        if(warningVitesse){
-            Tools.drawDoubleString(vitesse, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99, g2, font, red, white);
-        } else {
-            Tools.drawDoubleString(vitesse, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99, g2, font, black, white);
-        }
-
-        Tools.drawDoubleString(kilometrage, Affichage.LARGEUR - 189, Affichage.HAUTEUR-59, g2, font, black, white);
+        Tools.drawDoubleString(temps, Affichage.LARGEUR - 154, Affichage.HAUTEUR-159, g2, font, c1, c2);
+        Tools.drawDoubleString(timer, Affichage.LARGEUR - 99, Affichage.HAUTEUR-139, g2, font, c1, c2);
+        Tools.drawDoubleString(str1, Affichage.LARGEUR - 204, Affichage.HAUTEUR-99, g2, font, c1, c2);
+        Tools.drawDoubleString(str2, Affichage.LARGEUR - 189, Affichage.HAUTEUR-59, g2, font, c1, c2);
 
 
         g2.setFont(oldFont);
