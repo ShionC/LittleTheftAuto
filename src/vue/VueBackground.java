@@ -217,7 +217,7 @@ public class VueBackground {
             try {
                 this.obstacleMutex.lock();
                 for(Obstacle obs : this.listObstacles){
-                    this.drawObstacle(g2, obs);
+                    this.drawSingleObstacle(g2, obs);
                 }
             } finally {
                 this.obstacleMutex.unlock();
@@ -230,12 +230,13 @@ public class VueBackground {
      * @param g2
      * @param obs
      */
-    private void drawObstacle(Graphics2D g2, Obstacle obs) {
+    private void drawSingleObstacle(Graphics2D g2, Obstacle obs) {
         //Image
         Shape collisionBox = obs.getHitBox();
         this.drawHitBox(g2, obs);
         //Image, centre l image sur le centre de la boite de collision
         BufferedImage img = Tools.deepCopy(obs.getImg());
+        img = Tools.scaleBI(img, obs.getScale(), obs.getScale());
         //Le centre est le meme que la boite de collision
         Point2D.Double centerObs = new Point2D.Double(collisionBox.getBounds2D().getCenterX(), collisionBox.getBounds2D().getCenterY());
         double x = centerObs.x-((img.getWidth()*obs.getScale())/2); //Cherche le point en haut a droite par rapport au centre

@@ -214,7 +214,6 @@ public class VueUser {
             at.translate(x, y);
             g2.drawImage(img, at, null);
         }
-
     }
 
     // Affichage du véhicule dans une sous-méthode
