@@ -32,15 +32,14 @@ public class VueBackground {
     /**Le type de nuage**/
     private ArrayList<Integer> cloudTypes = new ArrayList<>();
 
+    /*---------Obstacles----------*/
 
-    /**
-     * La liste des obstacles
-     */
     private ArrayList<Obstacle> listObstacles = new ArrayList<>();
+    /**Le nombre max de concurrents a la fois**/
+    private final int maxObstacles = 2;
+    private final double percChanceApparition = 5;
 
-
-
-
+    private final ReentrantLock obstacleMutex = new ReentrantLock();
 
     //Coord montagnes
     /**La position x initiale des montagnes**/
@@ -123,6 +122,78 @@ public class VueBackground {
         }
     }
 
+    /** Obstacles **/
+
+    /**
+     * Renvoie la liste des obstacles actuellement sur le jeu
+     * @return
+     */
+    public ArrayList<Obstacle> getObstacles(){
+        synchronized(this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+                return this.listObstacles;
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
+    }
+
+    /**
+     * Ajoute un obstacle a la liste avec une certaine probabilité
+     */
+    private void addObstacle(){
+        synchronized(this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+
+                if(this.listObstacles.size() < this.maxObstacles){
+                    double rand = Tools.rangedRandomDouble(0,100);
+                    if(rand <= this.percChanceApparition){
+                        Obstacle newObs = new Obstacle();
+                        this.listObstacles.add(newObs);
+                    }
+                }
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
+    }
+
+    /**
+     * Enleve les concurrents de la liste lorsqu ils sortent de l ecran
+     */
+    private void deleteObstacle(){
+        synchronized(this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+
+                if(this.listObstacles.size()>0){
+                    for(int i = 0; i<this.listObstacles.size(); i++){
+                        Obstacle obs = this.listObstacles.get(i);
+                        // Si l'obstacle est à droite de la route
+                        if (obs.isRightRoute()) {
+                            // On l'enlève s'il est sorti de la fenetre
+                            if ((obs.getPosX() > Affichage.LARGEUR) || (obs.getPosY() > Affichage.HAUTEUR)) {
+                                this.listObstacles.remove(obs);
+                            }
+                        } else {
+                            // Si l'obstacle est à gauche de la route
+                            if ((obs.getPosX() + obs.getLARGEUR() < 0) || (obs.getPosY() > Affichage.HAUTEUR)) {
+                                this.listObstacles.remove(obs);
+                            }
+                        }
+                    }
+
+                }
+
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
+
+    }
+
     /**
      * Reinitialise la liste des obstacles
      */
@@ -131,21 +202,11 @@ public class VueBackground {
     }
 
     /**
-     * Renvoie la forme de l obstacle
-     * <br/>Utilise pour les formules de collision
-     * @param obs
-     * @return
-     */
-    public Area getShapeObstacle(Obstacle obs){
-        //TODO
-        return null;
-    }
-
-    /**
      * Met a jour la liste des obstacles : En ajoute si il reste de la place, en enleve si ils sont sortis de la fenetre
      */
     public void updateObstacles(){
-        //TODO update listObstacles
+        this.deleteObstacle();
+        this.addObstacle();
     }
 
     /**
@@ -153,7 +214,36 @@ public class VueBackground {
      * @param g2
      */
     private void drawObstacles(Graphics2D g2){
-        //TODO ne pas oublier de scale l obstacle lui meme !
+        synchronized (this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+                for(Obstacle obs : this.listObstacles){
+                    this.drawObstacle(g2, obs);
+                }
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
+    }
+
+    /**
+     * Dessine un obstacle
+     * @param g2
+     * @param obs
+     */
+    private void drawObstacle(Graphics2D g2, Obstacle obs) {
+        //Image
+        Shape collisionBox = obs.getHitBox();
+        this.drawHitBox(g2, obs);
+        //Image, centre l image sur le centre de la boite de collision
+        BufferedImage img = Tools.deepCopy(obs.getImg());
+        //Le centre est le meme que la boite de collision
+        Point2D.Double centerObs = new Point2D.Double(collisionBox.getBounds2D().getCenterX(), collisionBox.getBounds2D().getCenterY());
+        double x = centerObs.x-((img.getWidth()*obs.getScale())/2); //Cherche le point en haut a droite par rapport au centre
+        double y = centerObs.y-((img.getWidth()*obs.getScale())/2);
+        AffineTransform at = new AffineTransform();
+        at.translate(x, y);
+        g2.drawImage(img, at, null);
     }
 
     /**
