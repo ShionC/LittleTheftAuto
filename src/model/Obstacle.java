@@ -1,43 +1,66 @@
 package model;
 
-import java.awt.*;
+import Tools.Tools;
+import vue.Affichage;
+import model.Route;
+import vue.VueBackground;
 
-public class Obstacle {
+import java.awt.*;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+
+public class Obstacle extends ConcreteObject {
+
+    // Type d'obstacle
+    private int type;
 
     /**True si la position de l obstacle est a droite de la route, false sinon**/
     private boolean rightRoute;
 
     /**La distance separant l obstacle de la route. <br/>Parametre de profondeur**/
-    private int distToRoute;
+    private float distToRoute;
 
-    //TODO les autres coord
-    private int posY;
-    private int posX;
-
-    //Pour creer les shapes en fonction du type d obstacle
-    private final int LargeurInit;
-    private final int HauteurInit;
-    //Largeur avec scale
+    //Largeur et hauteur de la hitbox initiales sans scale
     private int LARGEUR;
     private int HAUTEUR;
 
-    private int type;
+    // L'image correspondant à l'obstacle en fonction du type d'obstacle
+    private BufferedImage img;
 
+    // Vitesse des obstacles, de la route et de user
+    private int vitesse;
 
     public Obstacle(){
-        //TODO
-        this.LargeurInit = 0; //TODO initialiser
-        this.HauteurInit = 0;
-        this.LARGEUR = this.LargeurInit;
-        this.HAUTEUR = this.HauteurInit;
+        this.chooseTypeObstacle();
+        this.posY = VueBackground.horizon;
+        this.posX = (float) Tools.rangedRandomDouble(50, Affichage.LARGEUR-50);
+        this.sizeObstacle();
+        this.calculeDistToRoute();
+        this.img = Images.getObstacleimg(this.type);
+        this.vitesse = 30;
     }
 
+    // Tous les getters _________________________________________________________________________
+
     public int getPosX() {
-        return posX;
+        return (int) this.posX;
     }
 
     public int getPosY() {
-        return posY;
+        return (int) this.posY;
+    }
+
+    public BufferedImage getImg() { return this.img; }
+
+    @Override
+    /**
+     * Renvoie la hitBox de l'obstacle.
+     * @return
+     */
+    public Area getHitBox() {
+        Shape collisionBox = new Rectangle2D.Double(this.getPosX(), this.getPosY(), this.getLARGEUR(), this.getHAUTEUR());
+        return new Area(collisionBox);
     }
 
     /**
@@ -52,26 +75,21 @@ public class Obstacle {
         return rightRoute;
     }
 
-    public int getHAUTEUR() {
-        return HAUTEUR;
-    }
-
-    public int getLARGEUR() {
-        return LARGEUR;
-    }
-
-    public int getDistToRoute() {
-        return distToRoute;
-    }
-
     /**
-     * Modifie LARGEUR et HAUTEUR.
-     * <br/> Modifie la taille de Obstacle
-     * <br/>Permet a la shape de objet de correspondre a la taille de l image
-     * @param fac
+     * Renvoie la largeur de la hitbox de User
+     * @return
      */
-    public void scale(double fac){
-        //TODO mod LARGEUR et HAUTEUR en fonction de init.
+    public double getLARGEUR(){
+        return this.LARGEUR * this.getScale();
+    }
+
+    /**Renvoie la hauteur de la hitBox de User**/
+    public double getHAUTEUR(){
+        return this.HAUTEUR * this.getScale();
+    }
+
+    public float getDistToRoute() {
+        return distToRoute;
     }
 
     /**
@@ -82,26 +100,99 @@ public class Obstacle {
         return type;
     }
 
+    // Autres méthodes __________________________________________________________________________
+
+    private void chooseTypeObstacle() {
+        int maxType = 9;
+        this.type = Tools.rangedRandomInt(1,maxType);
+    }
+
+    private void calculeDistToRoute() {
+        // Initialisation
+        if (!isRightRoute()) {
+            this.distToRoute = Affichage.LARGEUR / 2 - this.posX;
+        } else {
+            this.distToRoute = this.posX - Affichage.LARGEUR / 2;
+        }
+    }
+
+    public double getScale() {
+        double initScale = 1;
+        double initPos = Affichage.HAUTEUR - this.HAUTEUR - 20;
+        double scale = (initScale * this.posY)/initPos;
+
+        return scale;
+    }
+
     /**
      * Verifie si l objet est a droite ou a gauche du point
      * @param p
      * @return
      */
     public boolean isRightPoint(Point p){
-        //TODO
-        return false;
+        return this.posX > p.x;
+    }
+
+    /** Taille de la hitbox en fonction du type d'obstacle **/
+    public void sizeObstacle() {
+        if (this.type == 1) {
+            // rock1
+            this.LARGEUR = 150;
+            this.HAUTEUR = 105;
+        } else if (this.type == 2) {
+            // rock2
+            this.LARGEUR = 150;
+            this.HAUTEUR = 101;
+        } else if (this.type == 3) {
+            // rock3
+            this.LARGEUR = 200;
+            this.HAUTEUR = 129;
+        } else if (this.type == 4) {
+            // rock4
+            this.LARGEUR = 200;
+            this.HAUTEUR = 126;
+        } else if (this.type == 5) {
+            // tree1
+            this.LARGEUR = 126;
+            this.HAUTEUR = 170;
+        } else if (this.type == 6) {
+            // tree2
+            this.LARGEUR = 141;
+            this.HAUTEUR = 185;
+        } else if (this.type == 7) {
+            // tree3
+            this.LARGEUR = 150;
+            this.HAUTEUR = 190;
+        } else if (this.type == 8) {
+            // rockground1
+            this.LARGEUR = 200;
+            this.HAUTEUR = 115;
+        } else {
+            // rockground2
+            this.LARGEUR = 182;
+            this.HAUTEUR = 127;
+        }
+
     }
 
     /**
      * Deplace l obstacle en prenant en compte la profondeur
-     * @param newRange le déplacement lateral, permet de donner une impression de profondeur. Correspond a la distance a la route a ce point
+     * @param distToRoute le déplacement lateral, permet de donner une impression de profondeur. Correspond a la distance a la route a ce point
      * @param dy la valeur de deplacement sur l axe Y
      */
-    public void move(int newRange, double dy){
-        //TODO, dx depends de rightRoute, permet de faire la profondeur
-        //Faire la mod dy comme pour la route
-        //Utiliser distToRoute
-        //Prendre en compte la largeur
+    public void move(float distToRoute, double dy){
+        // Déplacement sur l'axe X
+        // la valeur de déplacement sur l'axe X
+        double dx = 1;
+        //Si l'obstacle est à gauche de la route
+        if (!this.isRightRoute()) {
+            // L'obstacle se déplace vers la gauche au fur et à mesure
+            this.posX -= dx;
+        } else {
+            this.posX += dx;
+        }
 
+        // Déplacement sur l'axe Y : même vitesse que la route
+        this.posY += dy;
     }
 }
