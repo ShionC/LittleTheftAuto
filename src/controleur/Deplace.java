@@ -210,17 +210,25 @@ public class Deplace extends Thread {
 
                 //Obstacles
                 ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
-                for(Obstacle obs : listObstacles){
-                    int range = this.aff.bmg.getRange(obs.getPos());
+                try {
+                    this.aff.bmg.obstacleMutex.lock();
 
-                    //Mod obstacle
-                    if(range != -1){
-                        obs.move(range, modPos*modVitesse);
-                    } else {
-                        obs.move(obs.getDistToRoute(), modPos*modVitesse);
+                    for(Obstacle obs : listObstacles){
+                        int range = this.aff.bmg.getRange(obs.getPos());
+
+                        //Mod obstacle
+                        if(range != -1){
+                            obs.move(range, modPos*modVitesse);
+                        } else {
+                            obs.move(obs.getDistToRoute(), modPos*modVitesse);
+                        }
+
                     }
 
+                } finally {
+                    this.aff.bmg.obstacleMutex.unlock();
                 }
+
 
                 //Concurrents
 
@@ -263,15 +271,23 @@ public class Deplace extends Thread {
                 double decConc = -20; //Pour les concurrents
 
                 //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu
-                for(Obstacle obs : listObstacles){
-                    //Si collision entre voiture et obstacle
-                    if(Tools.collision(this.user.getHitBox(), obs.getHitBox())){
-                        //Decelere User
-                        this.user.modVitesse(decObs);
-                        //Rebond de user de l autre cote de l obstacle
-                        this.user.rebond(2, ! obs.isRightPoint(this.user.getPos()));
+                try {
+                    this.aff.bmg.obstacleMutex.lock();
+
+                    for(Obstacle obs : listObstacles){
+                        //Si collision entre voiture et obstacle
+                        if(Tools.collision(this.user.getHitBox(), obs.getHitBox())){
+                            //Decelere User
+                            this.user.modVitesse(decObs);
+                            //Rebond de user de l autre cote de l obstacle
+                            this.user.rebond(2, ! obs.isRightPoint(this.user.getPos()));
+                        }
                     }
+
+                } finally {
+                    this.aff.bmg.obstacleMutex.unlock();
                 }
+
 
                 try {
                     this.aff.vueUser.concurrentMutex.lock();

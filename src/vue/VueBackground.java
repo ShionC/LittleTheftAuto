@@ -38,7 +38,7 @@ public class VueBackground {
     private final int maxObstacles = 2;
     private final double percChanceApparition = 5;
 
-    private final ReentrantLock obstacleMutex = new ReentrantLock();
+    public final ReentrantLock obstacleMutex = new ReentrantLock();
 
     //Coord montagnes
     /**La position x initiale des montagnes**/
@@ -262,7 +262,14 @@ public class VueBackground {
      * @return
      */
     public ArrayList<Obstacle> getListObstacles() {
-        return listObstacles;
+        synchronized(this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+                return this.listObstacles;
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
     }
 
     /**
