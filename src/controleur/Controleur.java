@@ -186,18 +186,18 @@ public class Controleur implements KeyListener {
             Audio.musicPause.stop();
         }
     }
-
+/*
     /**
      * Fait renaitre user sur le milieu de la route avec une certaine vitesse.
      * <br/>Enleve 1 au nombre de vie;
      */
-    private void rebirth(){
+   /* private void rebirth(){
         //this.vieRestante--;
         ArrayList<Point> listRoute = this.route.getRoute();
         int i = Tools.findIdxFirstInfByY(new Point(this.user.getPosX(), this.user.getPosY()), listRoute);
         this.user.rebirth(Tools.findX(this.user.getPosY(), listRoute.get(i-1), listRoute.get(i)));
     }
-
+*/
     /**
      * Selectionne le choix suivant dans le menu pause
      * @param after true si le choix est le suivant, false si il s agit du precedent

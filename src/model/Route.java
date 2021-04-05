@@ -2,6 +2,7 @@ package model;
 
 import java.awt.*;
 import java.awt.geom.Area;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -12,7 +13,10 @@ import static vue.VueBackground.horizon;
 
 public class Route extends ConcreteObject {
     //*********************************** 1) Attributs **********************************/
-    /** Pour la ligne brisée principale**/
+    /** Pour la ligne brisée principale
+     * <br/> l idx 0 correspond au plus grand point sur l axe Y (en bas de l ecran).
+     * <br/>Cette liste est donc decroissante
+     */
     private ArrayList<Point> listePoints = new ArrayList<>();
     /**Mutex de listePoints**/
     private final ReentrantLock routeMutex = new ReentrantLock();
@@ -172,7 +176,8 @@ public class Route extends ConcreteObject {
 
     /**
      * Renvoie un clone de la liste des points qui constituent la route.
-     * <br/>Le point 0 est celui le plus bas dans le fenetre
+     * <br/> l idx 0 correspond au plus grand point sur l axe Y (en bas de l ecran).
+     * <br/>Cette liste est donc decroissante
      * @return l arrayList de la liste des points
      */
     public ArrayList<Point> getRoute() {
@@ -198,6 +203,27 @@ public class Route extends ConcreteObject {
         }
     }
 
+    /**
+     * Renvoie le point appartenant a la ligne brisee correspondant au seul point de la liste parallele au point p
+     * @param p le point de comparaison
+     * @return le point appartenant a la route situe sur le meme Y
+     */
+    public Point2D getPointRoutePara(Point p){
+        ArrayList<Point> listRoute = this.getRoute();
+        int i = Tools.findIdxFirstInfByY(p, listRoute);
+        Point2D res;
+        if(i > 0){
+            res = new Point2D.Float(Tools.findX(p.y, listRoute.get(i), listRoute.get(i-1)), p.y);
+        } else if(i == -1){
+            res = listRoute.get(0);
+        } else if(i == -2){
+            res = listRoute.get(listRoute.size()-1);
+        } else {
+            res = new Point2D.Float(-1, -1);
+        }
+        return res;
+    }
+
 
     /*--------------------Shape et profondeur de la route---------------------*/
 
@@ -219,16 +245,16 @@ public class Route extends ConcreteObject {
                     Point p = list.get(i);
                     if(p.y < horizon){
                         if(i==0){
-                            p.move((Tools.findX(horizon, list.get(i+1), p)), horizon);
+                            p.move((int) Tools.findX(horizon, list.get(i+1), p), horizon);
                         } else {
-                            p.move(Tools.findX(horizon,p,list.get(i-1)), horizon); //N affiche que les points sous l horizon !
+                            p.move((int) Tools.findX(horizon,p,list.get(i-1)), horizon); //N affiche que les points sous l horizon !
                         }
 
                     } else if(p.y>Affichage.HAUTEUR){
                         if(i == list.size()-1){
-                            p.move(Tools.findX(Affichage.HAUTEUR, p, list.get(i-1)), Affichage.HAUTEUR);
+                            p.move((int) Tools.findX(Affichage.HAUTEUR, p, list.get(i-1)), Affichage.HAUTEUR);
                         } else {
-                            p.move(Tools.findX(Affichage.HAUTEUR,list.get(i+1),p), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
+                            p.move((int) Tools.findX(Affichage.HAUTEUR,list.get(i+1),p), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
                         }
 
                     }
@@ -292,7 +318,7 @@ public class Route extends ConcreteObject {
                 //Initialisation du 1er point
                 Point oldP = list.get(0); //On a toujours olp > p
                 if(oldP.y>Affichage.HAUTEUR){
-                    oldP.move(Tools.findX(Affichage.HAUTEUR,list.get(1),oldP), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
+                    oldP.move((int) Tools.findX(Affichage.HAUTEUR,list.get(1),oldP), Affichage.HAUTEUR); //N affiche que les points dans l ecran !
                 }
                 tabX[0] = oldP.x-rangeRoute.get(0);
                 tabX[sizeTab-2] = oldP.x+rangeRoute.get(0); //Remplir en partant de la fin
@@ -303,7 +329,7 @@ public class Route extends ConcreteObject {
 
                     Point p = list.get(i);
                     if(p.y < horizon){
-                        p.move(Tools.findX(horizon,p,oldP), horizon); //N affiche que les points sous l horizon !
+                        p.move((int) Tools.findX(horizon,p,oldP), horizon); //N affiche que les points sous l horizon !
                     }
                     //Le point 0 est le point en bas a
                     tabX[i] = p.x-rangeRoute.get(i);

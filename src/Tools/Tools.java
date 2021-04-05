@@ -96,14 +96,15 @@ public class Tools {
      * @param p2 Le deuxieme point relatif du segment
      * @return la coord x du point cherche
      */
-    public static int findX(int y, Point p1, Point p2){
+    public static float findX(int y, Point p1, Point p2){
         float pente = (p2.y - p1.y) / ((float)p2.x - (float)p1.x);
         float x = (y - p1.y) / pente + p1.x;
         if((x<p1.x&&x<p2.x)||(x>p1.x&&x>p2.x)){
             System.out.println("X hors segment !!");
         }
             
-        return Math.round(x);
+        //return Math.round(x);
+        return x;
     }
 
     /**

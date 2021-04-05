@@ -124,10 +124,10 @@ public class Deplace extends Thread {
                     if(listRange.size() == 0){
                         System.out.println("ListRange size == 0 !!!");
                     }
-                    int xCenter = Tools.findX(obj.getPosY(), p2, p1); //Le centre de la route au niveau de User
-                    int xLeft = Tools.findX(obj.getPosY(), new Point(p2.x-listRange.get(i),p2.y),
+                    float xCenter = Tools.findX(obj.getPosY(), p2, p1); //Le centre de la route au niveau de User
+                    float xLeft = Tools.findX(obj.getPosY(), new Point(p2.x-listRange.get(i),p2.y),
                             new Point(p1.x-listRange.get(i+1),p1.y)); //Calcul par la gauche, le point sur le bord de la route
-                    int rangeMax = xCenter - xLeft; //La distance maximale que user peut etre par rapport au centre de la route.
+                    float rangeMax = xCenter - xLeft; //La distance maximale que user peut etre par rapport au centre de la route.
 
                     double modVitMin = 1; //Lorsque la distance est maximale, la vitesse est minimale
 
@@ -214,15 +214,28 @@ public class Deplace extends Thread {
                     this.aff.bmg.obstacleMutex.lock();
 
                     for(Obstacle obs : listObstacles){
-                        int range = this.aff.bmg.getRange(obs.getPos());
 
-                        //Mod obstacle
-                        if(range != -1){
-                            obs.move(range, modPos*modVitesse);
+                        //Deplacement sur l axe X (effet profondeur)
+                        // pos X du centre de la route
+                        Point2D pRoute = this.route.getPointRoutePara(obs.getPos());
+                        //obs.savePosXCenterRoute((float) pRoute.getX());
+                        //Range route
+                        int newRange = this.aff.bmg.getRange(obs.getPos());
+                        float oldRange = obs.getSavedRangeRoute();
+                        float facRange;
+                        if(oldRange != 0){
+                            //facRange = newRange / oldRange;
+                            facRange = newRange - oldRange;
                         } else {
-                            obs.move(obs.getDistToRoute(), modPos*modVitesse);
+                            facRange = 2;
                         }
 
+                        obs.saveRangeRoute(newRange);
+                        //Dist to route
+                        obs.updateDistToRoute(facRange);
+
+                        //Mod obstacle, deplacement sur l axe Y
+                        obs.move(modPos*modVitesse);
                     }
 
                 } finally {

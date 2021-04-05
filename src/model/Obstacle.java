@@ -2,7 +2,6 @@ package model;
 
 import Tools.Tools;
 import vue.Affichage;
-import model.Route;
 import vue.VueBackground;
 
 import java.awt.*;
@@ -12,8 +11,13 @@ import java.awt.image.BufferedImage;
 
 public class Obstacle extends ConcreteObject {
 
-    // Type d'obstacle
+    /**Le type d'obstacle**/
     private int type;
+
+    /**La position sur l axe Y de l obstacle a son apparition.
+     * <br/> Valable quel que soit le type d obstacle
+     */
+    public static float initY = VueBackground.horizon;
 
     /**True si la position de l obstacle est a droite de la route, false sinon**/
     private boolean rightRoute;
@@ -22,23 +26,42 @@ public class Obstacle extends ConcreteObject {
     private float distToRoute;
 
     //Largeur et hauteur de la hitbox initiales sans scale
-    private int LARGEUR;
-    private int HAUTEUR;
+    /**Les dimensions de la hitBox sans scale**/
+    private int LARGEUR, HAUTEUR;
 
-    // L'image correspondant à l'obstacle en fonction du type d'obstacle
+    /**La position X du centre de la route pour posY**/
+    private float posXCenterRoute;
+    /**La sauvegarde de la derniere range de la route pour posY**/
+    private float savedRangeRoute;
+    /**L'image correspondant à l'obstacle en fonction du type d'obstacle**/
     private BufferedImage img;
 
-    // Vitesse des obstacles, de la route et de user
-    private int vitesse;
+    /**Sert a gerer l eloignement des obstacles sur l axe X**/
+    private float modFacDistanceRoute = 2;//0.9f;
 
-    public Obstacle(){
+    /**
+     * Cree un obstacle initialise aleatoirement sur l axe X sur la map et a la position <i>initY</i> sur l axeY
+     * <br/>Cet obstacle possede une hitbox.
+     * <br/>Son deplacement suit les regles suivantes :
+     * <ul>
+     *     <li>son deplacement sur l axe Y est influence par la vitesse de User</li>
+     *     <li>son deplacement sur l axe X suit la range de la route pour un effet de perspective</li>
+     * </ul>
+     * @param posXCenterRoute
+     * @param currentRange
+     */
+    public Obstacle(float posXCenterRoute, float currentRange){
+
+        this.posXCenterRoute = posXCenterRoute;
+        this.savedRangeRoute = currentRange;
+
         this.chooseTypeObstacle();
-        this.posY = VueBackground.horizon;
+        this.posY = initY;
         this.posX = (float) Tools.rangedRandomDouble(50, Affichage.LARGEUR-50);
-        this.sizeObstacle();
-        this.calculeDistToRoute();
+        this.rightRoute = this.isRightPoint(new Point((int) posXCenterRoute, (int) this.posY));
+        this.initSizeObstacle();
+        this.initDistToRoute();
         this.img = Images.getObstacleimg(this.type);
-        this.vitesse = 30;
     }
 
     // Tous les getters _________________________________________________________________________
@@ -100,41 +123,57 @@ public class Obstacle extends ConcreteObject {
         return type;
     }
 
-    // Autres méthodes __________________________________________________________________________
-
-    private void chooseTypeObstacle() {
-        int maxType = 9;
-        this.type = Tools.rangedRandomInt(1,maxType);
-    }
-
-    private void calculeDistToRoute() {
-        // Initialisation
-        if (!isRightRoute()) {
-            this.distToRoute = Affichage.LARGEUR / 2 - this.posX;
-        } else {
-            this.distToRoute = this.posX - Affichage.LARGEUR / 2;
-        }
-    }
-
+    /**
+     * Renvoie la valeur du scale de l image / hitbox par rapport a sa position sur la route
+     * <br/>Methode de gestion de perspective
+     * @return
+     */
     public double getScale() {
         double initScale = 1;
-        double initPos = Affichage.HAUTEUR - this.HAUTEUR - 20;
+        double initPos = Affichage.HAUTEUR - this.HAUTEUR;
         double scale = (initScale * this.posY)/initPos;
 
         return scale;
     }
 
     /**
-     * Verifie si l objet est a droite ou a gauche du point
-     * @param p
+     * Renvoie la derniere valeur sauvegardee de la rangeRoute correspondant a la position sur l axe Y de l obstacle
      * @return
      */
-    public boolean isRightPoint(Point p){
-        return this.posX > p.x;
+    public float getSavedRangeRoute() {
+        return savedRangeRoute;
     }
 
-    /** Taille de la hitbox en fonction du type d'obstacle **/
-    public void sizeObstacle() {
+    /**
+     * Enregistre la valeur actuelle de la rangeRoute correspondant a la position sur l axe Y de l obstacle
+     * @param range la rangeRoute a sauvegarder
+     */
+    public void saveRangeRoute(float range){
+        this.savedRangeRoute = range;
+    }
+
+    /**
+     * Sauvegarde la position sur l axe X du milieu de la route a la position sur l axe Y de l obstacle
+     * @param posXCenterRoute
+     */
+    public void savePosXCenterRoute(float posXCenterRoute){
+        this.posXCenterRoute = posXCenterRoute;
+    }
+
+
+    // Init ----------------------------------------------------------------------------------
+
+
+    /**
+     * Choisi le type d obstacle
+     */
+    private void chooseTypeObstacle() {
+        int maxType = 9;
+        this.type = Tools.rangedRandomInt(1,maxType);
+    }
+
+    /** Initialise la taille de la hitbox en fonction du type d'obstacle **/
+    private void initSizeObstacle() {
         if (this.type == 1) {
             // rock1
             this.LARGEUR = 150;
@@ -176,14 +215,71 @@ public class Obstacle extends ConcreteObject {
     }
 
     /**
-     * Deplace l obstacle en prenant en compte la profondeur
-     * @param distToRoute le déplacement lateral, permet de donner une impression de profondeur. Correspond a la distance a la route a ce point
+     * Initialise la distance a la route en fonction de posX et posXCenterRoute
+     */
+    private void initDistToRoute(){
+        if (isRightRoute()) {
+            this.distToRoute = this.posX - this.posXCenterRoute;
+        } else {
+            this.distToRoute = this.posXCenterRoute - this.posX;
+        }
+    }
+
+
+    // Autres méthodes __________________________________________________________________________
+
+
+
+    /**
+     * Verifie si l objet est a droite ou a gauche du point
+     * @param p
+     * @return
+     */
+    public boolean isRightPoint(Point p){
+        return this.posX > p.x;
+    }
+
+    // Deplacement ------------------------------------------------------------
+
+
+    /**
+     * Met a jour posX en fonction de distToRoute et posXCenterRoute
+     */
+    private void updatePosX(){
+        if (isRightRoute()) {
+            this.posX = this.posXCenterRoute + this.distToRoute;
+        } else {
+            this.posX = (float) (this.posXCenterRoute - this.distToRoute - this.getLARGEUR());
+        }
+    }
+
+    /**
+     * Calcule la distance a la route en la modifiant par rapport au facteur donne
+     * <br/> Met a jour posX en fonction des calculs trouves
+     * <br/>Permet un effet de profondeur
+     * @param facteurMod le facteur de deplacement entre l ancienne position sur l axe X et la nouvelle
+     */
+    public void updateDistToRoute(float facteurMod) {
+        //this.distToRoute = this.distToRoute * facteurMod;//(facteurMod*this.modFacDistanceRoute);
+        /*if(facteurMod*this.modFacDistanceRoute>1){
+            this.distToRoute = this.distToRoute * facteurMod*this.modFacDistanceRoute;
+        } else {
+            this.distToRoute = this.distToRoute * facteurMod;
+        }
+
+         */
+        this.distToRoute = this.distToRoute + (facteurMod*this.modFacDistanceRoute);
+        this.updatePosX();
+    }
+
+    /**
+     * Deplace l obstacle sur l axe Y
      * @param dy la valeur de deplacement sur l axe Y
      */
-    public void move(float distToRoute, double dy){
+    public void move(double dy){
         // Déplacement sur l'axe X
         // la valeur de déplacement sur l'axe X
-        double dx = 1;
+        /*double dx = 1;
         //Si l'obstacle est à gauche de la route
         if (!this.isRightRoute()) {
             // L'obstacle se déplace vers la gauche au fur et à mesure
@@ -191,6 +287,8 @@ public class Obstacle extends ConcreteObject {
         } else {
             this.posX += dx;
         }
+
+         */
 
         // Déplacement sur l'axe Y : même vitesse que la route
         this.posY += dy;

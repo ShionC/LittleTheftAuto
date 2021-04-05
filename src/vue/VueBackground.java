@@ -81,10 +81,11 @@ public class VueBackground {
     /**
      * Renvoie range au point p sur la route
      * @param p Le point p sur la route (p.x n est pas oblige d etre sur la route)
-     * @return -1 si p.y est sortit de la route
+     * @return la range au point de la route le plus pres si p est sortit de la route
      */
     public int getRange(Point p){
         ArrayList<Point> listRoute = this.aff.route.getRoute();
+        ArrayList<Integer> rangeRoute = this.aff.route.getRangeRoute();
         //Touver le bon point sur le segment de route
         int i = Tools.findIdxFirstInfByY(p, listRoute);
         i--; //Car on veux dernier superieur
@@ -92,7 +93,11 @@ public class VueBackground {
 
         if(i>=0){ //Si l objet est toujours au niveau de la route
             Point p1 = listRoute.get(i);
-            return (this.aff.route.getRangeRoute().get(i)*(p.y- VueBackground.horizon +50))/(p1.y- VueBackground.horizon +50);//Produit en croix
+            return (rangeRoute.get(i)*(p.y- VueBackground.horizon +50))/(p1.y- VueBackground.horizon +50);//Produit en croix
+        } else if(i == -1) {
+            return rangeRoute.get(0);
+        } else if(i == -2){
+            return rangeRoute.get(rangeRoute.size()-1);
         } else {
             return -1;
         }
@@ -149,7 +154,10 @@ public class VueBackground {
                 if(this.listObstacles.size() < this.maxObstacles){
                     double rand = Tools.rangedRandomDouble(0,100);
                     if(rand <= this.percChanceApparition){
-                        Obstacle newObs = new Obstacle();
+                        Point pInitObs = new Point(0, (int) Obstacle.initY);
+                        float posXCenterInit = (float) this.aff.route.getPointRoutePara(pInitObs).getX();
+                        float rangeInit = this.getRange(pInitObs);
+                        Obstacle newObs = new Obstacle(posXCenterInit, rangeInit);
                         this.listObstacles.add(newObs);
                     }
                 }
@@ -386,7 +394,7 @@ public class VueBackground {
             Point p1 = listRoute.get(i-1);
             Point p2 = listRoute.get(i);
             if(p2.y < horizon){
-                p2.move(Tools.findX(horizon,p2,p1), horizon); //N affiche que les points sous l horizon !
+                p2.move((int) Tools.findX(horizon,p2,p1), horizon); //N affiche que les points sous l horizon !
             }
             g2.drawLine(p1.x,p1.y,p2.x,p2.y);
         }
@@ -396,7 +404,7 @@ public class VueBackground {
         int yPtCtrl = this.aff.route.getCtrl();
         if(yPtCtrl>horizon && yPtCtrl<Affichage.HAUTEUR+20){
             int idxRouteCtrl = Tools.findIdxFirstInfByY(new Point(0, yPtCtrl), listRoute);
-            int xOnRoute = Tools.findX(yPtCtrl, listRoute.get(idxRouteCtrl-1), listRoute.get(idxRouteCtrl));
+            int xOnRoute = (int) Tools.findX(yPtCtrl, listRoute.get(idxRouteCtrl-1), listRoute.get(idxRouteCtrl));
             int modFromRouteMax = 50;
             int modFromRoute = Math.round((modFromRouteMax*(float) (yPtCtrl-horizon+50))/(float) (Affichage.HAUTEUR-horizon+50));
             int rangePtCtrl = this.getRange(new Point(0, yPtCtrl)) + modFromRoute; //depasse de la route sur l axe X
