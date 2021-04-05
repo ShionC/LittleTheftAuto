@@ -233,7 +233,9 @@ public class VueBackground {
     private void drawSingleObstacle(Graphics2D g2, Obstacle obs) {
         //Image
         Shape collisionBox = obs.getHitBox();
-        this.drawHitBox(g2, obs);
+        if(this.aff.showHitbox){
+            this.drawHitBox(g2, obs);
+        }
         //Image, centre l image sur le centre de la boite de collision
         BufferedImage img = Tools.deepCopy(obs.getImg());
         img = Tools.scaleBI(img, obs.getScale(), obs.getScale());

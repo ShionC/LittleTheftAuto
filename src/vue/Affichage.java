@@ -42,6 +42,9 @@ public class Affichage extends JPanel {
     /**La partie est mise en pause**/
     boolean enPause;
 
+    /**Decide si on affiche la hitBox**/
+    boolean showHitbox = true;
+
     public Affichage(JFrame fenetre, User user, Route route) {
         this.fenetre = fenetre;
         // Dimensions de la fenêtre

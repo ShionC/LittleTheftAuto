@@ -158,7 +158,9 @@ public class VueUser {
             try {
                 this.concurrentMutex.lock();
                 for(Concurrent c : this.concurrents){
-                    //this.drawHitBox(g2, c);
+                    if(this.aff.showHitbox){
+                        this.drawHitBox(g2, c);
+                    }
                     this.drawUser(g2, c);
                 }
             } finally {
@@ -219,7 +221,9 @@ public class VueUser {
     // Affichage du véhicule dans une sous-méthode
     public void drawCar(Graphics2D g2) {
         //Boite de collision
-        this.drawHitBox(g2, this.aff.user);
+        if(this.aff.showHitbox){
+            this.drawHitBox(g2, this.aff.user);
+        }
         this.drawUser(g2, this.aff.user);
     }
 
