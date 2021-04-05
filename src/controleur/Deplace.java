@@ -276,7 +276,6 @@ public class Deplace extends Thread {
 
                 /*----------------Collision--------------*/
 
-                //TODO obstacles & concurrents
                 //Deceleration selon obstacle :
 
 
