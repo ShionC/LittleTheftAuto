@@ -193,14 +193,14 @@ public class Images {
         tree3 = Tools.getBIfromPath("src/Sprites/Obstacles/tree3.png");
         rockground1 = Tools.getBIfromPath("src/Sprites/Obstacles/rockground1.png");
         rockground2 = Tools.getBIfromPath("src/Sprites/Obstacles/rockground2.png");
-        double scaleXrock = 0.5;
-        double scaleYrock = 0.5;
+        double scaleXrock = 1;
+        double scaleYrock = 1;
         rock1 = Tools.scaleBI(rock1, scaleXrock, scaleYrock);
         rock2 = Tools.scaleBI(rock2, scaleXrock, scaleYrock);
         rock3 = Tools.scaleBI(rock3, scaleXrock, scaleYrock);
         rock4 = Tools.scaleBI(rock4, scaleXrock, scaleYrock);
-        double scaleXtree = 0.5;
-        double scaleYtree = 0.5;
+        double scaleXtree = 1;
+        double scaleYtree = 1;
         tree1 = Tools.scaleBI(tree1, scaleXtree, scaleYtree);
         tree2 = Tools.scaleBI(tree2, scaleXtree, scaleYtree);
         tree3 = Tools.scaleBI(tree3, scaleXtree, scaleYtree);
@@ -301,22 +301,22 @@ public class Images {
      * @return l image demandee
      */
     public static BufferedImage getObstacleimg(int obstacleType){
-        BufferedImage modeleImg;
-        if (obstacleType == 0) {
+        BufferedImage modeleImg = null;
+        if (obstacleType == 1) {
             modeleImg = rock1;
-        } else if (obstacleType == 1) {
-            modeleImg = rock2;
         } else if (obstacleType == 2) {
-            modeleImg = rock3;
+            modeleImg = rock2;
         } else if (obstacleType == 3) {
-            modeleImg = rock4;
+            modeleImg = rock3;
         } else if (obstacleType == 4) {
-            modeleImg = tree1;
+            modeleImg = rock4;
         } else if (obstacleType == 5) {
-            modeleImg = tree2;
+            modeleImg = tree1;
         } else if (obstacleType == 6) {
-            modeleImg = tree3;
+            modeleImg = tree2;
         } else if (obstacleType == 7) {
+            modeleImg = tree3;
+        } else if (obstacleType == 8) {
             modeleImg = rockground1;
         } else {
             modeleImg = rockground2;
