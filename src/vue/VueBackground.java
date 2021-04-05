@@ -39,6 +39,9 @@ public class VueBackground {
     private ArrayList<Obstacle> listObstacles = new ArrayList<>();
 
 
+
+
+
     //Coord montagnes
     /**La position x initiale des montagnes**/
     private final int initXMontagnes = -500;
