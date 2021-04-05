@@ -43,6 +43,11 @@ public class Controleur implements KeyListener {
     /**True si on a commence une partie. False si on est sur un ecran d acceuil**/
     public boolean inPartie;
 
+    /**Flag developpeur, autorise ou non la mort/fin de partie
+     * <br/>Mettre a true pour autoriser la mort / jeu normal
+     */
+    private boolean flagDeath = true;
+
 
     // ********************************** 2) Constructeur **********************************
 
@@ -100,6 +105,7 @@ public class Controleur implements KeyListener {
      */
     public void endPartie(int typeGameOver){
 
+        if(this.flagDeath){
             //System.out.println("End game ctrl");
             this.accueil.typeGameOver = typeGameOver;
             this.partieEnCours = false;
@@ -112,6 +118,7 @@ public class Controleur implements KeyListener {
             Data.push();
             this.accueil.goToAccueil();
             this.aff.switchInteface(false);
+        }
 
     }
 
