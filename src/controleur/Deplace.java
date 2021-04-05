@@ -265,7 +265,7 @@ public class Deplace extends Thread {
                 //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu
                 for(Obstacle obs : listObstacles){
                     //Si collision entre voiture et obstacle
-                    if(Tools.collision(this.user.getHitBox(), this.aff.bmg.getShapeObstacle(obs))){
+                    if(Tools.collision(this.user.getHitBox(), obs.getHitBox())){
                         //Decelere User
                         this.user.modVitesse(decObs);
                         //Rebond de user de l autre cote de l obstacle

@@ -2,17 +2,16 @@ package vue;
 
 import Tools.MyTimer;
 import Tools.Tools;
+import model.ConcreteObject;
 import model.Data;
 import model.Images;
 import model.Obstacle;
 
 import java.awt.*;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
-import java.awt.geom.Area;
-import java.awt.geom.AffineTransform;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class VueBackground {
 
@@ -244,6 +243,17 @@ public class VueBackground {
         AffineTransform at = new AffineTransform();
         at.translate(x, y);
         g2.drawImage(img, at, null);
+    }
+
+    /**
+     * Dessine la boite de collision
+     * @param g2 le contexte graphique
+     * @param obj l objet possedant une hitbox
+     */
+    private void drawHitBox(Graphics2D g2, ConcreteObject obj){
+        g2.setColor(new Color(188, 32, 1));
+        Shape collisionBox = obj.getHitBox();
+        g2.draw(collisionBox);
     }
 
     /**
