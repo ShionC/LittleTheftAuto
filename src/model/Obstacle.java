@@ -81,7 +81,7 @@ public class Obstacle extends ConcreteObject {
      * Renvoie la hitBox de l'obstacle.
      * @return
      */
-    public Area getHitBox() {
+    public synchronized Area getHitBox() {
         Shape collisionBox = new Rectangle2D.Double(this.getPosX(), this.getPosY(), this.getLARGEUR(), this.getHAUTEUR());
         return new Area(collisionBox);
     }

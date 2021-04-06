@@ -273,7 +273,7 @@ public class Affichage extends JPanel {
     /**
      * Met a jour l affichage
      */
-    public void update() {
+    public synchronized void update() {
         this.paintManager.repaint();
         if(this.partieEnCours){
             this.vueUser.update();

@@ -75,7 +75,7 @@ public class Route extends ConcreteObject {
     /**
      * Mise à jour de la route, ajoute ou enleve des points de la liste au besoin
      */
-    private void updateRoute() {
+    private synchronized void updateRoute() {
         synchronized (this.listePoints){
             try {
                 this.routeMutex.lock();
@@ -145,7 +145,7 @@ public class Route extends ConcreteObject {
      * <br/>Met aussi a jour le point de controle ainsi que rangeRoute
      * @param saut le deplacement de tous les points. Est mis a charger et lorsque il atteint une valeur > 1 fait bouger les points
      */
-    public void moveRoute(double saut) {
+    public synchronized void moveRoute(double saut) {
         //Peut etre utiliser un semaphore pour eviter que 2 objets essaient de se co en meme temps, avec getRoute
         this.sautCharge += saut;
         if(this.sautCharge >=1){   //La route avance
@@ -180,7 +180,7 @@ public class Route extends ConcreteObject {
      * <br/>Cette liste est donc decroissante
      * @return l arrayList de la liste des points
      */
-    public ArrayList<Point> getRoute() {
+    public synchronized ArrayList<Point> getRoute() {
         synchronized (this.listePoints){
             try {
                 this.routeMutex.lock();
@@ -232,7 +232,7 @@ public class Route extends ConcreteObject {
      * <br/>Range route defini la distance entre le milieu de la route et son cote gauche pour chaque point.
      * <br/>Permet un effet de profondeur
      */
-    private void updateRangeRoute(){
+    private synchronized void updateRangeRoute(){
         float rangeInit = 100; //Lorsque y=Affichage.HAUTEUR alors de chaque cote de la route il y a cette valeur
         ArrayList<Point> list = this.getRoute();
         synchronized (this.rangeroute){
@@ -303,7 +303,7 @@ public class Route extends ConcreteObject {
 
 
     @Override
-    public Area getHitBox() {
+    public synchronized Area getHitBox() {
         synchronized (this.rangeroute){
             try{
                 this.rangeMutex.lock();
@@ -358,10 +358,7 @@ public class Route extends ConcreteObject {
 
     /*----------------------------Point de controle------------------------*/
 
-    /**
-     *
-     * @param posY
-     */
+
     /**
      * Remplace l'ancien point de contrôle par un nouveau
      * @param posY la distance du nouveau point de controle par rapport a user

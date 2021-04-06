@@ -62,7 +62,7 @@ abstract public class ConcreteObject {
      * @param obj Le deuxieme ConcreteObject
      * @return true si il y a collision, false sinon
      */
-    public boolean collision(ConcreteObject obj){
+    public synchronized boolean collision(ConcreteObject obj){
         return Tools.collision(this.getHitBox(), obj.getHitBox());
     }
 
