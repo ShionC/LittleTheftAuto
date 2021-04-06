@@ -99,6 +99,7 @@ public class Affichage extends JPanel {
             cl.show(this.card, "Game");
             this.requestFocusInWindow();
             Audio.musicMenu.stop();
+            Audio.musicPause.stop();
             Audio.musicInGame.play();
         } else {
             cl.show(this.card, "OutScreen");
