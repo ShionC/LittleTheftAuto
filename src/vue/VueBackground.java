@@ -55,15 +55,9 @@ public class VueBackground {
     public VueBackground(Affichage aff){
         this.aff = aff;
 
-
-
         //Initialiser nuages
         this.initClouds();
-        //this.setShapeRoute();
 
-
-        //Initialiser les obstacles
-        //TODO les images
     }
 
     // ********************************** 3) Méthodes **********************************
@@ -127,7 +121,48 @@ public class VueBackground {
         }
     }
 
-    /** Obstacles **/
+    /**
+     * Deplace la position des nuages et de la montagne en fonction des actions de l utilisateur
+     * <br/>Cette methode est appellee par le controleur, lors des actions de l utilisateur pour deplacer user
+     * @param right true si deplace a droite, false sinon
+     */
+    public void moveDecors(boolean right){
+        int sautClouds = 1;
+        int sautMontagnes = 2;
+        for (int i = 0; i < this.clouds.size(); i++) {
+            if (right) {
+                this.clouds.get(i).move(this.clouds.get(i).x + sautClouds, this.clouds.get(i).y);
+            } else {
+                this.clouds.get(i).move(this.clouds.get(i).x - sautClouds, this.clouds.get(i).y);
+            }
+        }
+        if(right){
+            this.modMontagnes += sautMontagnes;
+        } else {
+            this.modMontagnes -= sautMontagnes;
+        }
+        //Pour eviter les depassements
+        if(this.initXMontagnes+this.modMontagnes>0){
+            this.modMontagnes = -this.initXMontagnes; //Le stabilise a 0
+        }
+        double largeurMontagne = Images.getMountain().getWidth()/(double)2;
+        if(this.initXMontagnes+largeurMontagne+this.modMontagnes<Affichage.LARGEUR){ //On voit le vide dans l ecran
+            this.modMontagnes = (int) (Affichage.LARGEUR-this.initXMontagnes-largeurMontagne); //Stabilise a Affichage.LARGEUR
+        }
+    }
+
+
+
+    /*-------------------- Obstacles -----------*/
+
+
+
+    /**
+     * Reinitialise la liste des obstacles
+     */
+    void initObstacles(){
+        this.listObstacles.clear();
+    }
 
     /**
      * Renvoie la liste des obstacles actuellement sur le jeu
@@ -203,13 +238,6 @@ public class VueBackground {
     }
 
     /**
-     * Reinitialise la liste des obstacles
-     */
-    void initObstacles(){
-        this.listObstacles.clear();
-    }
-
-    /**
      * Met a jour la liste des obstacles : En ajoute si il reste de la place, en enleve si ils sont sortis de la fenetre
      */
     public void updateObstacles(){
@@ -229,36 +257,6 @@ public class VueBackground {
             } finally {
                 this.obstacleMutex.unlock();
             }
-        }
-    }
-
-    /**
-     * Deplace la position des nuages et de la montagne en fonction des actions de l utilisateur
-     * <br/>Cette methode est appellee par le controleur, lors des actions de l utilisateur pour deplacer user
-     * @param right true si deplace a droite, false sinon
-     */
-    public void moveDecors(boolean right){
-        int sautClouds = 1;
-        int sautMontagnes = 2;
-        for (int i = 0; i < this.clouds.size(); i++) {
-            if (right) {
-                this.clouds.get(i).move(this.clouds.get(i).x + sautClouds, this.clouds.get(i).y);
-            } else {
-                this.clouds.get(i).move(this.clouds.get(i).x - sautClouds, this.clouds.get(i).y);
-            }
-        }
-        if(right){
-            this.modMontagnes += sautMontagnes;
-        } else {
-            this.modMontagnes -= sautMontagnes;
-        }
-        //Pour eviter les depassements
-        if(this.initXMontagnes+this.modMontagnes>0){
-            this.modMontagnes = -this.initXMontagnes; //Le stabilise a 0
-        }
-        double largeurMontagne = Images.getMountain().getWidth()/(double)2;
-        if(this.initXMontagnes+largeurMontagne+this.modMontagnes<Affichage.LARGEUR){ //On voit le vide dans l ecran
-            this.modMontagnes = (int) (Affichage.LARGEUR-this.initXMontagnes-largeurMontagne); //Stabilise a Affichage.LARGEUR
         }
     }
 
