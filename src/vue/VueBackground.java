@@ -36,6 +36,7 @@ public class VueBackground {
     private ArrayList<Obstacle> listObstacles = new ArrayList<>();
     /**Le nombre max de concurrents a la fois**/
     private final int maxObstacles = 2;
+    /**Pourcentage d apparition des obstacles**/
     private final double percChanceApparition = 5;
 
     public final ReentrantLock obstacleMutex = new ReentrantLock();
@@ -217,57 +218,6 @@ public class VueBackground {
     }
 
     /**
-     * Dessine tous les obstacles en fonction de leur type
-     * @param g2
-     */
-    private void drawObstacles(Graphics2D g2){
-        synchronized (this.listObstacles){
-            try {
-                this.obstacleMutex.lock();
-                for(Obstacle obs : this.listObstacles){
-                    this.drawSingleObstacle(g2, obs);
-                }
-            } finally {
-                this.obstacleMutex.unlock();
-            }
-        }
-    }
-
-    /**
-     * Dessine un obstacle
-     * @param g2
-     * @param obs
-     */
-    private void drawSingleObstacle(Graphics2D g2, Obstacle obs) {
-        //Image
-        Shape collisionBox = obs.getHitBox();
-        if(this.aff.showHitbox){
-            this.drawHitBox(g2, obs);
-        }
-        //Image, centre l image sur le centre de la boite de collision
-        BufferedImage img = Tools.deepCopy(obs.getImg());
-        img = Tools.scaleBI(img, obs.getScale(), obs.getScale());
-        //Le centre est le meme que la boite de collision
-        Point2D.Double centerObs = new Point2D.Double(collisionBox.getBounds2D().getCenterX(), collisionBox.getBounds2D().getCenterY());
-        double x = centerObs.x-((img.getWidth()*obs.getScale())/2); //Cherche le point en haut a droite par rapport au centre
-        double y = centerObs.y-((img.getWidth()*obs.getScale())/2);
-        AffineTransform at = new AffineTransform();
-        at.translate(x, y);
-        g2.drawImage(img, at, null);
-    }
-
-    /**
-     * Dessine la boite de collision
-     * @param g2 le contexte graphique
-     * @param obj l objet possedant une hitbox
-     */
-    private void drawHitBox(Graphics2D g2, ConcreteObject obj){
-        g2.setColor(new Color(188, 32, 1));
-        Shape collisionBox = obj.getHitBox();
-        g2.draw(collisionBox);
-    }
-
-    /**
      * Renvoie la liste des obstacles
      * @return
      */
@@ -317,9 +267,60 @@ public class VueBackground {
 
 
 
+
     /*------------------------------------Dessin---------------------------------------------------*/
 
 
+    /**
+     * Dessine tous les obstacles en fonction de leur type
+     * @param g2
+     */
+    private void drawObstacles(Graphics2D g2){
+        synchronized (this.listObstacles){
+            try {
+                this.obstacleMutex.lock();
+                for(Obstacle obs : this.listObstacles){
+                    this.drawSingleObstacle(g2, obs);
+                }
+            } finally {
+                this.obstacleMutex.unlock();
+            }
+        }
+    }
+
+    /**
+     * Dessine un obstacle
+     * @param g2
+     * @param obs
+     */
+    private void drawSingleObstacle(Graphics2D g2, Obstacle obs) {
+        //Image
+        Shape collisionBox = obs.getHitBox();
+        if(this.aff.showHitbox){
+            this.drawHitBox(g2, obs);
+        }
+        //Image, centre l image sur le centre de la boite de collision
+        BufferedImage img = Tools.deepCopy(obs.getImg());
+        img = Tools.scaleBI(img, obs.getScale(), obs.getScale());
+        //Le centre est le meme que la boite de collision
+        Point2D.Double centerObs = new Point2D.Double(collisionBox.getBounds2D().getCenterX(), collisionBox.getBounds2D().getCenterY());
+        double x = centerObs.x-((img.getWidth()*obs.getScale())/2); //Cherche le point en haut a droite par rapport au centre
+        double y = centerObs.y-((img.getWidth()*obs.getScale())/2);
+        AffineTransform at = new AffineTransform();
+        at.translate(x, y);
+        g2.drawImage(img, at, null);
+    }
+
+    /**
+     * Dessine la boite de collision
+     * @param g2 le contexte graphique
+     * @param obj l objet possedant une hitbox
+     */
+    private void drawHitBox(Graphics2D g2, ConcreteObject obj){
+        g2.setColor(new Color(188, 32, 1));
+        Shape collisionBox = obj.getHitBox();
+        g2.draw(collisionBox);
+    }
 
 
 
