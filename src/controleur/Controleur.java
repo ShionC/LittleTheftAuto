@@ -162,9 +162,7 @@ public class Controleur implements KeyListener {
             this.aff.pause();
             this.user.pause();
 
-            for(Concurrent c : this.aff.vueUser.getConcurrents()){
-                c.pause();
-            }
+            this.aff.vueUser.pauseAllConcurrents();
 
             Data.pausePartie();
             Audio.musicInGame.pause();
@@ -184,9 +182,7 @@ public class Controleur implements KeyListener {
             this.aff.resume();
             this.user.resume();
 
-            for(Concurrent c : this.aff.vueUser.getConcurrents()){
-                c.resume();
-            }
+            this.aff.vueUser.resumeAllConcurrents();
 
             Data.resumePartie();
             Audio.musicInGame.resume();

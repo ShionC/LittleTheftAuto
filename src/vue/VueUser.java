@@ -144,6 +144,41 @@ public class VueUser {
 
     }
 
+    /**
+     * Met en pause tous les concurrents.
+     * <br/>Protege par un mutex
+     */
+    public void pauseAllConcurrents(){
+        synchronized (this.concurrents){
+            try{
+                this.concurrentMutex.lock();
+                for(Concurrent c : this.concurrents){
+                    c.pause();
+                }
+
+            } finally {
+                this.concurrentMutex.unlock();
+            }
+        }
+    }
+
+    /**
+     * Resume tous les concurrents.
+     * <br/>Protege par un mutex
+     */
+    public void resumeAllConcurrents(){
+        synchronized (this.concurrents){
+            try{
+                this.concurrentMutex.lock();
+                for(Concurrent c : this.concurrents){
+                    c.resume();
+                }
+
+            } finally {
+                this.concurrentMutex.unlock();
+            }
+        }
+    }
 
     /*------------Dessin---------------*/
 
