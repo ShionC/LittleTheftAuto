@@ -1,5 +1,7 @@
 package vue;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Cree une classe appelant repaint() de l affichage principal toutes les timeLapse milliseconds.
  */
@@ -16,6 +18,9 @@ public class PaintManager implements Runnable {
 
     /**Le temps ecoule entre 2 affichages**/
     private final int timeLapse = 5;
+
+    /**Mutex de paint**/
+    private final ReentrantLock paintMutex = new ReentrantLock();
 
     /**
      * Cree une classe appelant repaint() de l affichage principal toutes les timeLapse milliseconds.
@@ -42,9 +47,15 @@ public class PaintManager implements Runnable {
 
     /**
      * Appelle la methode repaint() de l affichage
+     * <br/>Protege par un mutex
      */
-    public void repaint(){
-        this.aff.repaint();
+    public synchronized void repaint(){
+        try{
+            this.paintMutex.lock();
+            this.aff.repaint();
+        } finally {
+            this.paintMutex.unlock();
+        }
     }
 
     @Override
