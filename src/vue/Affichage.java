@@ -98,12 +98,14 @@ public class Affichage extends JPanel {
         if(toInGame){
             cl.show(this.card, "Game");
             this.requestFocusInWindow();
+            System.out.println("switch to game");
             Audio.musicMenu.stop();
             Audio.musicPause.stop();
             Audio.musicInGame.play();
         } else {
             cl.show(this.card, "OutScreen");
             this.outScreen.requestFocusInWindow();
+            System.out.println("switch to menu");
             Audio.musicPause.stop();
             Audio.musicInGame.stop();
             Audio.musicMenu.play();
@@ -273,12 +275,13 @@ public class Affichage extends JPanel {
     /**
      * Met a jour l affichage
      */
-    public void update() {
+    public synchronized void update() {
+        System.out.print("Do update & repaint");
         this.paintManager.repaint();
         if(this.partieEnCours){
             this.vueUser.update();
         }
-
+        System.out.println("        -> done update aff");
     }
 
 

@@ -102,12 +102,18 @@ public class Deplace extends Thread {
         //Calcul de la vitesse
         double modVit = 0;
         //boolean onRoad;
+        if(obj instanceof User){
+            System.out.print("  vit calcul point ");
+        }
         //if (Tools.collision(obj.getHitBox(), this.route.getHitBox())) {
         if (obj.collision(this.route)) {
+            if(obj instanceof User) System.out.print(" on road ");
             Area hitBoxObj = obj.getHitBox();
             obj.isOnRoad = true;
             //onRoad = true;
+            if(obj instanceof User) System.out.print(" got hitbox ");
             if(obj.getVitesse()<obj.getVitesseMax()){
+                if(obj instanceof User) System.out.print(" vit<max ");
                 //Touver le bon point sur le segment de route
                 ArrayList<Point> listRoute = this.route.getRoute();
                 boolean modifier;
@@ -138,8 +144,7 @@ public class Deplace extends Thread {
                     modVit = (modVitMin*dist)/(double) rangeMax;
 
                 }
-
-
+                if(obj instanceof User) System.out.print(" verif maxModVit ");
                 if(modVit < 0){
                     //System.out.println("Alerte ! ModVit < 0 on road!!!");
                 }
@@ -158,6 +163,7 @@ public class Deplace extends Thread {
         } else {
             //onRoad = false;
             obj.isOnRoad = false;
+            if(obj instanceof User) System.out.print(" out road ");
             //System.out.println("Out of Road");
             double decceleration = this.freinHorsRoute;
             if(obj.getVitesse()>=decceleration){
@@ -167,9 +173,11 @@ public class Deplace extends Thread {
             }
 
         }
-
+        if(obj instanceof User) System.out.print("  -> vit calcul done ");
+        if(obj instanceof User) System.out.print("  mod vit ");
         obj.modVitesse(modVit);
         //System.out.println("Vitesse user : "+this.user.getVitesse());
+        if(obj instanceof User) System.out.print("  -> mod vit done ");
 
     }
 
@@ -178,22 +186,29 @@ public class Deplace extends Thread {
         while(run){
 
             if(this.ctrl.partieEnCours){
-
+                System.out.println("   -------------- Do deplace ");
 
                 /*---------------Deplacement----------*/
 
+                System.out.println("  Do move ");
+
+                System.out.print("        User");
                 //Calcul de la vitesse
+                System.out.print("   vit  ");
                 this.calculVitObj(this.user);
+                System.out.print("   -> vit done  ");
 
                 //Calcul de la position selon les formules physiques
                 ////xt = v*t + x0 -> modPos = v*t, t en secondes
+                System.out.print("   pos  ");
                 double modPos = calcul_dPos(this.user.getVitesse(),varTime);
-
+                System.out.print("   -> pos done  ");
                 //Verification de game over
                 if(this.user.getVitesse() == 0){
                     this.ctrl.endPartie(1);
                 }
-
+                System.out.println("          -> done User");
+                System.out.print("        Decors");
                 //Application de la modification de la position
                 //Deplace les diff objets
                 this.route.moveRoute(modPos*modVitesse);
@@ -206,7 +221,8 @@ public class Deplace extends Thread {
                         this.aff.bmg.moveDecors(inertieUser>0);
                     }
                 }
-
+                System.out.println("        -> done decors");
+                System.out.print("        Obstacles");
                 //Obstacles
                 ArrayList<Obstacle> listObstacles = this.aff.bmg.getListObstacles();
                 try {
@@ -240,8 +256,8 @@ public class Deplace extends Thread {
                 } finally {
                     this.aff.bmg.obstacleMutex.unlock();
                 }
-
-
+                System.out.println("        -> done obstacles");
+                System.out.print("        concurrents");
                 //Concurrents
 
                 ArrayList<Concurrent> listConcurrents = this.aff.vueUser.getConcurrents();
@@ -270,17 +286,18 @@ public class Deplace extends Thread {
                     this.aff.vueUser.concurrentMutex.unlock();
                 }
 
-
+                System.out.println("        -> done concurrents");
+                System.out.println("          -> done move");
 
 
                 /*----------------Collision--------------*/
 
                 //Deceleration selon obstacle :
-
+                System.out.println("  Do collision ");
 
                 double decObs = -30; //Pour les obstacles
                 double decConc = -20; //Pour les concurrents
-
+                System.out.print("        Obstacles");
                 //Test collision obstacles -> Diminue vitesse, pas de test fin de jeu
                 try {
                     this.aff.bmg.obstacleMutex.lock();
@@ -299,8 +316,8 @@ public class Deplace extends Thread {
                 } finally {
                     this.aff.bmg.obstacleMutex.unlock();
                 }
-
-
+                System.out.println("        -> done obstacles coll");
+                System.out.print("        Concurrents");
                 try {
                     this.aff.vueUser.concurrentMutex.lock();
 
@@ -331,11 +348,13 @@ public class Deplace extends Thread {
                 } finally {
                     this.aff.vueUser.concurrentMutex.unlock();
                 }
-
-
+                System.out.println("        ->  donne concurrents coll");
+                System.out.println("          -> done collision");
 
                 this.aff.bmg.updateObstacles();
                 this.aff.update();
+
+                System.out.println("       -> done Deplace");
 
             }
 

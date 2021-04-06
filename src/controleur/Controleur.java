@@ -106,7 +106,7 @@ public class Controleur implements KeyListener {
     public void endPartie(int typeGameOver){
 
         if(this.flagDeath || typeGameOver == 0 ){ //Pour pouvoir arreter une partie en cours par ecran de pause
-            //System.out.println("End game ctrl");
+            System.out.println("End game ctrl - type : "+typeGameOver);
             this.accueil.typeGameOver = typeGameOver;
             this.partieEnCours = false;
             this.enPause = false; //La fin de partie n est pas une pause

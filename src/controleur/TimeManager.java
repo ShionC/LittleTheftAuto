@@ -103,6 +103,8 @@ public class TimeManager extends Thread {
 
             if(this.ctrl.partieEnCours){
 
+                System.out.println(" ---------------- Do timer ");
+
                 if(this.timerPtCtrl.isOver()){
                     if(this.ctrl.user.getPosY() <= this.route.getCtrl()){ //Si user depasse le point de controle
                         Data.addScore(this.route.getValueCtrl());
@@ -124,7 +126,7 @@ public class TimeManager extends Thread {
                         //Augmente score de user ?
                     }
                 }
-
+                System.out.println("        -> done timer");
             }
 
             try {

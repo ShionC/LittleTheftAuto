@@ -353,7 +353,7 @@ public class User extends ConcreteObject implements Runnable {
      * <br/>Sa rotation depends de l etat de User
      * @return
      */
-    public Area getHitBox(){
+    public synchronized Area getHitBox(){
         Shape collisionBox = new Rectangle2D.Double(this.getPosX(), this.getPosY(), this.getLARGEUR(), this.getHAUTEUR());
         int currentEtat = this.etat.getCurrentState();
         double rotation = 0.4;

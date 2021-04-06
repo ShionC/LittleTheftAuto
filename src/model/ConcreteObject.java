@@ -62,8 +62,11 @@ abstract public class ConcreteObject {
      * @param obj Le deuxieme ConcreteObject
      * @return true si il y a collision, false sinon
      */
-    public boolean collision(ConcreteObject obj){
-        return Tools.collision(this.getHitBox(), obj.getHitBox());
+    public synchronized boolean collision(ConcreteObject obj){
+        if(this instanceof User && obj instanceof Route) System.out.print(" coll user/route ");
+        boolean res = Tools.collision(this.getHitBox(), obj.getHitBox());
+        if(this instanceof User && obj instanceof Route) System.out.print(" ->coll user/route done ");
+        return res;
     }
 
 }
