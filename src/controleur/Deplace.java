@@ -293,6 +293,7 @@ public class Deplace extends Thread {
                             this.user.modVitesse(decObs);
                             //Rebond de user de l autre cote de l obstacle
                             this.user.rebond(2, ! obs.isRightPoint(this.user.getPos()));
+                            Audio.jingleCollision.play();
                         }
                     }
 
@@ -305,15 +306,7 @@ public class Deplace extends Thread {
                     this.aff.vueUser.concurrentMutex.lock();
 
                     for(Concurrent c : listConcurrents){
-                        if(this.user.collision(c)){
-                            this.user.modVitesse(decConc);
-                            boolean isRight = this.user.getPosX()>c.getPosX();
-                            this.user.rebond(2, isRight);
-                            c.rebond(3, ! isRight);
-                            Audio.jingleCollision.play();
-
-                        }
-                        if(! c.isHS()){
+                        if(! c.isHS()){ //Avant collision pour eviter rebond trop eloigne
                             if(c.getPosY()>this.user.getPosY()){
                                 c.goHS();
                                 Data.addScore(scoreConcurrent);
@@ -325,6 +318,14 @@ public class Deplace extends Thread {
                                 }
 
                             }
+                        }
+                        if(this.user.collision(c)){
+                            this.user.modVitesse(decConc);
+                            boolean isRight = this.user.getPosX()>c.getPosX();
+                            this.user.rebond(2, isRight);
+                            c.rebond(3, ! isRight);
+                            Audio.jingleCollision.play();
+
                         }
                     }
 
