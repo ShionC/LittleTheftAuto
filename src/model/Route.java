@@ -307,6 +307,7 @@ public class Route extends ConcreteObject {
         synchronized (this.rangeroute){
             try{
                 this.rangeMutex.lock();
+                this.routeMutex.lock();
 
                 updateRangeRoute();
                 ArrayList<Integer> rangeRoute = this.getRangeRoute();
@@ -345,6 +346,7 @@ public class Route extends ConcreteObject {
                 return new Area(new Polygon(tabX,tabY, sizeTab));
 
             } finally {
+                this.routeMutex.unlock();
                 this.rangeMutex.unlock();
             }
 

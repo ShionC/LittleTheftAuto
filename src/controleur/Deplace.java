@@ -35,7 +35,7 @@ public class Deplace extends Thread {
 
     /**La modification que on applie au deplacement, pour gerer la vitesse selon les besoins.
      * <br/> /!\ min = 1 !!**/
-    double modVitesse = 1;
+    double modVitesse = 4; //5
 
     /**Le score obtenu lorsqu'un concurrent est depasse**/
     int scoreConcurrent = 50;
@@ -58,7 +58,6 @@ public class Deplace extends Thread {
         this.aff = ctrl.aff;
         this.newPartie();
 
-        this.modVitesse = 5;
     }
 
     /**
