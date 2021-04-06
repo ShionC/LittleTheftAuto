@@ -218,7 +218,7 @@ public class Affichage extends JPanel {
      * Fonction pour dessiner
      * @param g
      */
-    public void paint(Graphics g) {
+    /*public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -241,6 +241,33 @@ public class Affichage extends JPanel {
             this.drawPauseScreen(g2);
         }
 
+    }*/
+
+    @Override
+    public void paintComponent(Graphics g) {
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        super.paintComponent(g);
+        //super.paint(g);
+        super.revalidate();
+        super.repaint();
+        this.bmg.drawFond(g2);
+
+        this.bmg.drawBackground(g2);
+        this.vueUser.drawConcurrent(g2);
+        this.vueUser.drawCar(g2);
+        this.vueUser.drawMessage(g2);
+        this.bmg.drawData(g2);
+
+        if(! this.partieEnCours){
+            g2.setColor(new Color(193, 191, 177, 100));
+            g2.fillRect(0, 0, Affichage.LARGEUR, Affichage.HAUTEUR);
+        }
+        if(! this.partieEnCours && this.enPause){
+            this.drawPauseScreen(g2);
+        }
     }
 
     /**

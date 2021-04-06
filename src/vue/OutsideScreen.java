@@ -572,11 +572,17 @@ public class OutsideScreen  extends JPanel {
     }
 
     public void update(){
-        this.updateStats();
-        this.updateRegles();
-        this.updateEndGame();
-        this.updateFirstScreen();
-        this.draw();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                updateStats();
+                updateRegles();
+                updateEndGame();
+                updateFirstScreen();
+                draw();
+            }
+        });
+
     }
 
 

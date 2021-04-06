@@ -1,5 +1,8 @@
 package vue;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -12,6 +15,8 @@ public class PaintManager implements Runnable {
 
     /**La thread principale, repaint() l affichage toutes les timeLapse**/
     private Thread thread;
+    /**Timer principal, repaint() l affichage toutes les timeLapse**/
+    private Timer timer;
 
     /**Flag to stop the thread**/
     private boolean run = true;
@@ -29,6 +34,19 @@ public class PaintManager implements Runnable {
     public PaintManager(Affichage aff){
         this.aff = aff;
         this.thread = new Thread(this);
+        //initTimer();
+    }
+
+    /**
+     * Initialise le timer
+     */
+    private void initTimer(){
+        this.timer = new Timer(timeLapse, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                repaintHorsSwing();
+            }
+        });
     }
 
     /**
@@ -36,6 +54,7 @@ public class PaintManager implements Runnable {
      */
     public void stopRun(){
         this.run = false;
+        //this.timer.stop();
     }
 
     /**
@@ -43,6 +62,7 @@ public class PaintManager implements Runnable {
      */
     public void start(){
         this.thread.start();
+        //this.timer.start();
     }
 
     /**
@@ -50,6 +70,24 @@ public class PaintManager implements Runnable {
      * <br/>Protege par un mutex
      */
     public synchronized void repaint(){
+        boolean withSwing = true;
+        if(withSwing){
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    repaintHorsSwing();
+                }
+            });
+        } else {
+            repaintHorsSwing();
+        }
+
+    }
+
+    /**
+     * Methode repaint mais hors de Swing.invokeLater
+     */
+    private void repaintHorsSwing(){
         try{
             this.paintMutex.lock();
             this.aff.repaint();
