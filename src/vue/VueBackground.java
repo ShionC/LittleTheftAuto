@@ -37,7 +37,7 @@ public class VueBackground {
     /**Le nombre max de concurrents a la fois**/
     private final int maxObstacles = 2;
     /**Pourcentage d apparition des obstacles**/
-    private final double percChanceApparition = 5;
+    private final double percChanceApparition = 3;
 
     public final ReentrantLock obstacleMutex = new ReentrantLock();
 

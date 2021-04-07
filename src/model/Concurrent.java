@@ -142,7 +142,7 @@ public class Concurrent extends User{
 
             try {
                 //noinspection BusyWait
-                Thread.sleep(dt);
+                Thread.sleep(dt*2);
             } catch(Exception e) {
                 e.printStackTrace();
             }
