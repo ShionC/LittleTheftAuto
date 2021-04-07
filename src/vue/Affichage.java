@@ -11,6 +11,7 @@ import model.User;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 
@@ -44,6 +45,8 @@ public class Affichage extends JPanel {
 
     /**Decide si on affiche la hitBox**/
     boolean showHitbox = true;
+
+    private ReentrantLock switchMutex = new ReentrantLock();
 
     public Affichage(JFrame fenetre, User user, Route route) {
         this.fenetre = fenetre;
@@ -94,19 +97,26 @@ public class Affichage extends JPanel {
      * @param toInGame true si vers le jeu, false si vers le menu
      */
     public void switchInteface(boolean toInGame){
-        CardLayout cl = (CardLayout) this.card.getLayout();
-        if(toInGame){
-            cl.show(this.card, "Game");
-            this.requestFocusInWindow();
-            Audio.musicMenu.stop();
-            Audio.musicPause.stop();
-            Audio.musicInGame.play();
-        } else {
-            cl.show(this.card, "OutScreen");
-            this.outScreen.requestFocusInWindow();
-            Audio.musicPause.stop();
-            Audio.musicInGame.stop();
-            Audio.musicMenu.play();
+        try{
+            this.switchMutex.lock();
+
+            CardLayout cl = (CardLayout) this.card.getLayout();
+            if(toInGame){
+                cl.show(this.card, "Game");
+                this.requestFocusInWindow();
+                Audio.musicMenu.stop();
+                Audio.musicPause.stop();
+                Audio.musicInGame.play();
+            } else {
+                cl.show(this.card, "OutScreen");
+                this.outScreen.requestFocusInWindow();
+                Audio.musicPause.stop();
+                Audio.musicInGame.stop();
+                Audio.musicMenu.play();
+            }
+
+        } finally {
+            this.switchMutex.unlock();
         }
     }
 

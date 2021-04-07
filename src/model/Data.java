@@ -116,7 +116,7 @@ public class Data {
      * Declanche le jingle de score
      * @param score la valeur a ajouter au score
      */
-    public static void addScore(int score){
+    public synchronized static void addScore(int score){
         currentScore += score;
         Audio.jingleScore.play();
     }
@@ -148,7 +148,7 @@ public class Data {
     /**
      * Ajoute 1 au decompte du nombre de points de controles passes
      */
-    public static void addCtrlPt(){
+    public synchronized static void addCtrlPt(){
         currentNbCtrlPt++;
     }
 
@@ -156,7 +156,7 @@ public class Data {
      * Defini le kilometrage de la partie actuelle
      * @param metrage
      */
-    public static void setCurrentKilometrage(int metrage){
+    public synchronized static void setCurrentKilometrage(int metrage){
         currentKilometrage = metrage;
     }
 
