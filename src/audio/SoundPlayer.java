@@ -89,6 +89,15 @@ public class SoundPlayer {
         this.myFile = file;
     }
 
+   /* private File getFile(String pathName){
+        return getClass().getClassLoader().getResourceAsStream(pathName);
+    }
+
+
+    */
+
+
+
     /**
      * Stop definitively the SoundPlayer
      */
