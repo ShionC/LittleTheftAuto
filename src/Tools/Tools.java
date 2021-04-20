@@ -1,12 +1,17 @@
 package Tools;
 
+import model.Images;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.geom.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 import java.awt.*;
 import java.awt.image.AffineTransformOp;
@@ -277,7 +282,7 @@ public class Tools {
      * @return the BufferedImage found. Raise an exception if the image couldn't be found
      */
     public static BufferedImage getBIfromPath(String pathName) {
-        BufferedImage bi = null;
+        /*BufferedImage bi = null;
         try{
             File c = new File(pathName);
             bi = ImageIO.read(c);
@@ -292,6 +297,25 @@ public class Tools {
         }
 
         return bi;
+
+         */
+        //pathName = "/"+pathName;
+        Objects.requireNonNull(pathName);
+
+        URL url = Tools.class.getClassLoader().getResource(pathName);
+        if (url == null) {
+            String fmt = "cannot find resource [%s]";
+            throw new IllegalStateException(String.format(fmt, pathName));
+        }
+
+        try (InputStream stream = url.openStream()) {
+            return ImageIO.read(stream);
+        }
+        catch (IOException e) {
+            String fmt = "cannot read resource [%s] at [%s]";
+            String err = String.format(fmt, pathName, url);
+            throw new IllegalStateException(err, e);
+        }
     }
 
 

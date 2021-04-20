@@ -4,6 +4,7 @@ import Tools.Tools;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -75,6 +76,24 @@ public class Images {
     public static final double scaleUser = 0.5;
 
 
+    /*--------------------Util--------------------------------------*/
+
+    /**
+     * Recupere l imageIcon depuis le path
+     * <br/>Marche aussi pour les .jar
+     * @param pathName
+     * @return
+     */
+    private static ImageIcon getImageIconFromPath(String pathName){
+        URL imgURL = Images.class.getClassLoader().getResource(pathName);
+        if (imgURL == null) {
+            String fmt = "cannot find resource [%s]";
+            throw new IllegalStateException(String.format(fmt, pathName));
+        }
+        ImageIcon image = new ImageIcon(imgURL);
+        return image;
+    }
+
     /*--------------------------------Init-------------------------------------------------*/
     /**
      * Initialise toutes les images utilisees par le jeu
@@ -92,11 +111,12 @@ public class Images {
      * Initialise l image des nuages et de la montagne
      */
     private static void initClouds_Montain(){
+        String pathDecors = "Sprites/Decors/";
         //Nuages
-        cloud1 = Tools.getBIfromPath("src/Sprites/Decors/Nuages/cloud1.png");
-        cloud2 = Tools.getBIfromPath("src/Sprites/Decors/Nuages/cloud2.png");
-        cloud3 = Tools.getBIfromPath("src/Sprites/Decors/Nuages/cloud3.png");
-        cloud4 = Tools.getBIfromPath("src/Sprites/Decors/Nuages/cloud4.png");
+        cloud1 = Tools.getBIfromPath(pathDecors+"Nuages/cloud1.png");
+        cloud2 = Tools.getBIfromPath(pathDecors+"Nuages/cloud2.png");
+        cloud3 = Tools.getBIfromPath(pathDecors+"Nuages/cloud3.png");
+        cloud4 = Tools.getBIfromPath(pathDecors+"Nuages/cloud4.png");
         //Scale, changer la taille des images
         double scaleX = 0.5;
         double scaleY = 0.5;
@@ -106,18 +126,20 @@ public class Images {
         cloud4 = Tools.scaleBI(cloud4, scaleX, scaleY);
 
         //Montagne
-        mountain = Tools.getBIfromPath("src/Sprites/Decors/mountains.png");
+        mountain = Tools.getBIfromPath(pathDecors+"mountains.png");
         mountain = Tools.scaleBI(mountain, 0.5, 0.5);
 
         //Herbe
-        grass = Tools.getBIfromPath("src/Sprites/Decors/grass.png");
+        grass = Tools.getBIfromPath(pathDecors+"grass.png");
     }
 
     private static void initUsers(){
         // Dessins du user
-        BufferedImage userStraight = Tools.getBIfromPath("src/Sprites/User/user.png");
-        BufferedImage userLeft = Tools.getBIfromPath("src/Sprites/User/userleft.png");
-        BufferedImage userRight = Tools.getBIfromPath("src/Sprites/User/userright.png");
+        String pathUser = "Sprites/User/";
+        String pathConc = "Sprites/Concurrents/";
+        BufferedImage userStraight = Tools.getBIfromPath(pathUser+"user.png");
+        BufferedImage userLeft = Tools.getBIfromPath(pathUser+"userleft.png");
+        BufferedImage userRight = Tools.getBIfromPath(pathUser+"userright.png");
         userStraight = Tools.scaleBI(userStraight, scaleUser, scaleUser);
         userLeft = Tools.scaleBI(userLeft, scaleUser, scaleUser);
         userRight = Tools.scaleBI(userRight, scaleUser, scaleUser);
@@ -128,9 +150,9 @@ public class Images {
         listStatesUser.put(1, userRight);
 
         //Concurrent1
-        BufferedImage c1Straight = Tools.getBIfromPath("src/Sprites/Concurrents/c1.png");
-        BufferedImage c1Left = Tools.getBIfromPath("src/Sprites/Concurrents/c1left.png");
-        BufferedImage c1Right = Tools.getBIfromPath("src/Sprites/Concurrents/c1right.png");
+        BufferedImage c1Straight = Tools.getBIfromPath(pathConc+"c1.png");
+        BufferedImage c1Left = Tools.getBIfromPath(pathConc+"c1left.png");
+        BufferedImage c1Right = Tools.getBIfromPath(pathConc+"c1right.png");
         c1Straight = Tools.scaleBI(c1Straight, scaleUser, scaleUser);
         c1Left = Tools.scaleBI(c1Left, scaleUser, scaleUser);
         c1Right = Tools.scaleBI(c1Right, scaleUser, scaleUser);
@@ -142,9 +164,9 @@ public class Images {
 
 
         //Concurrent2
-        BufferedImage c2Straight = Tools.getBIfromPath("src/Sprites/Concurrents/c2.png");
-        BufferedImage c2Left = Tools.getBIfromPath("src/Sprites/Concurrents/c2left.png");
-        BufferedImage c2Right = Tools.getBIfromPath("src/Sprites/Concurrents/c2right.png");
+        BufferedImage c2Straight = Tools.getBIfromPath(pathConc+"c2.png");
+        BufferedImage c2Left = Tools.getBIfromPath(pathConc+"c2left.png");
+        BufferedImage c2Right = Tools.getBIfromPath(pathConc+"c2right.png");
         c2Straight = Tools.scaleBI(c2Straight, scaleUser, scaleUser);
         c2Left = Tools.scaleBI(c2Left, scaleUser, scaleUser);
         c2Right = Tools.scaleBI(c2Right, scaleUser, scaleUser);
@@ -155,9 +177,9 @@ public class Images {
         concurrent2.put(1, c2Right);
 
         //Concurrent3
-        BufferedImage c3Straight = Tools.getBIfromPath("src/Sprites/Concurrents/c3.png");
-        BufferedImage c3Left = Tools.getBIfromPath("src/Sprites/Concurrents/c3left.png");
-        BufferedImage c3Right = Tools.getBIfromPath("src/Sprites/Concurrents/c3right.png");
+        BufferedImage c3Straight = Tools.getBIfromPath(pathConc+"c3.png");
+        BufferedImage c3Left = Tools.getBIfromPath(pathConc+"c3left.png");
+        BufferedImage c3Right = Tools.getBIfromPath(pathConc+"c3right.png");
         c3Straight = Tools.scaleBI(c3Straight, scaleUser, scaleUser);
         c3Left = Tools.scaleBI(c3Left, scaleUser, scaleUser);
         c3Right = Tools.scaleBI(c3Right, scaleUser, scaleUser);
@@ -171,28 +193,30 @@ public class Images {
     }
 
     private static void initCurseur(){
-        curseur = Tools.getBIfromPath("src/Sprites/Bienvenue/curseur.png");
+        String pathBienv = "Sprites/Bienvenue/";
+        curseur = Tools.getBIfromPath(pathBienv +"curseur.png");
         curseur = Tools.deepCopy(curseur);
         curseur = Tools.getResizedImage(curseur, 20, 20);
 
-        iconCurseur = new ImageIcon(((new ImageIcon("src/Sprites/Bienvenue/curseur.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH));
+        iconCurseur = new ImageIcon((getImageIconFromPath(pathBienv+"curseur.png").getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH));
     }
 
     private static void initPause(){
-        pauseButton = Tools.getBIfromPath("src/Sprites/pauseButton.png");
+        pauseButton = Tools.getBIfromPath("Sprites/pauseButton.png");
         pauseButton = Tools.scaleBI(pauseButton, 0.5, 0.5);
     }
 
     public static void initObstacles(){
-        rock1 = Tools.getBIfromPath("src/Sprites/Obstacles/rock1.png");
-        rock2 = Tools.getBIfromPath("src/Sprites/Obstacles/rock2.png");
-        rock3 = Tools.getBIfromPath("src/Sprites/Obstacles/rock3.png");
-        rock4 = Tools.getBIfromPath("src/Sprites/Obstacles/rock4.png");
-        tree1 = Tools.getBIfromPath("src/Sprites/Obstacles/tree1.png");
-        tree2 = Tools.getBIfromPath("src/Sprites/Obstacles/tree2.png");
-        tree3 = Tools.getBIfromPath("src/Sprites/Obstacles/tree3.png");
-        rockground1 = Tools.getBIfromPath("src/Sprites/Obstacles/rockground1.png");
-        rockground2 = Tools.getBIfromPath("src/Sprites/Obstacles/rockground2.png");
+        String pathObs = "Sprites/Obstacles/";
+        rock1 = Tools.getBIfromPath(pathObs+"rock1.png");
+        rock2 = Tools.getBIfromPath(pathObs+"rock2.png");
+        rock3 = Tools.getBIfromPath(pathObs+"rock3.png");
+        rock4 = Tools.getBIfromPath(pathObs+"rock4.png");
+        tree1 = Tools.getBIfromPath(pathObs+"tree1.png");
+        tree2 = Tools.getBIfromPath(pathObs+"tree2.png");
+        tree3 = Tools.getBIfromPath(pathObs+"tree3.png");
+        rockground1 = Tools.getBIfromPath(pathObs+"rockground1.png");
+        rockground2 = Tools.getBIfromPath(pathObs+"rockground2.png");
         double scaleXrock = 1;
         double scaleYrock = 1;
         rock1 = Tools.scaleBI(rock1, scaleXrock, scaleYrock);
@@ -211,17 +235,18 @@ public class Images {
     }
 
     private static void initOutsideScreen(){
-        statsReport = new ImageIcon(((new ImageIcon("src/Sprites/statistics-report.png")).getImage()).getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH));
-        reglesJeu = new ImageIcon(((new ImageIcon("src/Sprites/regles_jeu.png")).getImage()).getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH));
-        arrows = new ImageIcon(((new ImageIcon("src/Sprites/ArrowLeftRight.png")).getImage()).getScaledInstance(85, 60, java.awt.Image.SCALE_SMOOTH));
-        speedControl = new ImageIcon(((new ImageIcon("src/Sprites/speed_control.png")).getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH));
-        escap = new ImageIcon(((new ImageIcon("src/Sprites/esc_key.png")).getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH));
-        skull = new ImageIcon(((new ImageIcon("src/Sprites/game_over.png")).getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH));
-        imgCredit = new ImageIcon(((new ImageIcon("src/Sprites/credits.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
-        drapeaux = new ImageIcon(((new ImageIcon("src/Sprites/Drapeaux.png")).getImage()).getScaledInstance(354, 142, java.awt.Image.SCALE_SMOOTH));
+        String pathOutSreen = "Sprites/";
+        statsReport = new ImageIcon(((getImageIconFromPath(pathOutSreen+"statistics-report.png").getImage()).getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
+        reglesJeu = new ImageIcon(((getImageIconFromPath(pathOutSreen+"regles_jeu.png").getImage()).getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH)));
+        arrows = new ImageIcon(((getImageIconFromPath(pathOutSreen+"ArrowLeftRight.png").getImage()).getScaledInstance(85, 60, java.awt.Image.SCALE_SMOOTH)));
+        speedControl = new ImageIcon(((getImageIconFromPath(pathOutSreen+"speed_control.png").getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH)));
+        escap = new ImageIcon(((getImageIconFromPath(pathOutSreen+"esc_key.png").getImage()).getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH)));
+        skull = new ImageIcon(((getImageIconFromPath(pathOutSreen+"game_over.png").getImage()).getScaledInstance(65, 45, java.awt.Image.SCALE_SMOOTH)));
+        imgCredit = new ImageIcon(((getImageIconFromPath(pathOutSreen+"credits.png").getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH)));
+        drapeaux = new ImageIcon(((getImageIconFromPath(pathOutSreen+"Drapeaux.png").getImage()).getScaledInstance(354, 142, java.awt.Image.SCALE_SMOOTH)));
 
-        Mathilde_avatar = new ImageIcon(((new ImageIcon("src/Sprites/Mathilde_doll.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
-        Celine_avatar = new ImageIcon(((new ImageIcon("src/Sprites/Celine_avatar.png")).getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        Mathilde_avatar = new ImageIcon(((getImageIconFromPath(pathOutSreen+"Mathilde_doll.png").getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH)));
+        Celine_avatar = new ImageIcon(((getImageIconFromPath(pathOutSreen+"Celine_avatar.png").getImage()).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH)));
     }
 
 
